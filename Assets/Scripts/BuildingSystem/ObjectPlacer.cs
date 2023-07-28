@@ -17,26 +17,35 @@ namespace BuildingSystem
 
         private void ManageObjectPlacement()
         {
-            GridManager.ResetTileMap();
-            
             if (!_currentPlaceableObject)
             {
                 if (Input.GetMouseButtonUp(1))
                 {
                     Instantiate(_placeableObjectTest.gameObject).TryGetComponent(out _currentPlaceableObject);
                 }
-                return;
+                else
+                {
+                    return;    
+                }
             }
+            
+            GridManager.ResetTileMap();
             
             _currentPlaceableObject.transform.position = GridManager.Instance.cursorPosition;
             Vector3Int hoveredCell = GridManager.HoveredCell;
-            
-            
+
+
+            if (Input.GetKeyUp(KeyCode.R))
+            {
+                _currentPlaceableObject.Rotate();    
+            }
+
             if (GridManager.Instance.CheckIfObjectIfPlaceable(hoveredCell, _currentPlaceableObject)
-            && Input.GetMouseButtonUp(0))
+                    && Input.GetMouseButtonUp(0))
             {
                 _currentPlaceableObject.Place(hoveredCell);
                 _currentPlaceableObject = null;
+                return;
             }
             
             GridManager.DisplayFeedBackTiles();

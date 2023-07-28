@@ -97,16 +97,16 @@ namespace BuildingSystem
         public bool CheckIfObjectIfPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
         {
             bool isBlocked = false;
-            foreach (var cellOffset in placeableObject.range)
+            foreach (var cell in placeableObject.GetAbsoluteCellRange(referentialCell))
             {
-                if (CheckIfCellIsBlocked(cellOffset + referentialCell))
+                if (CheckIfCellIsBlocked(cell))
                 {
                     isBlocked = true;
-                    _feedBackBlockedTiles.Add(cellOffset + referentialCell);
+                    _feedBackBlockedTiles.Add(cell);
                 }
                 else
                 {
-                    _feedBackRangeTiles.Add(cellOffset + referentialCell);
+                    _feedBackRangeTiles.Add(cell);
                 }
             }
 
