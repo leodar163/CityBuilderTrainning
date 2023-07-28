@@ -9,46 +9,58 @@ namespace BuildingSystem
         private PlaceableObject _currentPlaceableObject = null;
 
         [SerializeField] private PlaceableObject _placeableObjectTest;
-        
+
         private void Update()
         {
-            ManageObjectPlacement();
+            if (!_currentPlaceableObject && Input.GetKeyUp(KeyCode.B))
+            {
+                Instantiate(_placeableObjectTest.gameObject).TryGetComponent(out _currentPlaceableObject);
+            }
+
+            if (_currentPlaceableObject)
+            {
+                GridManager.ResetTileMap();
+                
+                SnapObjectToGrid();
+                
+                if (Input.GetKeyUp(KeyCode.R))
+                {
+                    _currentPlaceableObject.Rotate();    
+                }
+
+                if (GridManager.ObjectIsPlaceable(GridManager.HoveredCell, _currentPlaceableObject))
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        PlaceObject();   
+                    }
+                    else
+                    {
+                        GridManager.DisplayFeedBackTiles();
+                    }
+                }
+            }
+
+            if (Input.GetMouseButtonUp(1))
+            {
+                if (BuildingHovering.HoveredBuilding)
+                {
+                    BuildingHovering.HoveredBuilding.Destroy();
+                    if(_currentPlaceableObject)
+                        GridManager.ResetTileMap();
+                }
+            }
         }
 
-        private void ManageObjectPlacement()
+        private void SnapObjectToGrid()
         {
-            if (!_currentPlaceableObject)
-            {
-                if (Input.GetMouseButtonUp(1))
-                {
-                    Instantiate(_placeableObjectTest.gameObject).TryGetComponent(out _currentPlaceableObject);
-                }
-                else
-                {
-                    return;    
-                }
-            }
-            
-            GridManager.ResetTileMap();
-            
             _currentPlaceableObject.transform.position = GridManager.Instance.cursorPosition;
-            Vector3Int hoveredCell = GridManager.HoveredCell;
+        }
 
-
-            if (Input.GetKeyUp(KeyCode.R))
-            {
-                _currentPlaceableObject.Rotate();    
-            }
-
-            if (GridManager.Instance.CheckIfObjectIfPlaceable(hoveredCell, _currentPlaceableObject)
-                    && Input.GetMouseButtonUp(0))
-            {
-                _currentPlaceableObject.Place(hoveredCell);
-                _currentPlaceableObject = null;
-                return;
-            }
-            
-            GridManager.DisplayFeedBackTiles();
+        private void PlaceObject()
+        {
+            _currentPlaceableObject.Place(GridManager.HoveredCell);
+            _currentPlaceableObject = null;
         }
     }
 }

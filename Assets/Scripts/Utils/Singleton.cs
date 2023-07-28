@@ -19,13 +19,13 @@ namespace Utils
                     {
                         case 0:
                             throw new NullReferenceException(
-                                $"No {nameof(T)} instantiated, while it's needed as a Singleton");
+                                $"No {typeof(T)} instantiated, while it's needed as a Singleton");
                         case 1:
                             s_instance = instances[0];
                             break;
                         default:
                             throw new IndexOutOfRangeException(
-                                $"There is multiple instances of {nameof(T)}, " +
+                                $"There is multiple instances of {typeof(T)}, " +
                                 $"while as it is a Singleton, there's should be only one.");
 
                     }

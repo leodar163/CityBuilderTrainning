@@ -94,7 +94,7 @@ namespace BuildingSystem
         
         
         
-        public bool CheckIfObjectIfPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
+        public static bool ObjectIsPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
         {
             bool isBlocked = false;
             foreach (var cell in placeableObject.GetAbsoluteCellRange(referentialCell))
@@ -102,35 +102,51 @@ namespace BuildingSystem
                 if (CheckIfCellIsBlocked(cell))
                 {
                     isBlocked = true;
-                    _feedBackBlockedTiles.Add(cell);
+                    Instance._feedBackBlockedTiles.Add(cell);
                 }
                 else
                 {
-                    _feedBackRangeTiles.Add(cell);
+                    Instance._feedBackRangeTiles.Add(cell);
                 }
             }
 
             return !isBlocked;
         }
 
-        public bool CheckIfCellIsBlocked(Vector3Int cell)
+        public static bool CheckIfCellIsBlocked(Vector3Int cell)
         {
-            if (_blockedCells.Contains(cell)) return true;
+            if (Instance._blockedCells.Contains(cell)) return true;
             return false;
         }
         
-        public void BlockCells(params Vector3Int[] cellsToBlock)
+        public static void BlockCells(params Vector3Int[] cellsToBlock)
         {
             foreach (var cell in cellsToBlock)
             {
                 if (CheckIfCellIsBlocked(cell))
                 {
-                    Debug.LogWarning($"{cell} was already blocked");
+                    Debug.LogWarning($"Try to block cell({cell}) while it's already free");
                 }
                 else
                 {
-                    _blockedCells.Add(cell);
+                    Instance._blockedCells.Add(cell);
                 }   
+            }
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        public static void FreeCells(params Vector3Int[] cellsToFree)
+        {
+            foreach (var cell in cellsToFree)
+            {
+                if (!Instance._blockedCells.Contains(cell))
+                {
+                    Debug.LogWarning($"Try to free cell({cell}) while it's already free");
+                }
+                else
+                {
+                    Instance._blockedCells.Remove(cell);
+                }
             }
         }
     }

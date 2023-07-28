@@ -270,8 +270,9 @@ GameObject:
   m_Component:
   - component: {fileID: 359502016}
   - component: {fileID: 359502015}
+  - component: {fileID: 359502017}
   m_Layer: 0
-  m_Name: ObjectPlacer
+  m_Name: BuildingSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,6 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _placeableObjectTest: {fileID: 6484181705300731160, guid: 76637ff67f1de84458d0e32e70e0cb37,
     type: 3}
+  deleteMode: 0
 --- !u!4 &359502016
 Transform:
   m_ObjectHideFlags: 0
@@ -306,6 +308,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &359502017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359502014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a2857ef6ffd47a8987a22161ea28764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

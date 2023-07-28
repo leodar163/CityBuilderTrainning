@@ -55,8 +55,18 @@ namespace BuildingSystem
         public void Place(Vector3Int coordinates)
         {
             currentCoordinates = coordinates;
-            GridManager.Instance.BlockCells(GetAbsoluteCellRange());
+            GridManager.BlockCells(GetAbsoluteCellRange());
             isPlaced = true;
+        }
+
+        public void Destroy()
+        {
+            if (isPlaced)
+            {
+                GridManager.FreeCells(GetAbsoluteCellRange());
+            }
+            
+            Destroy(gameObject);
         }
     }
 }
