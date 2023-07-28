@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Utils;
 
@@ -9,17 +10,25 @@ namespace BuildingSystem
     public class GridManager : Singleton<GridManager>
     {
         [SerializeField] private Grid _grid;
-        [SerializeField] private Tilemap _tilemap;
+        [SerializeField] private Tilemap _feedBackTileMap;
 
         [SerializeField] private Transform _cursor;
+        [Header("Tiles")]
         [SerializeField] private Tile _rangeTile;
+        [SerializeField] private Tile _blockTile;
 
         private Camera _mainCamera;
 
-        private List<Vector3Int> _blockedCells = new List<Vector3Int>();
+        private readonly List<Vector3Int> _blockedCells = new ();
         private Vector3Int _hoveredCell;
 
         public Vector3 cursorPosition => _cursor.position;
+        public static Vector3Int HoveredCell => Instance._hoveredCell;
+
+
+        private readonly List<Vector3Int> _feedBackBlockedTiles = new List<Vector3Int>();
+        private readonly List<Vector3Int> _feedBackRangeTiles = new List<Vector3Int>();
+
 
         private void Awake()
         {
@@ -41,6 +50,19 @@ namespace BuildingSystem
             }
         }
 
+        public static void DisplayFeedBackTiles()
+        {
+            foreach (var cell in Instance._feedBackBlockedTiles)
+            {
+                Instance._feedBackTileMap.SetTile(cell, Instance._blockTile);
+            }
+
+            foreach (var cell in Instance._feedBackRangeTiles)
+            {
+                Instance._feedBackTileMap.SetTile(cell, Instance._rangeTile);
+            }
+        }
+        
         private bool TryGetHoveredTile(out Vector3Int hoveredCell)
         {
             Ray mouseRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -54,39 +76,62 @@ namespace BuildingSystem
             return false;
         }
 
-        private void PaintTileMap(params Vector3Int[] cellsToPaint)
+        public static void ResetTileMap()
         {
-            
-        }
-
-        public bool CheckIfObjectIfPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
-        {
-            foreach (var cellOffset in placeableObject.range)
+            foreach (var cell in Instance._feedBackBlockedTiles)
             {
-                if (CheckIfCellIsBlocked(cellOffset + referentialCell)) return true;
+                Instance._feedBackTileMap.SetTile(cell, null);
             }
 
-            return false;
+            foreach (var cell in Instance._feedBackRangeTiles)
+            {
+                Instance._feedBackTileMap.SetTile(cell, null);
+            }
+            
+            Instance._feedBackBlockedTiles.Clear();
+            Instance._feedBackRangeTiles.Clear();
         }
         
+        
+        
+        public bool CheckIfObjectIfPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
+        {
+            bool isBlocked = false;
+            foreach (var cellOffset in placeableObject.range)
+            {
+                if (CheckIfCellIsBlocked(cellOffset + referentialCell))
+                {
+                    isBlocked = true;
+                    _feedBackBlockedTiles.Add(cellOffset + referentialCell);
+                }
+                else
+                {
+                    _feedBackRangeTiles.Add(cellOffset + referentialCell);
+                }
+            }
+
+            return !isBlocked;
+        }
+
         public bool CheckIfCellIsBlocked(Vector3Int cell)
         {
             if (_blockedCells.Contains(cell)) return true;
             return false;
         }
         
-        public bool TryPlaceObject(PlaceableObject placeableObject)
+        public void BlockCells(params Vector3Int[] cellsToBlock)
         {
-            if (_hoveredCell == default || CheckIfObjectIfPlaceable(_hoveredCell, placeableObject)) return false;
-
-            placeableObject.Place(_hoveredCell);
-            
-            foreach (var cellOffset in placeableObject.range)
+            foreach (var cell in cellsToBlock)
             {
-                _blockedCells.Add(_hoveredCell + cellOffset);
+                if (CheckIfCellIsBlocked(cell))
+                {
+                    Debug.LogWarning($"{cell} was already blocked");
+                }
+                else
+                {
+                    _blockedCells.Add(cell);
+                }   
             }
-
-            return true;
         }
     }
 }

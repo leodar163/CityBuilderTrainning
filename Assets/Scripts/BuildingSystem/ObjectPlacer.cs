@@ -17,6 +17,8 @@ namespace BuildingSystem
 
         private void ManageObjectPlacement()
         {
+            GridManager.ResetTileMap();
+            
             if (!_currentPlaceableObject)
             {
                 if (Input.GetMouseButtonUp(1))
@@ -27,11 +29,17 @@ namespace BuildingSystem
             }
             
             _currentPlaceableObject.transform.position = GridManager.Instance.cursorPosition;
-
-            if (Input.GetMouseButtonUp(0) && GridManager.Instance.TryPlaceObject(_currentPlaceableObject))
+            Vector3Int hoveredCell = GridManager.HoveredCell;
+            
+            
+            if (GridManager.Instance.CheckIfObjectIfPlaceable(hoveredCell, _currentPlaceableObject)
+            && Input.GetMouseButtonUp(0))
             {
+                _currentPlaceableObject.Place(hoveredCell);
                 _currentPlaceableObject = null;
             }
+            
+            GridManager.DisplayFeedBackTiles();
         }
     }
 }
