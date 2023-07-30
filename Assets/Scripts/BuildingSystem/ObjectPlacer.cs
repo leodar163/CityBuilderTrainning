@@ -38,6 +38,9 @@ namespace BuildingSystem
                     if (Input.GetMouseButtonUp(0))
                     {
                         PlaceObject();   
+                        GridManager.PaintTilemap(null, GridManager.TileMapType.Feedback, blockedCells);
+                        GridManager.PaintTilemap(null, GridManager.TileMapType.Feedback, freeCells);
+                        return;
                     }
                 }
                 
