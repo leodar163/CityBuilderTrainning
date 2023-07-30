@@ -292,7 +292,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _placeableObjectTest: {fileID: 6484181705300731160, guid: 76637ff67f1de84458d0e32e70e0cb37,
     type: 3}
-  deleteMode: 0
+  _freeTile: {fileID: 11400000, guid: b8b473c7a3561024a86884c1c0265de5, type: 2}
+  _blockTile: {fileID: 11400000, guid: b95b98b434c61e340b13ec35c06011c1, type: 2}
 --- !u!4 &359502016
 Transform:
   m_ObjectHideFlags: 0
@@ -851,9 +852,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grid: {fileID: 2004770302}
   _feedBackTileMap: {fileID: 611090939}
+  _size:
+    m_Position: {x: -62, y: -62, z: 0}
+    m_Size: {x: 124, y: 124, z: 0}
   _cursor: {fileID: 654916889}
-  _rangeTile: {fileID: 11400000, guid: b8b473c7a3561024a86884c1c0265de5, type: 2}
-  _blockTile: {fileID: 11400000, guid: b95b98b434c61e340b13ec35c06011c1, type: 2}
 --- !u!156049354 &2004770302
 Grid:
   m_ObjectHideFlags: 0

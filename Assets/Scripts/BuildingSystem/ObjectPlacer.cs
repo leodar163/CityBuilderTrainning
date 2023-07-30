@@ -1,14 +1,18 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using Utils;
 
 namespace BuildingSystem
 {
     public class ObjectPlacer : Singleton<ObjectPlacer>
     {
-        private PlaceableObject _currentPlaceableObject = null;
+        private PlaceableObject _currentPlaceableObject;
 
         [SerializeField] private PlaceableObject _placeableObjectTest;
+        
+        [SerializeField] private Tile _freeTile;
+        [SerializeField] private Tile _blockTile;
 
         private void Update()
         {
@@ -19,7 +23,7 @@ namespace BuildingSystem
 
             if (_currentPlaceableObject)
             {
-                GridManager.ResetTileMap();
+                GridManager.ResetTileMap(GridManager.TileMapType.Feedback);
                 
                 SnapObjectToGrid();
                 
@@ -28,17 +32,17 @@ namespace BuildingSystem
                     _currentPlaceableObject.Rotate();    
                 }
 
-                if (GridManager.ObjectIsPlaceable(GridManager.HoveredCell, _currentPlaceableObject))
+                if (GridManager.ObjectIsPlaceable(GridManager.HoveredCell, _currentPlaceableObject,
+                        out Vector3Int[] blockedCells, out Vector3Int[] freeCells))
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
                         PlaceObject();   
                     }
-                    else
-                    {
-                        GridManager.DisplayFeedBackTiles();
-                    }
                 }
+                
+                GridManager.PaintTilemap(_blockTile, GridManager.TileMapType.Feedback, blockedCells);
+                GridManager.PaintTilemap(_freeTile, GridManager.TileMapType.Feedback, freeCells);
             }
 
             if (Input.GetMouseButtonUp(1))
@@ -47,7 +51,7 @@ namespace BuildingSystem
                 {
                     BuildingHovering.HoveredBuilding.Destroy();
                     if(_currentPlaceableObject)
-                        GridManager.ResetTileMap();
+                        GridManager.ResetTileMap(GridManager.TileMapType.Feedback);
                 }
             }
         }
