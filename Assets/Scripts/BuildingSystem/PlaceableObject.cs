@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using GridSystem;
+using UnityEngine;
 
 namespace BuildingSystem
 {
     public class PlaceableObject : MonoBehaviour
     {
+        public bool blockCell = true;
         public Vector3Int[] range = {Vector3Int.zero};
         public Vector3Int currentCoordinates { get; private set; }
         public bool isPlaced { get; private set; }
@@ -55,7 +57,10 @@ namespace BuildingSystem
         public void Place(Vector3Int coordinates)
         {
             currentCoordinates = coordinates;
-            GridManager.BlockCells(GetAbsoluteCellRange());
+            foreach (var cell in GetAbsoluteCellRange())
+            {
+                GridManager.GetCellData(cell).PlaceObjectOn(this);
+            }
             isPlaced = true;
         }
 
@@ -63,7 +68,10 @@ namespace BuildingSystem
         {
             if (isPlaced)
             {
-                GridManager.FreeCells(GetAbsoluteCellRange());
+                foreach (var cell in GetAbsoluteCellRange())
+                {
+                    GridManager.GetCellData(cell).RemoveObject();
+                }
             }
             
             Destroy(gameObject);

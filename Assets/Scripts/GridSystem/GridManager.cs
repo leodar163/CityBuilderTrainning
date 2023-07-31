@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using BuildingSystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Utils;
 
-namespace BuildingSystem
+namespace GridSystem
 {
     public class GridManager : Singleton<GridManager>
     {
@@ -19,7 +19,7 @@ namespace BuildingSystem
 
         private Camera _mainCamera;
 
-        private readonly List<Vector3Int> _blockedCells = new ();
+        private CellData[,] _cellDatas; 
         private Vector3Int _hoveredCell;
 
         public Vector3 cursorPosition => _cursor.position;
@@ -33,6 +33,7 @@ namespace BuildingSystem
         private void Awake()
         {
             _mainCamera = Camera.main;
+            InitCellData();
         }
 
         private void Update()
@@ -49,7 +50,22 @@ namespace BuildingSystem
                 _cursor.gameObject.SetActive(false);
             }
         }
-        
+
+        private void InitCellData()
+        {
+            _cellDatas = new CellData[_size.size.x, _size.size.y];
+           
+            for (int i = 0; i < _cellDatas.GetLength(0); i++)
+            {
+                for (int j = 0; j < _cellDatas.GetLength(1); j++)
+                {
+                    _cellDatas[i, j] = new CellData
+                    {
+                        cell = new Vector3Int(i, j)
+                    };
+                }
+            }
+        }
         
         private bool TryGetHoveredTile(out Vector3Int hoveredCell)
         {
@@ -151,37 +167,13 @@ namespace BuildingSystem
         
         public static bool CellIsBlocked(Vector3Int cell)
         {
-            return Instance._blockedCells.Contains(cell);
+            return GetCellData(cell).isBlocked;
         }
-        
-        public static void BlockCells(params Vector3Int[] cellsToBlock)
+
+        public static ref CellData GetCellData(Vector3Int cell)
         {
-            foreach (var cell in cellsToBlock)
-            {
-                if (CellIsBlocked(cell))
-                {
-                    Debug.LogWarning($"Try to block cell({cell}) while it's already free");
-                }
-                else
-                {
-                    Instance._blockedCells.Add(cell);
-                }   
-            }
+            return ref Instance._cellDatas[cell.x - Instance._size.xMin, cell.y - Instance._size.yMin];
         }
-        
-        public static void FreeCells(params Vector3Int[] cellsToFree)
-        {
-            foreach (var cell in cellsToFree)
-            {
-                if (!Instance._blockedCells.Contains(cell))
-                {
-                    Debug.LogWarning($"Try to free cell({cell}) while it's already free");
-                }
-                else
-                {
-                    Instance._blockedCells.Remove(cell);
-                }
-            }
-        }
+
     }
 }
