@@ -118,24 +118,34 @@ namespace PathFinding
                     return true;
                 }
 
-                foreach (var neighbour in cursor.neighbours)
+                for (int i = 0; i < cursor.neighbours.Length; i++)
                 {
+                    CellData neighbour = cursor.neighbours[i];
+                    PathNode neighbourPathNode = neighbour.pathNode;
+                    
                     if (neighbour.isBlocked || s_closedSet.Contains(neighbour))
                         continue;
 
-                    float movementCostToNeighbour = cursor.pathNode.realCost + cursor.DistanceFrom(neighbour);
+                    
+                    
+                    float movementCostToNeighbour = 
+                        cursor.pathNode.realCost + (cursor.DistanceFrom(neighbour) + 
+                        neighbourPathNode.extraMovementCost + neighbourPathNode.extraMovementCostsToNeighbours[i]) * 
+                        (neighbourPathNode.movementCostCoefficient + neighbourPathNode.movementCoefficientsToNeighbours[i]);
 
-                    //print($"{movementCostToNeighbour} < {neighbour.pathNode.realCost}");
-
-                    if (movementCostToNeighbour < neighbour.pathNode.realCost || !s_openSet.Contains(neighbour))
+                    if (movementCostToNeighbour < neighbourPathNode.realCost || !s_openSet.Contains(neighbour))
                     {
-                        neighbour.pathNode.realCost = movementCostToNeighbour;
-                        neighbour.pathNode.heuristicCost = neighbour.DistanceFrom(target);
-                        neighbour.pathNode.parent = cursor;
+                        neighbourPathNode.realCost = movementCostToNeighbour;
+                        neighbourPathNode.heuristicCost = neighbour.DistanceFrom(target);
+                        neighbourPathNode.parent = cursor;
 
                         if (!s_openSet.Contains(neighbour))
                         {
                             s_openSet.Add(neighbour);
+                        }
+                        else
+                        {
+                            s_openSet.UpdateItemPlace(neighbour);
                         }
                     }
                 }

@@ -10,7 +10,7 @@ namespace GridSystem
     {
         public PlaceableObject placedObject { get; private set; }
         public bool isBlocked => placedObject != null && placedObject.isPlaced;
-        public Vector3Int cell { get; private set; }
+        public Vector3Int cell { get; }
         public Vector3 position { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
@@ -34,6 +34,14 @@ namespace GridSystem
         public void FindNeighbours()
         {
             neighbours = GridManager.findNeighbours(this);
+            pathNode.movementCoefficientsToNeighbours = new float[neighbours.Length];
+            pathNode.extraMovementCostsToNeighbours = new float[neighbours.Length];
+            
+            for (int i = 0; i < neighbours.Length; i++)
+            {
+                pathNode.extraMovementCostsToNeighbours[i] = 0;
+                pathNode.movementCoefficientsToNeighbours[i] = 1;
+            }
         }
 
         public float DistanceFrom(CellData target)
