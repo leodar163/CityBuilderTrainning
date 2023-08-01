@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using GridSystem;
+using OptiCollections;
 using UnityEngine;
 using Utils;
 
@@ -10,36 +12,87 @@ namespace PathFinding
     {
         [SerializeField] private Vector3Int origin;
         [SerializeField] private Vector3Int target;
-        [SerializeField] private bool refreshPath;
+
+        private readonly Heap<CellData> _openSet = new ();
+        private readonly HashSet<CellData> _closedSet = new ();
+
+        private readonly Queue<PathRequest> _pathRequests = new ();
+        
+        private static Heap<CellData> s_openSet => Instance._openSet;
+        private static HashSet<CellData> s_closedSet => Instance._closedSet;
+
+        private static Queue<PathRequest> s_pathRequests => Instance._pathRequests;
+
+
+        private IEnumerator _pathFindingRoutine;
+
+        private CellData[] _feedBackPath = Array.Empty<CellData>();
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawSphere(GridManager.GetCellCenter(origin), 0.1f);
-            Gizmos.DrawSphere(GridManager.GetCellCenter(target), 0.1f);
-            
-            if (refreshPath && Application.isPlaying && TryFindPath(origin, target, out CellData[] path))
+            if (_feedBackPath.Length > 0)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawSphere(GridManager.GetCellCenter(path[0]), 0.2f);
-                for (int i = 0; i < path.Length - 1; i++)
-                {
-                    Vector3 begin = GridManager.GetCellCenter(path[i]) + Vector3.up * 0.1f;
-                    Vector3 end = GridManager.GetCellCenter(path[i + 1]) + Vector3.up * 0.1f;
+                Gizmos.DrawSphere(_feedBackPath[0].position, 0.2f);
+                for (int i = 0; i < _feedBackPath.Length - 1; i++)
+                {   
+                    Vector3 begin = _feedBackPath[i].position + Vector3.up * 0.1f;
+                    Vector3 end = _feedBackPath[i + 1].position + Vector3.up * 0.1f;
                     
                     Gizmos.DrawLine(begin, end);
-                    Gizmos.DrawSphere(end, 0.2f);
+                    /*if(i < _feedBackPath.Length - 2)*/ Gizmos.DrawSphere(end, 0.2f);
                 }
+            }
+            
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(GridManager.GetCellCenter(origin) + Vector3.up * 0.1f, 0.1f);
+            Gizmos.DrawSphere(GridManager.GetCellCenter(target) + Vector3.up * 0.1f, 0.1f);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyUp(KeyCode.P))
+            {
+                RequestPathFinding(new PathRequest(origin, target,
+                    delegate(bool b, CellData[] path)
+                    {
+                        _feedBackPath = path;
+                    }
+                ));
             }
         }
 
+        public static void RequestPathFinding(PathRequest pathRequest)
+        {
+            s_pathRequests.Enqueue(pathRequest);
+
+            if (Instance._pathFindingRoutine == null)
+            {
+                Instance._pathFindingRoutine = Instance.PathFindingRoutine();
+                Instance.StartCoroutine(Instance._pathFindingRoutine);
+            }
+        }
+
+        private IEnumerator PathFindingRoutine()
+        {
+            while (s_pathRequests.Count > 0)
+            {
+                
+                PathRequest request = _pathRequests.Dequeue();
+                bool pathFound = TryFindPath(request.origin, request.target, out CellData[] path);
+                request.onFinished.Invoke(pathFound, path);
+                
+                yield return null;
+            }
+
+            _pathFindingRoutine = null;
+        }
+        
         /// <summary>
-        /// Use A* algorithm to find path bitween two cells
+        /// Use A* algorithm to find path between two cells
         /// </summary>
-        /// <param name="currentCell"></param>
-        /// <param name="targetCell"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static bool TryFindPath(Vector3Int currentCell, Vector3Int targetCell, out CellData[] path)
+        /// <returns>returns false if no path has been found</returns>
+        private static bool TryFindPath(Vector3Int currentCell, Vector3Int targetCell, out CellData[] path)
         {
             if (GridManager.CellIsOutOfGrid(currentCell) || GridManager.CellIsOutOfGrid(targetCell))
             {
@@ -48,58 +101,45 @@ namespace PathFinding
             }
             CellData origin = GridManager.GetCellData(currentCell);
             CellData target = GridManager.GetCellData(targetCell);
-
-            List<CellData> openSet = new List<CellData>();
-            HashSet<CellData> closedSet = new HashSet<CellData>();
             
-            openSet.Add(origin);
+            s_openSet.Clear();
+            s_closedSet.Clear();
+            
+            s_openSet.Add(origin);
 
-            while (openSet.Count > 0)
+            while (s_openSet.Count > 0)
             {
-                CellData cursor = openSet[0];
-                for (int i = 1; i < openSet.Count; i++)
-                {
-                    if (openSet[i].pathNode.totalCost < cursor.pathNode.totalCost
-                        || openSet[i].pathNode.totalCost == cursor.pathNode.totalCost &&
-                        openSet[i].pathNode.heuristicCost < cursor.pathNode.heuristicCost)
-                    {
-                        cursor = openSet[i];
-                    }
-                }
-
-                openSet.Remove(cursor);
-                closedSet.Add(cursor);
+                CellData cursor = s_openSet.GetAndRemoveFirstItem();
+                s_closedSet.Add(cursor);
 
                 if (cursor == target)
                 {
-                    print("path found");
                     path = RetracePath(origin, target);
                     return true;
                 }
 
                 foreach (var neighbour in cursor.neighbours)
                 {
-                    if (neighbour.isBlocked || closedSet.Contains(neighbour))
+                    if (neighbour.isBlocked || s_closedSet.Contains(neighbour))
                         continue;
 
                     float movementCostToNeighbour = cursor.pathNode.realCost + cursor.DistanceFrom(neighbour);
 
                     //print($"{movementCostToNeighbour} < {neighbour.pathNode.realCost}");
 
-                    if (movementCostToNeighbour < neighbour.pathNode.realCost || !openSet.Contains(neighbour))
+                    if (movementCostToNeighbour < neighbour.pathNode.realCost || !s_openSet.Contains(neighbour))
                     {
                         neighbour.pathNode.realCost = movementCostToNeighbour;
                         neighbour.pathNode.heuristicCost = neighbour.DistanceFrom(target);
                         neighbour.pathNode.parent = cursor;
 
-                        if (!openSet.Contains(neighbour))
+                        if (!s_openSet.Contains(neighbour))
                         {
-                            openSet.Add(neighbour);
+                            s_openSet.Add(neighbour);
                         }
                     }
                 }
             }
-            print("Path not found");
             path = Array.Empty<CellData>();
             return false;
         }
@@ -121,5 +161,21 @@ namespace PathFinding
             path.Reverse();
             return path.ToArray();
         }
+    }
+
+    public struct PathRequest
+    {
+        public Vector3Int origin;
+        public Vector3Int target;
+        public readonly Action<bool, CellData[]> onFinished;
+
+        public PathRequest(Vector3Int origin, Vector3Int target, Action<bool, CellData[]> onFinished)
+        {
+            this.origin = origin;
+            this.target = target;
+            this.onFinished = onFinished;
+        }
+        
+        
     }
 }

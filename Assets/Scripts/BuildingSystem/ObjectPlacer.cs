@@ -33,7 +33,7 @@ namespace BuildingSystem
                     _currentPlaceableObject.Rotate();    
                 }
 
-                if (GridManager.ObjectIsPlaceable(GridManager.HoveredCell, _currentPlaceableObject,
+                if (GridManager.ObjectIsPlaceable(GridManager.HoveredCell.cell, _currentPlaceableObject,
                         out Vector3Int[] blockedCells, out Vector3Int[] freeCells))
                 {
                     if (Input.GetMouseButtonUp(0))
@@ -67,7 +67,7 @@ namespace BuildingSystem
 
         private void PlaceObject()
         {
-            _currentPlaceableObject.Place(GridManager.HoveredCell);
+            _currentPlaceableObject.Place(GridManager.HoveredCell.cell);
             _currentPlaceableObject = null;
         }
     }

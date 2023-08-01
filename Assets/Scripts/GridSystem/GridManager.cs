@@ -20,10 +20,10 @@ namespace GridSystem
         private Camera _mainCamera;
 
         private CellData[,] _cellDatas; 
-        private Vector3Int _hoveredCell;
+        private CellData _hoveredCell;
 
         public Vector3 cursorPosition => _cursor.position;
-        public static Vector3Int HoveredCell => Instance._hoveredCell;
+        public static CellData HoveredCell => Instance._hoveredCell;
 
         public enum TileMapType
         {
@@ -41,7 +41,7 @@ namespace GridSystem
             if (TryGetHoveredTile(out _hoveredCell))
             {
                 _cursor.gameObject.SetActive(true);
-                 Vector3 newCursorPosition = _grid.GetCellCenterWorld(_hoveredCell);
+                 Vector3 newCursorPosition = _hoveredCell.position;
                  newCursorPosition.y = 0.0001f;
                  _cursor.position = newCursorPosition;
             }
@@ -69,10 +69,7 @@ namespace GridSystem
             {
                 for (int j = 0; j < _cellDatas.GetLength(1); j++)
                 {
-                    _cellDatas[i, j] = new CellData
-                    {
-                        cell = new Vector3Int(i + _size.xMin, j + _size.yMin),
-                    };
+                    _cellDatas[i, j] = new CellData(new Vector3Int(i + _size.xMin, j + _size.yMin));
                 }
             }
 
@@ -98,18 +95,21 @@ namespace GridSystem
             return neighbours.ToArray();
         }
         
-        private bool TryGetHoveredTile(out Vector3Int hoveredCell)
+        private bool TryGetHoveredTile(out CellData hoveredCell)
         {
             Ray mouseRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
             {
-                hoveredCell = _grid.WorldToCell(hit.point);
-                hoveredCell.x = Mathf.Clamp(HoveredCell.x, Instance._size.xMin, Instance._size.xMax);
-                hoveredCell.y = Mathf.Clamp(HoveredCell.y, Instance._size.yMin, Instance._size.yMax);
+                Vector3Int hoveredCellIndex = _grid.WorldToCell(hit.point);
+                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._size.xMin, Instance._size.xMax);
+                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._size.yMin, Instance._size.yMax);
+
+                hoveredCell = GetCellData(hoveredCellIndex);
+                
                 return true; 
             }
 
-            hoveredCell = default;
+            hoveredCell = null;
             return false;
         }
 
