@@ -51,6 +51,16 @@ namespace GridSystem
             }
         }
 
+        public static Vector3 GetCellCenter(Vector3Int cell)
+        {
+            return Instance._grid.GetCellCenterWorld(cell);
+        }
+
+        public static Vector3 GetCellCenter(CellData cellData)
+        {
+            return GetCellCenter(cellData.cell);
+        }
+        
         private void InitCellData()
         {
             _cellDatas = new CellData[_size.size.x, _size.size.y];
@@ -61,10 +71,31 @@ namespace GridSystem
                 {
                     _cellDatas[i, j] = new CellData
                     {
-                        cell = new Vector3Int(i, j)
+                        cell = new Vector3Int(i + _size.xMin, j + _size.yMin),
                     };
                 }
             }
+
+            foreach (var cellData in _cellDatas)
+            {
+                cellData.FindNeighbours();
+            }
+        }
+
+        public static CellData[] findNeighbours(CellData originCell)
+        {
+            List<CellData> neighbours = new List<CellData>();
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    Vector3Int neighbour = originCell.cell + new Vector3Int(i, j);
+                    if(i == 0 && j == 0 || CellIsOutOfGrid(neighbour)) continue;
+                    neighbours.Add(GetCellData(neighbour));
+                }
+            }
+
+            return neighbours.ToArray();
         }
         
         private bool TryGetHoveredTile(out Vector3Int hoveredCell)
@@ -162,7 +193,7 @@ namespace GridSystem
         public static bool CellIsOutOfGrid(Vector3Int cell)
         {
             return cell.x < Instance._size.xMin || cell.y < Instance._size.yMin ||
-                    cell.x > Instance._size.xMax || cell.y > Instance._size.yMax;
+                    cell.x > Instance._size.xMax - 1 || cell.y > Instance._size.yMax - 1;
         }
         
         public static bool CellIsBlocked(Vector3Int cell)
@@ -170,10 +201,10 @@ namespace GridSystem
             return GetCellData(cell).isBlocked;
         }
 
-        public static ref CellData GetCellData(Vector3Int cell)
+        public static CellData GetCellData(Vector3Int cell)
         {
-            return ref Instance._cellDatas[cell.x - Instance._size.xMin, cell.y - Instance._size.yMin];
+            //print($"{cell} : {cell.x - Instance._size.xMin}, {cell.y - Instance._size.yMin}");
+            return Instance._cellDatas[cell.x - Instance._size.xMin, cell.y - Instance._size.yMin];
         }
-
     }
 }
