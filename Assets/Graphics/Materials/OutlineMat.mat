@@ -102,16 +102,16 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorStrenght: 4
-    - _ColorThreshold: 1.09
+    - _ColorStrenght: 9.5
+    - _ColorThreshold: 1.04
     - _Cull: 2
     - _Cutoff: 0.5
     - _DepthCoef: 10000
     - _DepthDotExposant: 1
     - _DepthNormalCoef: 1
-    - _DepthNormalThreashold: 0.1
+    - _DepthNormalThreashold: 0
     - _DepthStrength: 1.93
-    - _DepthThreshold: 0.66
+    - _DepthThreshold: 0.39
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
