@@ -1,13 +1,22 @@
-﻿using System;
-using GridSystem;
+﻿using GridSystem;
 using ResourceSystem;
 using UnityEngine;
+using TerrainData = TerrainSystem.TerrainData;
 
 namespace BuildingSystem.Facilities
 {
-    [Serializable]
-    public class Facility : IResourceUpdater, ICellModifier
+    [RequireComponent(typeof(BoxCollider))]
+    public abstract class Facility : MonoBehaviour, IResourceUpdater, ICellModifier
     {
+        [SerializeField] private BoxCollider _collider;
+
+        public BoxCollider Collider => _collider;
+
+        private void OnValidate()
+        {
+            if (!_collider) TryGetComponent(out _collider);
+        }
+
         public virtual void OnUpdateResources(ResourceDeck resources)
         {
             
@@ -21,6 +30,11 @@ namespace BuildingSystem.Facilities
         public virtual void OnRemovedFromCell(CellData cell)
         {
             
+        }
+
+        public virtual bool CanBePlaced(TerrainData terrain)
+        {
+            return true;
         }
     }
 }

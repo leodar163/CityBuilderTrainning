@@ -13,6 +13,8 @@ namespace TerrainSystem
     {
     public Tile tile;
     private readonly List<Facility> facilities = new();
+    public int maxFacilityCount = 10;
+    public int freeFacilityPlacements => maxFacilityCount - facilities.Count; 
     public CellData cell { get; private set; }
     public ResourceDeck resourceDeck;
 
@@ -59,12 +61,12 @@ namespace TerrainSystem
         facilities.Add(facilityToAdd);
     }
 
-    public virtual void OnUpdateResources(ResourceDeck resources)
-    {
-        foreach (var facility in facilities)
+        public virtual void OnUpdateResources(ResourceDeck resources)
         {
-            facility.OnUpdateResources(resources);
+            foreach (var facility in facilities)
+            {
+                facility.OnUpdateResources(resources);
+            }
         }
-    }
     }
 }
