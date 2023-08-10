@@ -1,8 +1,9 @@
 ﻿using BuildingSystem;
 using OptiCollections;
 using PathFinding;
-using Unity.VisualScripting;
+using ResourceSystem;
 using UnityEngine;
+using TerrainData = TerrainSystem.TerrainData;
 
 namespace GridSystem
 {
@@ -14,6 +15,7 @@ namespace GridSystem
         public Vector3 position { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
+        public TerrainData terrain { get; private set; }
 
         public CellData(Vector3Int cell)
         {
@@ -65,6 +67,16 @@ namespace GridSystem
             if (difference == 0)
                 difference = other.pathNode.heuristicCost - pathNode.heuristicCost;
             return difference;
+        }
+
+        public void AttachTerrain(TerrainData terrainData)
+        {
+            terrain = terrainData;
+        }
+
+        public void DetachTerrain()
+        {
+            terrain = null;
         }
     }
 }

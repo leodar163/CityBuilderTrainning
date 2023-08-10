@@ -59,7 +59,7 @@ namespace BuildingSystem
             currentCoordinates = coordinates;
             foreach (var cell in GetAbsoluteCellRange())
             {
-                GridManager.GetCellData(cell).PlaceObjectOn(this);
+                GridManager.GetCellDataFromCellId(cell).PlaceObjectOn(this);
             }
             isPlaced = true;
         }
@@ -70,7 +70,7 @@ namespace BuildingSystem
             {
                 foreach (var cell in GetAbsoluteCellRange())
                 {
-                    GridManager.GetCellData(cell).RemoveObject();
+                    GridManager.GetCellDataFromCellId(cell).RemoveObject();
                 }
             }
             

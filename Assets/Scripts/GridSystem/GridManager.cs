@@ -2,38 +2,62 @@
 using System.Collections.Generic;
 using BuildingSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Utils;
 
 namespace GridSystem
 {
+    [RequireComponent(typeof(BoxCollider))]
     public class GridManager : Singleton<GridManager>
     {
         [SerializeField] private Grid _grid;
-        [SerializeField] private Tilemap _feedBackTileMap;
-
-        [SerializeField] private BoundsInt _size = new BoundsInt(-62, -62, 0, 124, 124, 0);
+        [SerializeField] private BoxCollider _gridCollider;
         
+        [Header("Tilemaps")]
+        [SerializeField] private Tilemap _feedBackTileMap;
+        [SerializeField] private Tilemap _terrainTileMap;
+        
+        [Header("Bounds")] 
+        [SerializeField] private Vector2Int _gridSize = new Vector2Int(62, 62); 
+        [SerializeField] private Vector2Int _positionOffset;
+        
+        [Space]
         [SerializeField] private Transform _cursor;
-        [Header("Tiles")]
+ 
 
         private Camera _mainCamera;
 
         private CellData[,] _cellDatas; 
         private CellData _hoveredCell;
 
+        private RectInt _gridRect;
+
+        public static Vector2Int GridSize => Instance._gridSize; 
         public Vector3 cursorPosition => _cursor.position;
         public static CellData HoveredCell => Instance._hoveredCell;
 
         public enum TileMapType
         {
-            Feedback
+            Feedback,
+            Terrain
         }
 
         private void Awake()
         {
+            _gridRect = new RectInt(-_gridSize/2 +_positionOffset, _gridSize);
             _mainCamera = Camera.main;
             InitCellData();
+        }
+
+        private void OnValidate()
+        {
+            if (!_gridCollider) TryGetComponent(out _gridCollider);
+            if (_gridCollider)
+            {
+                _gridCollider.size = new Vector3(_gridSize.x, 0.1f,_gridSize.y);
+                _gridCollider.center = Vector3.zero;
+            }
         }
 
         private void Update()
@@ -63,13 +87,13 @@ namespace GridSystem
         
         private void InitCellData()
         {
-            _cellDatas = new CellData[_size.size.x, _size.size.y];
+            _cellDatas = new CellData[_gridSize.x, _gridSize.y];
            
             for (int i = 0; i < _cellDatas.GetLength(0); i++)
             {
                 for (int j = 0; j < _cellDatas.GetLength(1); j++)
                 {
-                    _cellDatas[i, j] = new CellData(new Vector3Int(i + _size.xMin, j + _size.yMin));
+                    _cellDatas[i, j] = new CellData(new Vector3Int(i + _gridRect.xMin, j + _gridRect.yMin));
                 }
             }
 
@@ -88,7 +112,7 @@ namespace GridSystem
                 {
                     Vector3Int neighbour = originCell.cell + new Vector3Int(i, j);
                     if(i == 0 && j == 0 || CellIsOutOfGrid(neighbour)) continue;
-                    neighbours.Add(GetCellData(neighbour));
+                    neighbours.Add(GetCellDataFromCellId(neighbour));
                 }
             }
 
@@ -101,10 +125,10 @@ namespace GridSystem
             if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
             {
                 Vector3Int hoveredCellIndex = _grid.WorldToCell(hit.point);
-                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._size.xMin, Instance._size.xMax);
-                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._size.yMin, Instance._size.yMax);
+                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax);
+                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax);
 
-                hoveredCell = GetCellData(hoveredCellIndex);
+                hoveredCell = GetCellDataFromCellId(hoveredCellIndex);
                 
                 return true; 
             }
@@ -119,9 +143,9 @@ namespace GridSystem
 
             Vector3Int cursor = Vector3Int.zero;
 
-            for (int y = Instance._size.yMin; y < Instance._size.yMax; y++)
+            for (int y = Instance._gridRect.yMin; y < Instance._gridRect.yMax; y++)
             {
-                for (int x = Instance._size.xMin; x < Instance._size.xMax; x++)
+                for (int x = Instance._gridRect.xMin; x < Instance._gridRect.xMax; x++)
                 {
                     cursor.x = x;
                     cursor.y = y;
@@ -135,6 +159,7 @@ namespace GridSystem
             return tileMapType switch 
             {
                 TileMapType.Feedback => Instance._feedBackTileMap,
+                TileMapType.Terrain => Instance._terrainTileMap,
                 _ => throw new ArgumentOutOfRangeException(nameof(tileMapType), tileMapType, null)
             };
         }
@@ -192,19 +217,29 @@ namespace GridSystem
 
         public static bool CellIsOutOfGrid(Vector3Int cell)
         {
-            return cell.x < Instance._size.xMin || cell.y < Instance._size.yMin ||
-                    cell.x > Instance._size.xMax - 1 || cell.y > Instance._size.yMax - 1;
+            return cell.x < Instance._gridRect.xMin || cell.y < Instance._gridRect.yMin ||
+                    cell.x > Instance._gridRect.xMax - 1 || cell.y > Instance._gridRect.yMax - 1;
         }
         
         public static bool CellIsBlocked(Vector3Int cell)
         {
-            return GetCellData(cell).isBlocked;
+            return GetCellDataFromCellId(cell).isBlocked;
         }
 
-        public static CellData GetCellData(Vector3Int cell)
+        public static CellData GetCellDataFromCellId(Vector3Int cell)
         {
-            //print($"{cell} : {cell.x - Instance._size.xMin}, {cell.y - Instance._size.yMin}");
-            return Instance._cellDatas[cell.x - Instance._size.xMin, cell.y - Instance._size.yMin];
+            //print($"{cell} : {cell.x - Instance._gridRect.xMin}, {cell.y - Instance._gridRect.yMin}");
+            return GetCellDataFromIndex(cell.x - Instance._gridRect.xMin, cell.y - Instance._gridRect.yMin);
+        }
+
+        public static CellData GetCellDataFromIndex(Vector2Int index)
+        {
+            return GetCellDataFromIndex(index.x, index.y);
+        }
+
+        public static CellData GetCellDataFromIndex(int indexX, int indexY)
+        {
+            return Instance._cellDatas[indexX, indexY];
         }
     }
 }

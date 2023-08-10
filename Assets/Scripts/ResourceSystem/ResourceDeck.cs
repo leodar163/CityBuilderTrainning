@@ -4,10 +4,11 @@ using UnityEngine;
 
 namespace ResourceSystem
 {
-    [CreateAssetMenu(menuName = "Resource/Resource Deck", fileName = "NewResourceDeck")]
+    [CreateAssetMenu(menuName = "Resources/Resource Deck", fileName = "NewResourceDeck")]
     public class ResourceDeck : ScriptableObject
     {
-        public List<ResourceSlider> resourceSliders = new();
+        [SerializeField] private List<ResourceSlider> _resourceSliders = new();
+        public List<ResourceSlider> resourceSliders => _resourceSliders;
 
         [Serializable]
         public class ResourceSlider

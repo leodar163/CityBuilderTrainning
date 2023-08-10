@@ -1,7 +1,6 @@
-﻿using System;
-using Cinemachine;
+﻿using Cinemachine;
 using UnityEngine;
-using UnityEngine.Serialization;
+using ResourceSet = ResourceSystem.ResourceSet;
 
 namespace Cameras
 {

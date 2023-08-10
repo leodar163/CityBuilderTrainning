@@ -99,8 +99,8 @@ namespace PathFinding
                 throw new ArgumentOutOfRangeException("You're trying to find a path out of the grid size. Don't.",
                     new Exception());
             }
-            CellData origin = GridManager.GetCellData(currentCell);
-            CellData target = GridManager.GetCellData(targetCell);
+            CellData origin = GridManager.GetCellDataFromCellId(currentCell);
+            CellData target = GridManager.GetCellDataFromCellId(targetCell);
             
             s_openSet.Clear();
             s_closedSet.Clear();
