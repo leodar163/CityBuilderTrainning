@@ -50,13 +50,19 @@ namespace GridSystem
             InitCellData();
         }
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireCube(new Vector3(_positionOffset.x, 0, _positionOffset.y),new Vector3(_gridSize.x, 0.01f, _gridSize.y));
+        }
+
         private void OnValidate()
         {
             if (!_gridCollider) TryGetComponent(out _gridCollider);
             if (_gridCollider)
             {
-                _gridCollider.size = new Vector3(_gridSize.x, 0.1f,_gridSize.y);
-                _gridCollider.center = Vector3.zero;
+                _gridCollider.size = new Vector3(_gridSize.x * 4, 0.01f,_gridSize.y * 4);
+                _gridCollider.center = new Vector3(_positionOffset.x, 0, _positionOffset.y);
             }
         }
 
@@ -121,6 +127,10 @@ namespace GridSystem
         
         private bool TryGetHoveredTile(out CellData hoveredCell)
         {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.x = Mathf.Clamp(mousePos.x, 0, Screen.width);
+            mousePos.y = Mathf.Clamp(mousePos.y, 0, Screen.height);
+            
             Ray mouseRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
             {
