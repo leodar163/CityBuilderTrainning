@@ -18,16 +18,18 @@ namespace BuildingSystem.Facilities
         private void Update()
         {
             if (!selectedFacility) return;
-            
-            
-            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell))
+
+            if (Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Escape))
             {
-                if (Input.GetMouseButtonUp(0))
-                {
-                    PlaceNewFacility(selectedFacility, GridManager.HoveredCell);
-                    selectedFacility = null;
-                    GridManager.PaintCursor(Color.white);
-                }
+                EndPlacement(); 
+                return;
+            }
+
+            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
+                && Input.GetMouseButtonUp(0) 
+                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell))
+            {
+                EndPlacement();   
             }
         }
 
@@ -36,8 +38,10 @@ namespace BuildingSystem.Facilities
             selectedFacility = facilityToSelect;
         }
 
-        public static bool CanPlaceFacility(Facility facility, CellData cell)
+        private static bool CanPlaceFacility(Facility facility, CellData cell)
         {
+            if (cell == null) return false;
+            
             TerrainData terrain = cell.terrain;
 
             bool canPlace = terrain.freeFacilityPlacements > 0 && facility.CanBePlaced(terrain); 
@@ -47,12 +51,23 @@ namespace BuildingSystem.Facilities
             return canPlace;
         }
         
-        private static void PlaceNewFacility(Facility facilityToPlace, CellData cell)
+        private static bool TryPlaceNewFacility(Facility facilityToPlace, CellData cell)
         {
-            if (Instantiate(facilityToPlace.gameObject).TryGetComponent(out Facility newFacility))
+            if (Instantiate(facilityToPlace.gameObject).TryGetComponent(out Facility newFacility) 
+                && cell.terrain.TryAddFacility(newFacility))
             {
-                cell.terrain.AddFacility(newFacility);
+                return true;
             }
+
+            Destroy(newFacility.gameObject);
+            
+            return false;
+        }
+
+        private static void EndPlacement()
+        {
+            selectedFacility = null;
+            GridManager.PaintCursor(Color.white);
         }
     }
 }

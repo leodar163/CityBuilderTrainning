@@ -72,6 +72,7 @@ namespace GridSystem
         public void AttachTerrain(TerrainData terrainData)
         {
             terrain = terrainData;
+            terrain.transform.position = position;
         }
 
         public void DetachTerrain()

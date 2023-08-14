@@ -62,7 +62,7 @@ namespace GridSystem
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(new Vector3(_positionOffset.x, 0, _positionOffset.y),new Vector3(_gridSize.x, 0.01f, _gridSize.y));
+            Gizmos.DrawWireCube(new Vector3(_positionOffset.x + 0.5f, 0, _positionOffset.y + 0.5f),new Vector3(_gridSize.x, 0.01f, _gridSize.y));
         }
 
         private void OnValidate()
@@ -70,8 +70,8 @@ namespace GridSystem
             if (!_gridCollider) TryGetComponent(out _gridCollider);
             if (_gridCollider)
             {
-                _gridCollider.size = new Vector3(_gridSize.x * 4, 0.01f,_gridSize.y * 4);
-                _gridCollider.center = new Vector3(_positionOffset.x, 0, _positionOffset.y);
+                _gridCollider.size = new Vector3(_gridSize.x, 0.01f,_gridSize.y);
+                _gridCollider.center = new Vector3(_positionOffset.x+ 0.5f, 0, _positionOffset.y+ 0.5f);
             }
         }
 
@@ -92,7 +92,9 @@ namespace GridSystem
 
         public static Vector3 GetCellCenter(Vector3Int cell)
         {
-            return Instance._grid.GetCellCenterWorld(cell);
+            Vector3 center = Instance._grid.GetCellCenterWorld(cell);
+            center.y = 0;
+            return center;
         }
 
         public static Vector3 GetCellCenter(CellData cellData)
