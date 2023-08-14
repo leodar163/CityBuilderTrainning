@@ -1,11 +1,8 @@
-﻿using System;
-using GridSystem;
+﻿using GridSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
-using Utils;
 
-namespace UI
+namespace Utils.UI
 {
     public abstract class PanelUI<T> : Singleton<T>, IPointerEnterHandler, IPointerExitHandler
         where T : PanelUI<T>

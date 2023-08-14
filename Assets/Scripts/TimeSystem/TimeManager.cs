@@ -9,11 +9,12 @@ namespace TimeSystem
     {
         public static int timeSpeed = 1;
         public static bool isPaused;
+        public const float secondPerMonth = 6;
 
         public static event Action<InGameDate> onNewMonth;
         public static InGameDate date { get; private set; }
-        
-        private float monthTimer;
+
+        public static float monthTimer { get; private set; }
 
         private TimeControles _controls;
 
@@ -21,6 +22,10 @@ namespace TimeSystem
         private void Awake()
         {
             _controls = new TimeControles();
+            date = new InGameDate();
+            timeSpeed = 1;
+            isPaused = false;
+            monthTimer = 0;
         }
 
         private void OnEnable()
@@ -46,7 +51,7 @@ namespace TimeSystem
             
             monthTimer += Time.deltaTime * timeSpeed;
             
-            if (monthTimer >= 6)
+            if (monthTimer >= secondPerMonth)
             {
                 monthTimer = 0;
 
