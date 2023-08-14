@@ -79,5 +79,10 @@ namespace GridSystem
         {
             terrain = null;
         }
+
+        public void OnMonthUpdate()
+        {
+            terrain.OnUpdateResources(terrain.resourceDeck);
+        }
     }
 }

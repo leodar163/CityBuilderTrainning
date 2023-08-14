@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 6363388185365044418}
+  icon: {fileID: 21300000, guid: 250d488424020ed4c895e3704e43732b, type: 3}
 --- !u!65 &6363388185365044418
 BoxCollider:
   m_ObjectHideFlags: 0

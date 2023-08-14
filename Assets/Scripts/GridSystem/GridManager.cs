@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BuildingSystem;
+using TimeSystem;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
@@ -49,6 +50,8 @@ namespace GridSystem
 
         private void Awake()
         {
+            TimeManager.onNewMonth += _ => MonthUpdateCells();
+            
             if (_cursor.TryGetComponent(out MeshRenderer meshRend))
             {
                 _cursorMat = meshRend.material;
@@ -266,6 +269,14 @@ namespace GridSystem
         public static CellData GetCellDataFromIndex(int indexX, int indexY)
         {
             return Instance._cellDatas[indexX, indexY];
+        }
+
+        public static void MonthUpdateCells()
+        {
+            foreach (var cell in Instance._cellDatas)
+            {
+                cell.OnMonthUpdate();
+            }
         }
     }
 }

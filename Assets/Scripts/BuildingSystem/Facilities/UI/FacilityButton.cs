@@ -21,7 +21,6 @@ namespace BuildingSystem.Facilities.UI
 
         private void Update()
         {
-            _button.interactable = !FacilityPlacer.selectedFacility;
             _animator.SetBool(animSelectionProperty, FacilityPlacer.selectedFacility == facility);
         }
 

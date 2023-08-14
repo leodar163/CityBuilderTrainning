@@ -10,8 +10,8 @@ namespace PathFinding
 {
     public class PathFinder : Singleton<PathFinder>
     {
-        [SerializeField] private Vector3Int origin;
-        [SerializeField] private Vector3Int target;
+        //[SerializeField] private Vector3Int origin;
+        //[SerializeField] private Vector3Int target;
 
         private readonly Heap<CellData> _openSet = new ();
         private readonly HashSet<CellData> _closedSet = new ();
@@ -30,6 +30,7 @@ namespace PathFinding
 
         private void OnDrawGizmos()
         {
+            /*
             if (_feedBackPath.Length > 0)
             {
                 Gizmos.color = Color.green;
@@ -40,26 +41,19 @@ namespace PathFinding
                     Vector3 end = _feedBackPath[i + 1].position + Vector3.up * 0.1f;
                     
                     Gizmos.DrawLine(begin, end);
-                    /*if(i < _feedBackPath.Length - 2)*/ Gizmos.DrawSphere(end, 0.2f);
+                    if(i < _feedBackPath.Length - 2) Gizmos.DrawSphere(end, 0.2f);
                 }
             }
             
             Gizmos.color = Color.magenta;
             Gizmos.DrawSphere(GridManager.GetCellCenter(origin) + Vector3.up * 0.1f, 0.1f);
             Gizmos.DrawSphere(GridManager.GetCellCenter(target) + Vector3.up * 0.1f, 0.1f);
+            */
         }
 
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.P))
-            {
-                RequestPathFinding(new PathRequest(origin, target,
-                    delegate(bool b, CellData[] path)
-                    {
-                        _feedBackPath = path;
-                    }
-                ));
-            }
+            
         }
 
         public static void RequestPathFinding(PathRequest pathRequest)

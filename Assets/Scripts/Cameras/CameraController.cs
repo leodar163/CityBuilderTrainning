@@ -1,6 +1,5 @@
 ﻿using Cinemachine;
 using UnityEngine;
-using ResourceSet = ResourceSystem.ResourceSet;
 
 namespace Cameras
 {
