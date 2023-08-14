@@ -6,7 +6,7 @@ using Utils;
 namespace ResourceSystem
 {
     [CreateAssetMenu(menuName = "Resources/Resource Set", fileName = "NewResourceSet")]
-    public class ResourceSet : ScriptableWithDefault<ResourceSet>
+    public class ResourceSet : DefaultableScriptableObject<ResourceSet>
     {
         [SerializeField] private List<ResourceType> _resources = new();
 

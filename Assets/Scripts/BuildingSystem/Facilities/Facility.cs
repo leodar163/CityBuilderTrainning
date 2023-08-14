@@ -9,7 +9,8 @@ namespace BuildingSystem.Facilities
     public abstract class Facility : MonoBehaviour, IResourceUpdater, ICellModifier
     {
         [SerializeField] private BoxCollider _collider;
-
+        public Sprite icon;
+        
         public BoxCollider Collider => _collider;
 
         private void OnValidate()

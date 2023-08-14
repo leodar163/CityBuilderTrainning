@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Utils
 {
-    public class ScriptableWithDefault<T> : ScriptableObject 
+    public class DefaultableScriptableObject<T> : ScriptableObject 
         where T : ScriptableObject
     {
         private static T s_default;
-
+        
         public static T Default
         {
             get

@@ -45,4 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tile: {fileID: 11400000, guid: d2663c82fb02f15498108821fdb41c3e, type: 2}
+  maxFacilityCount: 9
   resourceDeck: {fileID: 0}

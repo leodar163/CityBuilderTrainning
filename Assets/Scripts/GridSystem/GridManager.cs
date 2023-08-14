@@ -24,7 +24,7 @@ namespace GridSystem
         
         [Space]
         [SerializeField] private Transform _cursor;
- 
+        private Material _cursorMat;
 
         private Camera _mainCamera;
 
@@ -37,6 +37,10 @@ namespace GridSystem
         public Vector3 cursorPosition => _cursor.position;
         public static CellData HoveredCell => Instance._hoveredCell;
 
+        private bool _hoveringActivated = true;
+
+        public static bool hoveringActivated { get => Instance._hoveringActivated; set => Instance._hoveringActivated = value;}
+
         public enum TileMapType
         {
             Feedback,
@@ -45,6 +49,11 @@ namespace GridSystem
 
         private void Awake()
         {
+            if (_cursor.TryGetComponent(out MeshRenderer meshRend))
+            {
+                _cursorMat = meshRend.material;
+            }
+            
             _gridRect = new RectInt(-_gridSize/2 +_positionOffset, _gridSize);
             _mainCamera = Camera.main;
             InitCellData();
@@ -68,7 +77,7 @@ namespace GridSystem
 
         private void Update()
         {
-            if (TryGetHoveredTile(out _hoveredCell))
+            if (_hoveringActivated && TryGetHoveredTile(out _hoveredCell))
             {
                 _cursor.gameObject.SetActive(true);
                  Vector3 newCursorPosition = _hoveredCell.position;
@@ -135,8 +144,8 @@ namespace GridSystem
             if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
             {
                 Vector3Int hoveredCellIndex = _grid.WorldToCell(hit.point);
-                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax);
-                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax);
+                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax - 1);
+                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax - 1);
 
                 hoveredCell = GetCellDataFromCellId(hoveredCellIndex);
                 
@@ -182,6 +191,11 @@ namespace GridSystem
                 if(CellIsOutOfGrid(cell)) break;
                 mapToPaint.SetTile(cell, paintTile);
             }
+        }
+
+        public static void PaintCursor(Color color)
+        {
+            Instance._cursorMat.color = color;
         }
         
         public static bool ObjectIsPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)

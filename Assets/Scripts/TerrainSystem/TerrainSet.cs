@@ -4,7 +4,7 @@ using Utils;
 namespace TerrainSystem
 {
     [CreateAssetMenu(menuName = "Terrains/Terrain Set", fileName = "NewTerrainSet")]
-    public class TerrainSet : ScriptableWithDefault<TerrainSet>
+    public class TerrainSet : DefaultableScriptableObject<TerrainSet>
     {
         [SerializeField] public TerrainData[] terrains;
     }
