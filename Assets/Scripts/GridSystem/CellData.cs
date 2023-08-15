@@ -2,8 +2,8 @@
 using OptiCollections;
 using PathFinding;
 using ResourceSystem;
+using TerrainSystem;
 using UnityEngine;
-using TerrainData = TerrainSystem.TerrainData;
 
 namespace GridSystem
 {
@@ -11,16 +11,16 @@ namespace GridSystem
     {
         public PlaceableObject placedObject { get; private set; }
         public bool isBlocked => placedObject != null && placedObject.isPlaced;
-        public Vector3Int cell { get; }
+        public Vector3Int cellCoordinates { get; }
         public Vector3 position { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
-        public TerrainData terrain { get; private set; }
+        public TerrainType terrain { get; private set; }
 
-        public CellData(Vector3Int cell)
+        public CellData(Vector3Int cellCoordinates)
         {
-            this.cell = cell;
-            position = GridManager.GetCellCenter(cell);
+            this.cellCoordinates = cellCoordinates;
+            position = GridManager.GetCellCenter(cellCoordinates);
         }
         
         public void PlaceObjectOn(PlaceableObject objectToPlace)
@@ -48,8 +48,8 @@ namespace GridSystem
 
         public float DistanceFrom(CellData target)
         {
-            int distX = Mathf.Abs(target.cell.x - cell.x);
-            int distY = Mathf.Abs(target.cell.y - cell.y);
+            int distX = Mathf.Abs(target.cellCoordinates.x - cellCoordinates.x);
+            int distY = Mathf.Abs(target.cellCoordinates.y - cellCoordinates.y);
             
             return distX > distY ? 
                 1.4f * distY + (distX - distY) 
@@ -69,9 +69,9 @@ namespace GridSystem
             return difference;
         }
 
-        public void AttachTerrain(TerrainData terrainData)
+        public void AttachTerrain(TerrainType terrainType)
         {
-            terrain = terrainData;
+            terrain = terrainType;
             terrain.transform.position = position;
         }
 

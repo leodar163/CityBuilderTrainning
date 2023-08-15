@@ -4,28 +4,40 @@ using BuildingSystem.Facilities;
 using GridSystem;
 using ResourceSystem;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 namespace TerrainSystem
 {
     [Serializable]
-    public abstract class TerrainData : MonoBehaviour, ICellModifier, IResourceUpdater
+    public abstract class TerrainType : MonoBehaviour, ICellModifier, IResourceUpdater
     {
+        [SerializeField] private LocalizedString _terrainName;
         public Tile tile;
-        private readonly List<Facility> facilities = new();
+        private readonly List<Facility> _facilities = new();
         public int maxFacilityCount = 10;
-        public int freeFacilityPlacements => maxFacilityCount - facilities.Count; 
+        public int facilityCount => _facilities.Count;
+        public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
         public CellData cell { get; private set; }
-        public ResourceDeck resourceDeck;
+        [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
+        [HideInInspector] public ResourceDeck resourceDeck;
+
+        public string terrainName => _terrainName.GetLocalizedString();
+
+        protected void Awake()
+        {
+            if (_resourceDeckTemplate == null) _resourceDeckTemplate = ScriptableResourceDeck.Default;
+            resourceDeck = new ResourceDeck(_resourceDeckTemplate.resourceDeck);
+        }
 
         public virtual void OnAddedToCell(CellData cell)
         {
             this.cell = cell;
-            GridManager.PaintTilemap(tile,GridManager.TileMapType.Terrain, cell.cell);
+            GridManager.PaintTilemap(tile,GridManager.TileMapType.Terrain, cell.cellCoordinates);
             cell.AttachTerrain(this);
             transform.position = cell.position;
-            foreach (var facility in facilities)
+            foreach (var facility in _facilities)
             {
                 facility.OnAddedToCell(cell);
             }
@@ -34,10 +46,10 @@ namespace TerrainSystem
         public virtual void OnRemovedFromCell(CellData cell)
         {
             if (this.cell != cell) return;
-            GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cell.cell);
+            GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cell.cellCoordinates);
             cell.DetachTerrain();
             this.cell = null;
-            foreach (var facility in facilities)
+            foreach (var facility in _facilities)
             {
                 facility.OnRemovedFromCell(cell);
             }
@@ -53,13 +65,13 @@ namespace TerrainSystem
 
         public bool TryAddFacility(Facility facilityToAdd)
         {
-            if (facilities.Contains(facilityToAdd)) return false;
+            if (_facilities.Contains(facilityToAdd)) return false;
             if (cell != null)
             {
                 facilityToAdd.OnAddedToCell(cell);
             }
             facilityToAdd.transform.parent = transform;
-            facilities.Add(facilityToAdd);
+            _facilities.Add(facilityToAdd);
             PlaceFacility(facilityToAdd);
             
             return true;
@@ -74,14 +86,29 @@ namespace TerrainSystem
             };
 
             facilityToPlace.transform.localPosition = position;
+            facilityToPlace.OnAddedToCell(cell);
+        }
+
+        public void RemoveFacility(Facility facilityToRemove)
+        {
+            if (_facilities.Contains(facilityToRemove))
+            {
+                _facilities.Remove(facilityToRemove);
+                facilityToRemove.OnRemovedFromCell(cell);
+            }
         }
 
         public virtual void OnUpdateResources(ResourceDeck resources)
         {
-            foreach (var facility in facilities)
+            foreach (var facility in _facilities)
             {
                 facility.OnUpdateResources(resources);
             }
+        }
+
+        public Facility GetFacility(int index)
+        {
+            return index > _facilities.Count ? null : _facilities[index];
         }
     }
 }

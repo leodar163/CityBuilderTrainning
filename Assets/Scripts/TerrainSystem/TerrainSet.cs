@@ -6,6 +6,6 @@ namespace TerrainSystem
     [CreateAssetMenu(menuName = "Terrains/Terrain Set", fileName = "NewTerrainSet")]
     public class TerrainSet : DefaultableScriptableObject<TerrainSet>
     {
-        [SerializeField] public TerrainData[] terrains;
+        [SerializeField] public TerrainType[] terrains;
     }
 }

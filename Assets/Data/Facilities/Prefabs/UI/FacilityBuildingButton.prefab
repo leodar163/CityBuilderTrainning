@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4634612985298532213}
   - component: {fileID: 4332020502900418943}
   m_Layer: 0
-  m_Name: FacilityButton
+  m_Name: FacilityBuildingButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

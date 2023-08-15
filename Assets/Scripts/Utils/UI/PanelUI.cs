@@ -1,4 +1,5 @@
-﻿using GridSystem;
+﻿using Cameras;
+using GridSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -43,11 +44,13 @@ namespace Utils.UI
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
             GridManager.hoveringActivated = false;
+            CameraController.Instance.canZoom = false;
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
             GridManager.hoveringActivated = true;
+            CameraController.Instance.canZoom = true;
         }
     }
 }

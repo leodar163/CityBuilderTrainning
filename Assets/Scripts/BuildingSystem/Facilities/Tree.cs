@@ -4,7 +4,7 @@ namespace BuildingSystem.Facilities
 {
     public class Tree : Facility
     {
-        public override bool CanBePlaced(TerrainData terrain)
+        public override bool CanBePlaced(TerrainType terrain)
         {
             return terrain is Forest;
         }

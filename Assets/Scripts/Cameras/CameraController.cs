@@ -1,9 +1,10 @@
 ﻿using Cinemachine;
 using UnityEngine;
+using Utils;
 
 namespace Cameras
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : Singleton<CameraController>
     {
         [SerializeField] private Transform root;
         [SerializeField] private CinemachineVirtualCamera _aimCam;
@@ -15,6 +16,7 @@ namespace Cameras
         private CameraControles _controls;
 
         [Header("Zooming")] 
+        public bool canZoom = true;
         public float zoomSpeed = 0.1f;
         public AnimationCurve yOffsetCurve;
         public AnimationCurve zOffsetCurve;
@@ -49,7 +51,7 @@ namespace Cameras
         private void Update()
         {
             MoveCamera(_controls.Camera.Move.ReadValue<Vector2>());
-            Zoom(_controls.Camera.Zooming.ReadValue<float>());
+            if (canZoom)  Zoom(_controls.Camera.Zooming.ReadValue<float>());
         }
 
         public void MoveCamera(Vector2 direction)

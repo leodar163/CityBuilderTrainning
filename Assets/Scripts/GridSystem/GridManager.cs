@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BuildingSystem;
+using GridSystem.UI;
 using TimeSystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Utils;
 
@@ -20,7 +20,7 @@ namespace GridSystem
         [SerializeField] private Tilemap _terrainTileMap;
         
         [Header("Bounds")] 
-        [SerializeField] private Vector2Int _gridSize = new Vector2Int(62, 62); 
+        [SerializeField] private Vector2Int _gridSize = new (62, 62); 
         [SerializeField] private Vector2Int _positionOffset;
         
         [Space]
@@ -62,12 +62,13 @@ namespace GridSystem
             InitCellData();
         }
 
+        /*
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireCube(new Vector3(_positionOffset.x + 0.5f, 0, _positionOffset.y + 0.5f),new Vector3(_gridSize.x, 0.01f, _gridSize.y));
         }
-
+        */
         private void OnValidate()
         {
             if (!_gridCollider) TryGetComponent(out _gridCollider);
@@ -86,6 +87,11 @@ namespace GridSystem
                  Vector3 newCursorPosition = _hoveredCell.position;
                  newCursorPosition.y = 0.0001f;
                  _cursor.position = newCursorPosition;
+
+                 if (Input.GetMouseButtonUp(0))
+                 {
+                     CellPanel.Instance.OpenPanel();
+                 }
             }
             else
             {
@@ -102,7 +108,7 @@ namespace GridSystem
 
         public static Vector3 GetCellCenter(CellData cellData)
         {
-            return GetCellCenter(cellData.cell);
+            return GetCellCenter(cellData.cellCoordinates);
         }
         
         private void InitCellData()
@@ -130,7 +136,7 @@ namespace GridSystem
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    Vector3Int neighbour = originCell.cell + new Vector3Int(i, j);
+                    Vector3Int neighbour = originCell.cellCoordinates + new Vector3Int(i, j);
                     if(i == 0 && j == 0 || CellIsOutOfGrid(neighbour)) continue;
                     neighbours.Add(GetCellDataFromCellId(neighbour));
                 }

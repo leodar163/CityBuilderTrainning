@@ -50,7 +50,7 @@ namespace TerrainSystem
                         
                     Instance._terrainMap[x, y] = terrainIndex;
 
-                    if (Instantiate(Instance._terrainSet.terrains[terrainIndex]).TryGetComponent(out TerrainData newTerrain))
+                    if (Instantiate(Instance._terrainSet.terrains[terrainIndex]).TryGetComponent(out TerrainType newTerrain))
                     {
                         newTerrain.OnAddedToCell(GridManager.GetCellDataFromIndex(x,y));
                     }

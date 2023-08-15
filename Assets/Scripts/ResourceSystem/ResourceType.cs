@@ -11,6 +11,6 @@ namespace ResourceSystem
         public Sprite icon;
 
         public string id => _id;
-        public string resourceName => _name.GetLocalizedString();
+        public string resourceName => _name.GetLocalizedStringAsync().Result;
     }
 }

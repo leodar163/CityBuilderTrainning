@@ -1,8 +1,8 @@
 ﻿using System;
 using GridSystem;
+using TerrainSystem;
 using UnityEngine;
 using Utils;
-using TerrainData = TerrainSystem.TerrainData;
 
 namespace BuildingSystem.Facilities
 {
@@ -42,7 +42,7 @@ namespace BuildingSystem.Facilities
         {
             if (cell == null) return false;
             
-            TerrainData terrain = cell.terrain;
+            TerrainType terrain = cell.terrain;
 
             bool canPlace = terrain.freeFacilityPlacements > 0 && facility.CanBePlaced(terrain); 
             

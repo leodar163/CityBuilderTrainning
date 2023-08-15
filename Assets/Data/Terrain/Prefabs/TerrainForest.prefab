@@ -44,6 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb3b32dc0fb45aaa0eb0a04dae6ad74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _terrainName:
+    m_TableReference:
+      m_TableCollectionName: GUID:a8a8ef66ac4ac5b49b7951a4a5466f10
+    m_TableEntryReference:
+      m_KeyId: 14008602624
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   tile: {fileID: 11400000, guid: d2663c82fb02f15498108821fdb41c3e, type: 2}
   maxFacilityCount: 9
-  resourceDeck: {fileID: 0}
+  _resourceDeckTemplate: {fileID: 0}
+  resourceDeck:
+    _resourceSliders: []
+  references:
+    version: 2
+    RefIds: []

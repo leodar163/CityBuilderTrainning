@@ -1,6 +1,6 @@
 ﻿namespace TerrainSystem
 {
-    public class Mountain : TerrainData
+    public class Mountain : TerrainType
     {
         
     }

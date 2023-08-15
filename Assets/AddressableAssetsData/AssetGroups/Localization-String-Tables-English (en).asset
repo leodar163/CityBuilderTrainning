@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 5905b19652153f2468ded7b5ea75fc66
   m_SerializeEntries:
-  - m_GUID: 1192326d635bcfd41a18ec9631654bea
-    m_Address: Resource_en
+  - m_GUID: 3b7af8cb8e2f17e4abf128be4148484b
+    m_Address: Terrains_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
