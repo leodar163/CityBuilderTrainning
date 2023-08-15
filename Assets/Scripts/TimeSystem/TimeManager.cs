@@ -9,9 +9,10 @@ namespace TimeSystem
     {
         public static int timeSpeed = 1;
         public static bool isPaused;
-        public const float secondPerMonth = 6;
+        public const float secondPerMonth = 5;
 
         public static event Action<InGameDate> onNewMonth;
+        public static event Action<InGameDate> onNewYear;
         public static InGameDate date { get; private set; }
 
         public static float monthTimer { get; private set; }
@@ -86,6 +87,7 @@ namespace TimeSystem
         private static void OnNewMonth()
         {
             onNewMonth?.Invoke(date);
+            if(date.totalMonths % 12 == 0) onNewYear?.Invoke(date);
         }
 
         public void SetTimeSpeed(int speed)

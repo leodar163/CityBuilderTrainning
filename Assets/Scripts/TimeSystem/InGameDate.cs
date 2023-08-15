@@ -61,5 +61,15 @@
         {
             return obj != null && this == (InGameDate)obj;
         }
+
+        public override int GetHashCode()
+        {
+            return totalMonths;
+        }
+
+        public override string ToString()
+        {
+            return $"year: {years}, month: {months}";
+        }
     }
 }
