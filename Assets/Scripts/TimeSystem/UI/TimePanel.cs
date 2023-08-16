@@ -27,7 +27,7 @@ namespace TimeSystem.UI
         {
             UpdateSliders();
 
-            _timeSpeedMonitor.text = "X " + TimeManager.timeSpeed;
+            _timeSpeedMonitor.text = "X" + TimeManager.timeSpeed;
             _dateMonitor.text = TimeManager.date.ToString();
         }
         

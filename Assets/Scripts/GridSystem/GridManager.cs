@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BuildingSystem;
 using GridSystem.UI;
 using TimeSystem;
+using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
@@ -88,6 +89,8 @@ namespace GridSystem
                  newCursorPosition.y = 0.0001f;
                  _cursor.position = newCursorPosition;
 
+                 ToolTip.Sub(_hoveredCell.terrain);
+                 
                  if (Input.GetMouseButtonUp(0))
                  {
                      CellPanel.Instance.OpenPanel();

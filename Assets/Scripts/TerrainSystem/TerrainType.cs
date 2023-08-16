@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using GridSystem;
 using ResourceSystem;
+using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Tilemaps;
@@ -11,7 +12,7 @@ using Random = UnityEngine.Random;
 namespace TerrainSystem
 {
     [Serializable]
-    public abstract class TerrainType : MonoBehaviour, ICellModifier, IResourceUpdater
+    public abstract class TerrainType : MonoBehaviour, ICellModifier, IResourceUpdater, IToolTipSpeaker
     {
         [SerializeField] private LocalizedString _terrainName;
         public Tile tile;
@@ -23,6 +24,10 @@ namespace TerrainSystem
         [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
         [HideInInspector] public ResourceDeck resourceDeck;
 
+        [Header("Description")] 
+        [SerializeField] private string _typeDescription = "This is a terrain";
+        [SerializeField] private string _effectDescription = "No effect";
+        
         public string terrainName => _terrainName.GetLocalizedString();
 
         protected void Awake()
@@ -109,6 +114,16 @@ namespace TerrainSystem
         public Facility GetFacility(int index)
         {
             return index > _facilities.Count ? null : _facilities[index];
+        }
+
+
+        public ToolTipMessage ToToolTipMessage()
+        {
+            return new ToolTipMessage
+            {
+                title = terrainName,
+                message = $"{_typeDescription}\n\n{_effectDescription}"
+            };
         }
     }
 }
