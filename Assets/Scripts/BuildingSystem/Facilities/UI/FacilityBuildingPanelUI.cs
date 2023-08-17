@@ -24,14 +24,6 @@ namespace BuildingSystem.Facilities.UI
             UpdateUI();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyUp(KeyCode.F))
-            {
-                SwitchPanelOpening();
-            }
-        }
-
         private void UpdateUI()
         {
             if (!set) return;

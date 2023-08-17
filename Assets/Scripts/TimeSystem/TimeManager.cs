@@ -1,11 +1,10 @@
 ﻿using System;
-using GridSystem;
-using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
 
 namespace TimeSystem
 {
-    public class TimeManager : Utils.Singleton<TimeManager>
+    public class TimeManager : Singleton<TimeManager>
     {
         public static int timeSpeed = 1;
         public static bool isPaused;

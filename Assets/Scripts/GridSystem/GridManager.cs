@@ -88,16 +88,10 @@ namespace GridSystem
                  Vector3 newCursorPosition = _hoveredCell.position;
                  newCursorPosition.y = 0.0001f;
                  _cursor.position = newCursorPosition;
-
-                 ToolTip.Sub(_hoveredCell.terrain);
-                 
-                 if (Input.GetMouseButtonUp(0))
-                 {
-                     CellPanel.Instance.OpenPanel();
-                 }
             }
             else
             {
+                _hoveredCell = null;
                 _cursor.gameObject.SetActive(false);
             }
         }

@@ -1,14 +1,25 @@
 ﻿using System;
 using GridSystem;
+using Interactions;
 using TerrainSystem;
+using ToolTipSystem;
 using UnityEngine;
+using UnityEngine.Localization;
 using Utils;
 
 namespace BuildingSystem.Facilities
 {
-    public class FacilityPlacer : Singleton<FacilityPlacer>
+    public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractionMode
     {
         public static Facility selectedFacility { get; private set; }
+
+        [Header("Messages")] 
+        [SerializeField] private LocalizedString _notEnoughPlaceException;
+
+        [SerializeField] private LocalizedString _CanBePlace;
+        [SerializeField] private LocalizedString _CantBePlace;
+        
+        private static ToolTipMessage _toolTipMessage;
 
         private void Awake()
         {
@@ -17,13 +28,7 @@ namespace BuildingSystem.Facilities
 
         private void Update()
         {
-            if (!selectedFacility) return;
-
-            if (Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Escape))
-            {
-                EndPlacement(); 
-                return;
-            }
+            if (!selectedFacility || !isActive) return;
 
             if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
@@ -36,6 +41,7 @@ namespace BuildingSystem.Facilities
         public static void SelectFacility(Facility facilityToSelect)
         {
             selectedFacility = facilityToSelect;
+            InteractionManager.SwitchInteractionMode(InteractionMode.FacilityPlacing);
         }
 
         private static bool CanPlaceFacility(Facility facility, CellData cell)
@@ -43,12 +49,23 @@ namespace BuildingSystem.Facilities
             if (cell == null) return false;
             
             TerrainType terrain = cell.terrain;
+            
+            bool notEnoughPlace = terrain.freeFacilityPlacements > 0;
+            
+            string conditionsFormat = notEnoughPlace ? Instance._notEnoughPlaceException.GetLocalizedString() : "";
+            
+            bool canBePlaced = notEnoughPlace && facility.CanBePlaced(terrain, out conditionsFormat);
 
-            bool canPlace = terrain.freeFacilityPlacements > 0 && facility.CanBePlaced(terrain); 
+            _toolTipMessage = new ToolTipMessage
+            {
+                title = canBePlaced ? Instance._CanBePlace.GetLocalizedString() : Instance._CantBePlace.GetLocalizedString(),
+                message = conditionsFormat
+            };
+            ToolTip.Sub(Instance);
             
-            GridManager.PaintCursor(canPlace ? Color.green : Color.red);
+            GridManager.PaintCursor(canBePlaced ? Color.green : Color.red);
             
-            return canPlace;
+            return canBePlaced;
         }
         
         private static bool TryPlaceNewFacility(Facility facilityToPlace, CellData cell)
@@ -68,6 +85,24 @@ namespace BuildingSystem.Facilities
         {
             selectedFacility = null;
             GridManager.PaintCursor(Color.white);
+        }
+
+        public ToolTipMessage ToToolTipMessage()
+        {
+            return _toolTipMessage;
+        }
+
+        public bool isActive { get; private set; }
+        
+        public void ActivateMode()
+        {
+            isActive = true;
+        }
+
+        public void DeactivateMode()
+        {
+            EndPlacement();
+            isActive = false;
         }
     }
 }
