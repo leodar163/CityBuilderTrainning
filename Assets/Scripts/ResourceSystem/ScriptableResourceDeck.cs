@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Utils;
 
 namespace ResourceSystem
@@ -6,6 +7,20 @@ namespace ResourceSystem
     [CreateAssetMenu(menuName = "Resources/Resource Deck", fileName = "NewResourceDeck")]
     public class ScriptableResourceDeck : DefaultableScriptableObject<ScriptableResourceDeck>
     {
-        public ResourceDeck resourceDeck;
+        [SerializeField] private List<ResourceSlider> _sliders = new ();
+
+        public ResourceDeck GetResourceDeckCopy()
+        {
+            ResourceDeck deck = new(ResourceSet.Default);
+
+            foreach (var slider in _sliders)
+            {
+                ResourceSlider sliderToChange = deck.GetSlider(slider.resource);
+                sliderToChange.maxQuantity = slider.minQuantity;
+                sliderToChange.maxQuantity = slider.maxQuantity;
+                sliderToChange.quantity = slider.quantity;
+            }
+            return deck;
+        }
     }
 }

@@ -10,6 +10,8 @@ namespace ResourceSystem
     {
         [SerializeField] private List<ResourceType> _resources = new();
 
+        public List<ResourceType> resources => _resources;
+
         public ResourceType GetResource(string id)
         {
             foreach (var resource in _resources)

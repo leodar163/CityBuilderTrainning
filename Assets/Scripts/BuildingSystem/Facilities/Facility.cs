@@ -1,4 +1,5 @@
-﻿using GridSystem;
+﻿using System.Collections.Generic;
+using GridSystem;
 using ResourceSystem;
 using TerrainSystem;
 using ToolTipSystem;
@@ -9,7 +10,7 @@ using UnityEngine.Localization.SmartFormat.PersistentVariables;
 namespace BuildingSystem.Facilities
 {
     [RequireComponent(typeof(BoxCollider))]
-    public abstract class Facility : MonoBehaviour, IResourceUpdater, ICellModifier, IToolTipSpeaker
+    public abstract class Facility : MonoBehaviour, IResourceUpdater, ICellModifier, IToolTipSpeaker, IResourceModifier
     {
         [SerializeField] private BoxCollider _collider;
         public Sprite icon;
@@ -21,10 +22,10 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected LocalizedString _placementConditions;  
 
         public CellData cell { get; private set; }
-        
         public BoxCollider Collider => _collider;
 
         public string facilityName => _facilityName.GetLocalizedString();
+        public string modifierName => facilityName;
 
         private void OnValidate()
         {
@@ -39,11 +40,13 @@ namespace BuildingSystem.Facilities
         public virtual void OnAddedToCell(CellData cell)
         {
             this.cell = cell;
+            cell.terrain.resourceDeck.Sub(this);
         }
 
         public virtual void OnRemovedFromCell(CellData cell)
         {
             this.cell = null;
+            cell.terrain.resourceDeck.Unsub(this);
         }
 
         public virtual bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
@@ -69,6 +72,11 @@ namespace BuildingSystem.Facilities
                           "\n" + _resourceModifications.GetLocalizedString() +
                           "\n\n" + _placementConditions.GetLocalizedString()
             };
+        }
+
+        public virtual List<ResourceQuantity> GetResourceDelta()
+        {
+            return null;
         }
     }
 }

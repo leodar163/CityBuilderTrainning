@@ -38,13 +38,13 @@ namespace GridSystem.UI
         protected override void Awake()
         {
             base.Awake();
-            _resourceCheck = _ =>
-            {
-                if(currentCell != null)
-                    CheckForResourceSliders();
-            };
-            
+
             _mainCamera = Camera.main;
+        }
+
+        private void Start()
+        {
+            InitResourceSliders();
         }
 
         private void OnEnable()
@@ -91,13 +91,6 @@ namespace GridSystem.UI
             }
         }
 
-        private void Clear()
-        {
-            ClearFacilityLayout();
-            
-            ClearResourceLayout();
-        }
-
         private void ClearFacilityLayout()
         {
             foreach (var facilityInfoUI in _facilityInfoUIs)
@@ -121,7 +114,7 @@ namespace GridSystem.UI
         
         private void DisplayCellInfos()
         {
-            Clear();
+            ClearFacilityLayout();
             
             _coordinates.text = $"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}";
             _terrainType.text = currentCell.terrain.terrainName;
@@ -134,12 +127,7 @@ namespace GridSystem.UI
                 TryAddFacilityInfo(facilityToDisplay);
             }
 
-            ResourceDeck resourceDeck = currentCell.terrain.resourceDeck;
-            
-            foreach (var sliderToDisplay in resourceDeck.resourceSliders)
-            {
-                TryAddResourceSlider(sliderToDisplay);
-            }
+            AssignSliders();
         }
 
         private bool TryAddFacilityInfo(Facility facility)
@@ -155,12 +143,12 @@ namespace GridSystem.UI
             return false;
         }
         
-        private bool TryAddResourceSlider(ResourceSlider slider)
+        private bool TryAddResourceSlider(ResourceType resource)
         {
             if (Instantiate(_resourceSliderUITemplate, _resourcesLayout)
                 .TryGetComponent(out ResourceSliderUI resourceSliderUI))
             {
-                resourceSliderUI.resourceSlider = slider;
+                resourceSliderUI.resource = resource;
                 _sliderUIs.Add(resourceSliderUI);
                 return true;
             }
@@ -182,17 +170,22 @@ namespace GridSystem.UI
             
             _facilityCapacity.text = $"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}";
         }
-
-        private void CheckForResourceSliders()
+        
+        private void InitResourceSliders()
         {
-            if (_sliderUIs.Count != currentCell.terrain.resourceDeck.resourceSliders.Count)
+            ClearResourceLayout();
+            
+            foreach (var resource in ResourceSet.Default.resources)
             {
-                ClearResourceLayout();
+                TryAddResourceSlider(resource);
+            }
+        }
 
-                foreach (var slider in currentCell.terrain.resourceDeck.resourceSliders)
-                {
-                    TryAddResourceSlider(slider);
-                }
+        private void AssignSliders()
+        {
+            foreach (var sliderUi in _sliderUIs)
+            {
+                sliderUi.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(sliderUi.resource);
             }
         }
     }

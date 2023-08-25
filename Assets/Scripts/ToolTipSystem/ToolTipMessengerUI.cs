@@ -4,16 +4,29 @@ using UnityEngine.EventSystems;
 
 namespace ToolTipSystem
 {
-    public class ToolTipMessengerUI : ToolTipMessengerBase, IPointerEnterHandler, IPointerExitHandler
+    public class ToolTipMessengerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private MonoBehaviour _message;
+        private IToolTipSpeaker toolTipSpeaker;
         private bool _mouseIsIn;
+
+        private void OnValidate()
+        {
+            if (_message && _message is not IToolTipSpeaker)
+                _message = null;
+        }
+
+        private void Awake()
+        {
+            if (_message)
+                toolTipSpeaker = (IToolTipSpeaker)_message;
+        }
 
         private void Update()
         {
-            if (ToolTipSpeaker != null && _mouseIsIn)
+            if (toolTipSpeaker != null && _mouseIsIn)
             {
-                ToolTip.Sub(ToolTipSpeaker);
+                ToolTip.Sub(toolTipSpeaker);
             }
         }
 

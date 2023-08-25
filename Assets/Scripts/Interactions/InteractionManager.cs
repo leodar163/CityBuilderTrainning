@@ -46,7 +46,7 @@ namespace Interactions
 
             if (_controls.InteractionMode.OpenFacilityBuildingMode.WasReleasedThisFrame())
             {
-                FacilityBuildingPanelUI.Instance.OpenPanel();
+                FacilityBuildingPanelUI.Instance.SwitchPanelOpening();
             }
         }
 

@@ -58,6 +58,8 @@ MonoBehaviour:
   _resourceDeckTemplate: {fileID: 0}
   resourceDeck:
     _resourceSliders: []
+  _typeDescription: This is a terrain
+  _effectDescription: No effect
   references:
     version: 2
     RefIds: []

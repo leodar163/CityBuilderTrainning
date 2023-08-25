@@ -83,7 +83,7 @@ namespace GridSystem
 
         public void OnMonthUpdate()
         {
-            terrain.OnUpdateResources(terrain.resourceDeck);
+            terrain.resourceDeck.ApplyDeltaToSliders();
         }
     }
 }

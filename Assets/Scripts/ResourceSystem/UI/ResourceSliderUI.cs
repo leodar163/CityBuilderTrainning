@@ -2,12 +2,13 @@
 using System.Globalization;
 using TimeSystem;
 using TMPro;
+using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace ResourceSystem.UI
 {
-    public class ResourceSliderUI : MonoBehaviour
+    public class ResourceSliderUI : MonoBehaviour, IToolTipSpeaker
     {
         private ResourceSlider _resourceSlider;
         public ResourceSlider resourceSlider
@@ -19,7 +20,8 @@ namespace ResourceSystem.UI
                 UpdateDisplay();
             }
         }
-        
+
+        public ResourceType resource;
 
         [SerializeField] private Slider _slider;
         [SerializeField] private TextMeshProUGUI _resourceName;
@@ -66,6 +68,11 @@ namespace ResourceSystem.UI
                 _maxValue.text = _resourceSlider.maxQuantity.ToString(CultureInfo.InvariantCulture);
                 _value.text = _resourceSlider.quantity.ToString(CultureInfo.InvariantCulture);
             }
+        }
+
+        public ToolTipMessage ToToolTipMessage()
+        {
+            return _resourceSlider.ToToolTipMessage();
         }
     }
 }

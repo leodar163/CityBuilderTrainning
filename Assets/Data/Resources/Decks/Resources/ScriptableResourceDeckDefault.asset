@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb328ee4777142cfa9dc91d3b2360849, type: 3}
   m_Name: ScriptableResourceDeckDefault
   m_EditorClassIdentifier: 
-  resourceDeck:
-    _resourceSliders:
-    - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
-      minQuantity: 0
-      maxQuantity: 100
-      _quantity: 50
+  _sliders:
+  - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
+    minQuantity: 0
+    maxQuantity: 100
+    _quantity: 50

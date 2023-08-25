@@ -387,6 +387,9 @@ GameObject:
   m_Component:
   - component: {fileID: 621180902753636297}
   - component: {fileID: 8901358875232505452}
+  - component: {fileID: 2572944701320403551}
+  - component: {fileID: 7984193452819957342}
+  - component: {fileID: 891352373231910608}
   m_Layer: 0
   m_Name: ResourceSliderUI
   m_TagString: Untagged
@@ -431,15 +434,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceSlider:
-    resource: {fileID: 0}
-    minQuantity: 0
-    maxQuantity: 0
+  resource: {fileID: 0}
   _slider: {fileID: 739429007879719174}
   _resourceName: {fileID: 1635345566512041976}
   _value: {fileID: 4027794461624065889}
   _minValue: {fileID: 576395574511729053}
   _maxValue: {fileID: 1144280072364527451}
+--- !u!114 &2572944701320403551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654560102662061593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa34d666e1004c0cb9eee43003633980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _message: {fileID: 8901358875232505452}
+--- !u!222 &7984193452819957342
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654560102662061593}
+  m_CullTransparentMesh: 1
+--- !u!114 &891352373231910608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654560102662061593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.101960786}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5345610057228625590
 GameObject:
   m_ObjectHideFlags: 0

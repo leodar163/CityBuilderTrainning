@@ -1,4 +1,6 @@
-﻿using TerrainSystem;
+﻿using System.Collections.Generic;
+using ResourceSystem;
+using TerrainSystem;
 
 namespace BuildingSystem.Facilities
 {
@@ -12,6 +14,16 @@ namespace BuildingSystem.Facilities
 
             conditionsFormat = _placementConditions.GetLocalizedString();
             return terrainCondition;
+        }
+
+        public override List<ResourceQuantity> GetResourceDelta()
+        {
+            List<ResourceQuantity> deltas = new()
+            {
+                new ResourceQuantity(ResourceSet.Default.GetResource("resource_environment"), 0.3f)
+            };
+
+            return deltas;
         }
     }
 }
