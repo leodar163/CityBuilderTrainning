@@ -10,22 +10,30 @@ namespace BuildingSystem.Facilities.FacilityTypes
     {
         public Dictionary<ResourceSlider, float> borrowedResources { get; } = new();
 
-
         private static ResourceType s_populationResource;
+        private static ResourceType s_workforceResource;
         private static ResourceSlider s_mainPopulationSlider;
+        private static ResourceSlider s_mainWorkForceSlider;
 
         public int populationSettled => (int)borrowedResources[s_mainPopulationSlider];
 
         public int maxPopulationCapacity = 4;
         public float workForceRatio = 1;
 
+        public float producedWorkForce => populationSettled * workForceRatio;
+        
         private void Awake()
         {
             if (!s_populationResource) 
                 s_populationResource = ResourceSet.Default.GetResource("resource_population");
+            if (!s_workforceResource) 
+                s_workforceResource = ResourceSet.Default.GetResource("resource_workforce");
+            
             s_mainPopulationSlider ??= PlayerResourceDeck.deck.GetSlider(s_populationResource);
+            s_mainWorkForceSlider ??= PlayerResourceDeck.deck.GetSlider(s_workforceResource);
             
             borrowedResources.Add(s_mainPopulationSlider,0);
+            borrowedResources.Add(s_mainWorkForceSlider,0);
         }
 
         private void OnDisable()

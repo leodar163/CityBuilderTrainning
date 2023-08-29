@@ -110,8 +110,8 @@ namespace ResourceSystem
                 ColorUtility.ToHtmlStringRGBA(delta == 0 ? Color.white : delta > 0 ? Color.green : Color.red);
             return new ToolTipMessage
             {
-                title = $"<color=#{deltaColor}>{delta}</color>",
-                message = message
+                title = resource.resourceName,
+                message = $"<color=#{deltaColor}>{(delta > 0 ? "+" : "")}{delta}</color>\n" + message
             };
         }
 

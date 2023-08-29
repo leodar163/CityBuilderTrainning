@@ -49,8 +49,7 @@ namespace ResourceSystem
                 slider.Unsub(modifier);
             }
         }
-        
-        
+
         public ResourceSlider GetSlider(ResourceType resourceType)
         {
             foreach (var slider in _resourceSliders)

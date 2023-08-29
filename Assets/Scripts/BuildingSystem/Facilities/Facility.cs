@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GridSystem;
 using ResourceSystem;
 using TerrainSystem;
@@ -24,7 +25,9 @@ namespace BuildingSystem.Facilities
 
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
-       
+
+        public static event Action<Facility> onFacilityBuild;
+        public static event Action<Facility> onFacilityDestroyed;
 
         public string facilityName => _facilityName.GetLocalizedString();
         public string modifierName => facilityName;
@@ -39,12 +42,14 @@ namespace BuildingSystem.Facilities
         {
             this.cell = cell;
             cell.terrain.resourceDeck.Sub(this);
+            onFacilityBuild?.Invoke(this);
         }
 
         public virtual void OnRemovedFromCell(CellData cell)
         {
             this.cell = null;
             cell.terrain.resourceDeck.Unsub(this);
+            onFacilityDestroyed?.Invoke(this);
         }
 
         public virtual bool CanBePlaced(TerrainType terrain, out string conditionsFormat)

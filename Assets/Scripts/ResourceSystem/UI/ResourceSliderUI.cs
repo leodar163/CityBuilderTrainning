@@ -23,11 +23,10 @@ namespace ResourceSystem.UI
         }
 
         public ResourceType resource;
-
-        [SerializeField] private Slider _slider;
+        [Space] 
+        [SerializeField] private Image _resourceIcon;
         [SerializeField] private TextMeshProUGUI _resourceName;
         [SerializeField] private TextMeshProUGUI _value;
-        [SerializeField] private TextMeshProUGUI _minValue;
         [SerializeField] private TextMeshProUGUI _maxValue;
 
         private Action<InGameDate> update;
@@ -55,23 +54,21 @@ namespace ResourceSystem.UI
         {
             if (_resourceSlider == null)
             {
-                _slider.minValue = 0;
-                _slider.maxValue = 1;
-                _slider.value = 0;
-                _resourceName.text = "Null";
-                _minValue.text = "0";
-                _maxValue.text = "1";
-                _value.text = "0";
+                if (_resourceName) _resourceName.text = "Null";
+                if (_maxValue) _maxValue.text = "1";
+                if (_value) _value.text = "0";
             }
             else
             {
-                _slider.minValue = 0;
-                _slider.maxValue = _resourceSlider.maxQuantity;
-                _slider.value = _resourceSlider.quantity;
-                _resourceName.text = _resourceSlider.resource.resourceName;
-                _minValue.text = "0";
-                _maxValue.text = _resourceSlider.maxQuantity.ToString(CultureInfo.InvariantCulture);
-                _value.text = _resourceSlider.quantity.ToString(CultureInfo.InvariantCulture);
+                onUpdateMaxValue.Invoke(_resourceSlider.maxQuantity);
+                onUpdateValue.Invoke(_resourceSlider.quantity);
+                if(resource.borrowable) onUpdateAvailableValue.Invoke(_resourceSlider.availableQuantity);
+                
+                if(_resourceName) _resourceName.text = _resourceSlider.resource.resourceName;
+                if (_maxValue) _maxValue.text = _resourceSlider.maxQuantity.ToString(CultureInfo.InvariantCulture);
+                if (_value) _value.text = _resourceSlider.quantity.ToString(CultureInfo.InvariantCulture);
+
+                _resourceIcon.sprite = resource.icon;
             }
         }
 

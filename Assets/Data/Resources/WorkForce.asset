@@ -22,7 +22,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c31658053b76b5545a440f1cc20ac03e, type: 3}
+  _borrowable: 1
   references:
     version: 2
     RefIds: []

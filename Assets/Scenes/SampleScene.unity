@@ -5109,8 +5109,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1316096879}
-  - component: {fileID: 1316096881}
   - component: {fileID: 1316096880}
+  - component: {fileID: 1316096881}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -5161,23 +5161,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1316096878}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
-  m_ChildAlignment: 1
-  m_Spacing: 20
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 10, y: 10}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1001 &1318678638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6297,7 +6295,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3158e44897a94385a1b4360310077a2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceDeck: {fileID: 11400000, guid: 4bb829d4c4e888841b73c7cb0074548d, type: 2}
+  _resourceDeckTemplate: {fileID: 11400000, guid: 4bb829d4c4e888841b73c7cb0074548d,
+    type: 2}
+  populationResource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
+  workForceResource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
+  habitationResource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
 --- !u!4 &1669131336
 Transform:
   m_ObjectHideFlags: 0
