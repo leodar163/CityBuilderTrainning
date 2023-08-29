@@ -24,7 +24,7 @@ namespace ResourceSystem
         {
             foreach (var resource in set.resources)
             {
-                _resourceSliders.Add(new ResourceSlider(resource, 0, 0));       
+                _resourceSliders.Add(new ResourceSlider(resource, 0));       
             }
         }
 

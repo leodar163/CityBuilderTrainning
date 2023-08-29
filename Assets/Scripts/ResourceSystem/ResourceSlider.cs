@@ -9,7 +9,6 @@ namespace ResourceSystem
     public class ResourceSlider : IToolTipSpeaker
     {
         public ResourceType resource;
-        public float minQuantity;
         public float maxQuantity;
         [SerializeField] private float _quantity;
 
@@ -19,28 +18,25 @@ namespace ResourceSystem
         public float quantity 
         { 
             get => _quantity;
-            set => _quantity = Mathf.Round(Mathf.Clamp(value, minQuantity, maxQuantity) * 100) / 100;
+            set => _quantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
         }
 
         public ResourceSlider(ResourceSlider template)
         {
             resource = template.resource;
-            minQuantity = template.minQuantity;
             maxQuantity = template.maxQuantity;
             quantity = template.quantity;
         }
         
-        public ResourceSlider(ResourceType resource, float minQuantity, float maxQuantity)
+        public ResourceSlider(ResourceType resource,  float maxQuantity)
         {
             this.resource = resource;
-            this.minQuantity = minQuantity;
             this.maxQuantity = maxQuantity;
         }
 
-        public ResourceSlider(string resourceId, float minQuantity, float maxQuantity)
+        public ResourceSlider(string resourceId, float maxQuantity)
         {
             resource = ResourceSet.Default.GetResource(resourceId);
-            this.minQuantity = minQuantity;
             this.maxQuantity = maxQuantity;
         }
 

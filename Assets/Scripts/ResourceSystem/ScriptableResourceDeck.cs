@@ -16,7 +16,6 @@ namespace ResourceSystem
             foreach (var slider in _sliders)
             {
                 ResourceSlider sliderToChange = deck.GetSlider(slider.resource);
-                sliderToChange.maxQuantity = slider.minQuantity;
                 sliderToChange.maxQuantity = slider.maxQuantity;
                 sliderToChange.quantity = slider.quantity;
             }

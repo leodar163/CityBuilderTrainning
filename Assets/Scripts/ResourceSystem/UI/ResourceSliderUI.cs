@@ -60,11 +60,11 @@ namespace ResourceSystem.UI
             }
             else
             {
-                _slider.minValue = _resourceSlider.minQuantity;
+                _slider.minValue = 0;
                 _slider.maxValue = _resourceSlider.maxQuantity;
                 _slider.value = _resourceSlider.quantity;
                 _resourceName.text = _resourceSlider.resource.resourceName;
-                _minValue.text = _resourceSlider.minQuantity.ToString(CultureInfo.InvariantCulture);
+                _minValue.text = "0";
                 _maxValue.text = _resourceSlider.maxQuantity.ToString(CultureInfo.InvariantCulture);
                 _value.text = _resourceSlider.quantity.ToString(CultureInfo.InvariantCulture);
             }
