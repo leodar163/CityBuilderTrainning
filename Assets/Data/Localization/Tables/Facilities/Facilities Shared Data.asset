@@ -39,6 +39,18 @@ MonoBehaviour:
     m_Key: Fac_CantBePlaced
     m_Metadata:
       m_Items: []
+  - m_Id: 4348569451294720
+    m_Key: Fac_HouseName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352668234215424
+    m_Key: Fac_HousePlacement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352928583053312
+    m_Key: Fac_HouseDesc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

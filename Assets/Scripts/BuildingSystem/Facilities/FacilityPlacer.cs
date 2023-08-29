@@ -32,7 +32,8 @@ namespace BuildingSystem.Facilities
 
             if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
-                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell))
+                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
+                && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();   
             }
@@ -83,6 +84,7 @@ namespace BuildingSystem.Facilities
 
         private static void EndPlacement()
         {
+            Instance.isActive = false;
             selectedFacility = null;
             GridManager.PaintCursor(Color.white);
         }
@@ -102,7 +104,6 @@ namespace BuildingSystem.Facilities
         public void DeactivateMode()
         {
             EndPlacement();
-            isActive = false;
         }
     }
 }

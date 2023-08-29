@@ -2,7 +2,7 @@
 using ResourceSystem;
 using TerrainSystem;
 
-namespace BuildingSystem.Facilities
+namespace BuildingSystem.Facilities.FacilityTypes
 {
     public class TreeFacility : Facility
     {

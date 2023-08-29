@@ -46,6 +46,18 @@ MonoBehaviour:
     m_Localized: <color=red>Can't place here</color>
     m_Metadata:
       m_Items: []
+  - m_Id: 4348569451294720
+    m_Localized: house
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352668234215424
+    m_Localized: Can be placed anywhere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352928583053312
+    m_Localized: A place where workers can stay
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

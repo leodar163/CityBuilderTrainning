@@ -50,6 +50,14 @@ namespace Interactions
             }
         }
 
+        private void LateUpdate()
+        {
+            if (_currentInteractor == _facilityPlacer && !_facilityPlacer.isActive)
+            {
+                ReturnToDefaultInteractor();
+            }
+        }
+
         public static void SwitchInteractionMode(InteractionMode mode)
         {
             IInteractionMode interactorToActivate = mode switch

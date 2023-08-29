@@ -11,14 +11,21 @@ namespace ResourceSystem
         public ResourceType resource;
         public float maxQuantity;
         [SerializeField] private float _quantity;
-
+        private float _borrowedQuantity = 0;
         private List<IResourceModifier> _modifiers = new ();
-        
+        private readonly Dictionary<IResourceBorrower, float> _borrowers = new();
 
+        public float availableQuantity => _quantity - _borrowedQuantity;
+        
         public float quantity 
         { 
             get => _quantity;
-            set => _quantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
+            set
+            {
+                _quantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
+                if (resource.borrowable && _borrowedQuantity > _quantity)
+                    CallBackQuantity(_borrowedQuantity - _quantity);
+            }
         }
 
         public ResourceSlider(ResourceSlider template)
@@ -46,7 +53,10 @@ namespace ResourceSystem
 
             foreach (var modifier in _modifiers)
             {
-                foreach (var resourceDelta in modifier.GetResourceDelta())
+                List<ResourceQuantity> resourceDeltas = modifier.GetResourceDelta();
+                if(resourceDeltas == null)
+                    break;
+                foreach (var resourceDelta in resourceDeltas)
                 {
                     if (resourceDelta.resource == resource)
                     {
@@ -108,6 +118,45 @@ namespace ResourceSystem
         public void ApplyDelta()
         {
             quantity += GetNexResourceDelta();
+        }
+
+        public float BorrowQuantity(float quantityToBorrow, IResourceBorrower borrower)
+        {
+            if (!resource.borrowable) return 0;
+            
+            float quantityBorrowable = availableQuantity < quantityToBorrow ? availableQuantity : quantityToBorrow;
+
+            _borrowers.TryAdd(borrower, 0);
+
+            _borrowers[borrower] += quantityBorrowable;
+            _borrowedQuantity += quantityBorrowable;
+
+            return quantityBorrowable;
+        }
+
+        public void ReturnQuantity(float QuantityToReturn, IResourceBorrower borrower)
+        {
+            if (!resource.borrowable || !_borrowers.TryGetValue(borrower, out float borrowedQuantity)) return;
+
+            QuantityToReturn = borrowedQuantity < QuantityToReturn ? borrowedQuantity : QuantityToReturn;
+
+            _borrowedQuantity -= QuantityToReturn;
+            _borrowers[borrower] -= QuantityToReturn;
+
+            if (_borrowers[borrower] == 0)
+            {
+                _borrowers.Remove(borrower);
+            }
+        }
+
+        private void CallBackQuantity(float quantityToReturn)
+        {
+            foreach (var pair in _borrowers)
+            {
+                var quantityReturnable = pair.Value < quantityToReturn ? pair.Value : quantityToReturn;
+                pair.Key.ReleaseResource(quantityReturnable, this);
+                quantityToReturn -= quantityReturnable;
+            }
         }
     }
 }

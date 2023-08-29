@@ -4,6 +4,7 @@ using TimeSystem;
 using TMPro;
 using ToolTipSystem;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace ResourceSystem.UI
@@ -30,6 +31,10 @@ namespace ResourceSystem.UI
         [SerializeField] private TextMeshProUGUI _maxValue;
 
         private Action<InGameDate> update;
+
+        public UnityEvent<float> onUpdateValue = new();
+        public UnityEvent<float> onUpdateMaxValue = new();
+        public UnityEvent<float> onUpdateAvailableValue = new();
 
         private void Awake()
         {

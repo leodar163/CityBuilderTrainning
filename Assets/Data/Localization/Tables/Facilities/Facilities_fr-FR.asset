@@ -46,6 +46,18 @@ MonoBehaviour:
     m_Localized: <color=red>Impossible de placer</color>
     m_Metadata:
       m_Items: []
+  - m_Id: 4348569451294720
+    m_Localized: maison
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352668234215424
+    m_Localized: "Peut \xEAtre plac\xE9e partout"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4352928583053312
+    m_Localized: Un endroit pour loger les travailleurs
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

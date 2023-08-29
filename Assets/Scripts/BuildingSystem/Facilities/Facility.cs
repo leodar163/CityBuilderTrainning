@@ -10,7 +10,7 @@ using UnityEngine.Localization.SmartFormat.PersistentVariables;
 namespace BuildingSystem.Facilities
 {
     [RequireComponent(typeof(BoxCollider))]
-    public abstract class Facility : MonoBehaviour, IResourceUpdater, ICellModifier, IToolTipSpeaker, IResourceModifier
+    public abstract class Facility : MonoBehaviour , ICellModifier, IToolTipSpeaker, IResourceModifier
     {
         [SerializeField] private BoxCollider _collider;
         public Sprite icon;
@@ -19,10 +19,12 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected LocalizedString _facilityName;
         [SerializeField] protected LocalizedString _facilityDescription;
         [SerializeField] protected LocalizedString _resourceModifications;
-        [SerializeField] protected LocalizedString _placementConditions;  
+        [SerializeField] protected LocalizedString _placementConditions;
+        
 
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
+       
 
         public string facilityName => _facilityName.GetLocalizedString();
         public string modifierName => facilityName;
@@ -31,11 +33,7 @@ namespace BuildingSystem.Facilities
         {
             if (!_collider) TryGetComponent(out _collider);
         }
-
-        public virtual void OnUpdateResources(ResourceDeck resources)
-        {
-            
-        }
+        
 
         public virtual void OnAddedToCell(CellData cell)
         {
@@ -51,7 +49,7 @@ namespace BuildingSystem.Facilities
 
         public virtual bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
         {
-            conditionsFormat = "Can be placed";
+            conditionsFormat = _placementConditions.GetLocalizedString();
             return true;
         }
 
