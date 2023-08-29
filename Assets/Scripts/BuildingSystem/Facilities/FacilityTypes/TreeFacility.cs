@@ -1,11 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ResourceSystem;
 using TerrainSystem;
+using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
     public class TreeFacility : Facility
     {
+        private static ResourceType environmentResource;
+
+        private void Awake()
+        {
+            if (!environmentResource) environmentResource = ResourceSet.Default.GetResource("resource_environment");
+        }
+
         public override bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
         {
             bool terrainCondition = terrain is Forest;
@@ -16,11 +25,11 @@ namespace BuildingSystem.Facilities.FacilityTypes
             return terrainCondition;
         }
 
-        public override List<ResourceQuantity> GetResourceDelta()
+        public override List<ResourceDelta> GetResourceDelta()
         {
-            List<ResourceQuantity> deltas = new()
+            List<ResourceDelta> deltas = new()
             {
-                new ResourceQuantity(ResourceSet.Default.GetResource("resource_environment"), 0.3f)
+                new ResourceDelta(environmentResource, 0.3f, 0, 0)
             };
 
             return deltas;

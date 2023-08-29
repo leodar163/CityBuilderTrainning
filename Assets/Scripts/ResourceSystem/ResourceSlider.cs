@@ -13,6 +13,7 @@ namespace ResourceSystem
         [SerializeField] private float _quantity;
         private float _borrowedQuantity = 0;
         private List<IResourceModifier> _modifiers = new ();
+        private List<IResourceModifier> _permanentModifiers = new ();
         private readonly Dictionary<IResourceBorrower, float> _borrowers = new();
 
         public float availableQuantity => _quantity - _borrowedQuantity;
@@ -53,14 +54,14 @@ namespace ResourceSystem
 
             foreach (var modifier in _modifiers)
             {
-                List<ResourceQuantity> resourceDeltas = modifier.GetResourceDelta();
+                List<ResourceDelta> resourceDeltas = modifier.GetResourceDelta();
                 if(resourceDeltas == null)
                     break;
                 foreach (var resourceDelta in resourceDeltas)
                 {
                     if (resourceDelta.resource == resource)
                     {
-                        delta += resourceDelta.quantity;
+                        delta += resourceDelta.monthDelta;
                     }
                 }
             }
@@ -80,10 +81,10 @@ namespace ResourceSystem
                 {
                     if (resourceDelta.resource == resource)
                     {
-                        delta += resourceDelta.quantity;
-                        string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.quantity == 0 ? Color.white :
-                            resourceDelta.quantity > 0 ? Color.green : Color.red);
-                        message += $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.quantity}</color>\n";
+                        delta += resourceDelta.monthDelta;
+                        string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.monthDelta == 0 ? Color.white :
+                            resourceDelta.monthDelta > 0 ? Color.green : Color.red);
+                        message += $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.monthDelta}</color>\n";
                     }
                 }
             }

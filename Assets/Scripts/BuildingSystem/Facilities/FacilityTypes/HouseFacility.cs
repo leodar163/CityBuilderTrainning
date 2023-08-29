@@ -12,6 +12,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         private static ResourceType s_populationResource;
         private static ResourceType s_workforceResource;
+        private static ResourceType s_habitationResource;
         private static ResourceSlider s_mainPopulationSlider;
         private static ResourceSlider s_mainWorkForceSlider;
 
@@ -28,6 +29,8 @@ namespace BuildingSystem.Facilities.FacilityTypes
                 s_populationResource = ResourceSet.Default.GetResource("resource_population");
             if (!s_workforceResource) 
                 s_workforceResource = ResourceSet.Default.GetResource("resource_workforce");
+            if (!s_habitationResource) 
+                s_habitationResource = ResourceSet.Default.GetResource("resource_habitation");
             
             s_mainPopulationSlider ??= PlayerResourceDeck.deck.GetSlider(s_populationResource);
             s_mainWorkForceSlider ??= PlayerResourceDeck.deck.GetSlider(s_workforceResource);
@@ -84,6 +87,15 @@ namespace BuildingSystem.Facilities.FacilityTypes
             {
                 borrowedResources.Remove(slider);
             }
+        }
+
+        public override List<ResourceDelta> GetResourceDelta()
+        {
+            return new List<ResourceDelta>
+            {
+                new (s_habitationResource, 0, maxPopulationCapacity, 0),
+                new (s_workforceResource, 0, populationSettled * workForceRatio, 0)
+            };
         }
     }
 }

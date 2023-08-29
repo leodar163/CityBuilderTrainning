@@ -5,6 +5,6 @@ namespace ResourceSystem
     public interface IResourceModifier
     {
         public string modifierName { get; }
-        public List<ResourceQuantity> GetResourceDelta();
+        public List<ResourceDelta> GetResourceDelta();
     }
 }

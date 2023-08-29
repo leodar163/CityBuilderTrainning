@@ -120,9 +120,14 @@ namespace TerrainSystem
             };
         }
         
-        public virtual List<ResourceQuantity> GetResourceDelta()
+        public virtual List<ResourceDelta> GetResourceDelta()
         {
-            return new List<ResourceQuantity>();
+            return null;
+        }
+
+        public List<ResourceDelta> GetPermanentResourceDelta()
+        {
+            return null;
         }
     }
 }

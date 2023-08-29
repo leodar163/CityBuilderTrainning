@@ -5,11 +5,11 @@ namespace TerrainSystem
 {
     public class Forest : TerrainType
     {
-        public override List<ResourceQuantity> GetResourceDelta()
+        public override List<ResourceDelta> GetResourceDelta()
         {
-            return new List<ResourceQuantity>
+            return new List<ResourceDelta>
             {
-                new(ResourceSet.Default.GetResource("resource_environment"), -1)
+                new(ResourceSet.Default.GetResource("resource_environment"), -1, 0,0)
             };
         }
     }

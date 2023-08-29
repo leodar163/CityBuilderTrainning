@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ResourceSystem
@@ -11,6 +12,7 @@ namespace ResourceSystem
         public List<ResourceSlider> resourceSliders => _resourceSliders;
 
         private List<IResourceModifier> _resourceModifiers = new();
+        private List<IResourceModifier> _permanentResourceModifiers = new();
 
         public ResourceDeck(ResourceDeck template)
         {
