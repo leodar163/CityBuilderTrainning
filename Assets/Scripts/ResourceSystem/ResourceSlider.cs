@@ -9,25 +9,35 @@ namespace ResourceSystem
     public class ResourceSlider : IToolTipSpeaker
     {
         public ResourceType resource;
-        public float maxQuantity;
+        [SerializeField] private float _maxQuantity;
         [SerializeField] private float _quantity;
         private float _borrowedQuantity = 0;
         private List<IResourceModifier> _modifiers = new ();
-        private List<IResourceModifier> _permanentModifiers = new ();
         private readonly Dictionary<IResourceBorrower, float> _borrowers = new();
 
-        public float availableQuantity => _quantity - _borrowedQuantity;
+        private float _modifierQuantity = 0;
+        private float _modifierMaxQuantity = 0;
         
-        public float quantity 
-        { 
-            get => _quantity;
+        public float availableQuantity => _quantity - _borrowedQuantity;
+
+        public float maxQuantity
+        {
+            get => _maxQuantity + _modifierMaxQuantity;
+            set => _maxQuantity = Mathf.Round(value * 100) / 100;
+        }
+        
+        public float quantity
+        {
+            get => _quantity + Mathf.Clamp(_modifierQuantity, 0, maxQuantity);
             set
             {
                 _quantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
                 if (resource.borrowable && _borrowedQuantity > _quantity)
-                    CallBackQuantity(_borrowedQuantity - _quantity);
+                    CallBorrowersForRefund(_borrowedQuantity - _quantity);
             }
         }
+
+        #region CONSTRUCTORS
 
         public ResourceSlider(ResourceSlider template)
         {
@@ -48,7 +58,11 @@ namespace ResourceSystem
             this.maxQuantity = maxQuantity;
         }
 
-        public float GetNexResourceDelta()
+        #endregion
+
+        #region RESOURCE_DELTA_MANAGEMENT
+
+        public float GetNextMonthResourceDelta()
         {
             float delta = 0;
 
@@ -69,7 +83,7 @@ namespace ResourceSystem
             return Mathf.Round(delta * 100) / 100;
         }
         
-        public float GetNexResourceDelta(out string message)
+        public float GetNextMonthResourceDelta(out string message)
         {
             float delta = 0;
 
@@ -91,7 +105,54 @@ namespace ResourceSystem
 
             return Mathf.Round(delta * 100) / 100;
         }
+
+        public float GetMaxQuantityFromModifiers()
+        {
+            float modifiersMaxQuantity = 0;
+
+            foreach (var modifier in _modifiers)
+            {
+                foreach (var resourceDelta in modifier.GetResourceDelta())
+                {
+                    if (resourceDelta.resource == resource)
+                    {
+                        modifiersMaxQuantity += resourceDelta.maxDelta;
+                    }
+                }
+            }
+
+            return modifiersMaxQuantity;
+        }
+
+        public float GetQuantityFromModifiers()
+        {
+            float modifiersQuantity = 0;
+
+            foreach (var modifier in _modifiers)
+            {
+                foreach (var resourceDelta in modifier.GetResourceDelta())
+                {
+                    if (resourceDelta.resource == resource)
+                    {
+                        modifiersQuantity += resourceDelta.quantityDelta;
+                    }
+                }
+            }
+
+            return modifiersQuantity;
+        }
         
+        public void ApplyMonthDelta()
+        {
+            _modifierMaxQuantity = GetMaxQuantityFromModifiers();
+            quantity += GetNextMonthResourceDelta();
+            _modifierQuantity = GetQuantityFromModifiers();
+        }
+
+        #endregion
+
+        #region MODIFIER_SUBSCRIPTION
+
         public void Sub(IResourceModifier modifier)
         {
             if(!_modifiers.Contains(modifier))
@@ -104,9 +165,13 @@ namespace ResourceSystem
                 _modifiers.Remove(modifier);
         }
 
+        #endregion
+
+        #region TOOLTIP
+
         public ToolTipMessage ToToolTipMessage()
         {
-            float delta = GetNexResourceDelta(out string message);
+            float delta = GetNextMonthResourceDelta(out string message);
             string deltaColor =
                 ColorUtility.ToHtmlStringRGBA(delta == 0 ? Color.white : delta > 0 ? Color.green : Color.red);
             return new ToolTipMessage
@@ -116,12 +181,11 @@ namespace ResourceSystem
             };
         }
 
-        public void ApplyDelta()
-        {
-            quantity += GetNexResourceDelta();
-        }
+        #endregion
 
-        public float BorrowQuantity(float quantityToBorrow, IResourceBorrower borrower)
+        #region LOANING
+
+        public float LoanQuantity(float quantityToBorrow, IResourceBorrower borrower)
         {
             if (!resource.borrowable) return 0;
             
@@ -135,7 +199,7 @@ namespace ResourceSystem
             return quantityBorrowable;
         }
 
-        public void ReturnQuantity(float QuantityToReturn, IResourceBorrower borrower)
+        public void RefundQuantity(float QuantityToReturn, IResourceBorrower borrower)
         {
             if (!resource.borrowable || !_borrowers.TryGetValue(borrower, out float borrowedQuantity)) return;
 
@@ -150,14 +214,16 @@ namespace ResourceSystem
             }
         }
 
-        private void CallBackQuantity(float quantityToReturn)
+        private void CallBorrowersForRefund(float quantityToReturn)
         {
             foreach (var pair in _borrowers)
             {
                 var quantityReturnable = pair.Value < quantityToReturn ? pair.Value : quantityToReturn;
-                pair.Key.ReleaseResource(quantityReturnable, this);
+                pair.Key.ReturnResource(quantityReturnable, this);
                 quantityToReturn -= quantityReturnable;
             }
         }
+
+        #endregion
     }
 }

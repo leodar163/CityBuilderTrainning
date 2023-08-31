@@ -29,7 +29,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             List<ResourceDelta> deltas = new()
             {
-                new ResourceDelta(environmentResource, 0.3f, 0, 0)
+                new ResourceDelta(environmentResource, 0.3f)
             };
 
             return deltas;

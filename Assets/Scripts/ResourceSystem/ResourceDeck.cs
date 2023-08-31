@@ -67,7 +67,7 @@ namespace ResourceSystem
         {
             foreach (var slider in _resourceSliders)
             {
-                slider.ApplyDelta();
+                slider.ApplyMonthDelta();
             }
         }
     }

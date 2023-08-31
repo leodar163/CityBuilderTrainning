@@ -8,7 +8,8 @@ namespace BuildingSystem.Facilities.FacilityTypes
 {
     public class HouseFacility : Facility, IResourceBorrower
     {
-        public Dictionary<ResourceSlider, float> borrowedResources { get; } = new();
+        public Dictionary<ResourceSlider, float> loaners { get; } = new();
+        public IResourceBorrower selfBorrower => this;
 
         private static ResourceType s_populationResource;
         private static ResourceType s_workforceResource;
@@ -16,12 +17,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
         private static ResourceSlider s_mainPopulationSlider;
         private static ResourceSlider s_mainWorkForceSlider;
 
-        public int populationSettled => (int)borrowedResources[s_mainPopulationSlider];
+        public int inhabitants => (int)selfBorrower.GetBorrowedQuantity(s_populationResource);
 
         public int maxPopulationCapacity = 4;
         public float workForceRatio = 1;
 
-        public float producedWorkForce => populationSettled * workForceRatio;
+        public float producedWorkForce => inhabitants * workForceRatio;
         
         private void Awake()
         {
@@ -35,66 +36,33 @@ namespace BuildingSystem.Facilities.FacilityTypes
             s_mainPopulationSlider ??= PlayerResourceDeck.deck.GetSlider(s_populationResource);
             s_mainWorkForceSlider ??= PlayerResourceDeck.deck.GetSlider(s_workforceResource);
             
-            borrowedResources.Add(s_mainPopulationSlider,0);
-            borrowedResources.Add(s_mainWorkForceSlider,0);
+            loaners.Add(s_mainPopulationSlider,0);
+            loaners.Add(s_mainWorkForceSlider,0);
         }
 
         private void OnDisable()
         {
-            IResourceBorrower selfBorrower = this;
-            selfBorrower.ReleaseResource(populationSettled, s_mainPopulationSlider);
+            selfBorrower.ReturnResource(inhabitants, s_mainPopulationSlider);
         }
 
         private void Update()
         {
-            if (populationSettled < maxPopulationCapacity)
+            if (inhabitants < maxPopulationCapacity)
             {
-                BorrowResource(maxPopulationCapacity - populationSettled, s_populationResource);
+                BorrowPopulation();
             }
         }
 
-        public void BorrowResource(float quantity, ResourceType resource)
+        private void BorrowPopulation()
         {
-            ResourceSlider sliderToBorrowTo = null;
-            
-            if (resource == s_populationResource)
-            {
-                sliderToBorrowTo = s_mainPopulationSlider;
-            }
-
-            IResourceBorrower selfBorrower = this;
-            selfBorrower.BorrowResource(quantity, sliderToBorrowTo);
-        }
-
-        public void ReleaseResource(float quantityToRelease, ResourceType resource)
-        {
-            List<ResourceSlider> slidersToRemove = new();
-            
-            foreach (var pair in borrowedResources)
-            {
-                if (pair.Key.resource == resource)
-                {
-                    float quantityReleasable = quantityToRelease > pair.Value ? pair.Value : quantityToRelease;
-                    IResourceBorrower selfBorrower = this;
-                    selfBorrower.ReleaseResource(quantityReleasable, pair.Key);
-                    
-                    if(pair.Value == 0)
-                        slidersToRemove.Add(pair.Key);
-                }
-            }
-
-            foreach (var slider in slidersToRemove)
-            {
-                borrowedResources.Remove(slider);
-            }
+            selfBorrower.BorrowResource(maxPopulationCapacity - inhabitants, s_mainPopulationSlider);
         }
 
         public override List<ResourceDelta> GetResourceDelta()
         {
             return new List<ResourceDelta>
             {
-                new (s_habitationResource, 0, maxPopulationCapacity, 0),
-                new (s_workforceResource, 0, populationSettled * workForceRatio, 0)
+                new ResourceDelta(s_workforceResource, quantityDelta: workForceRatio * inhabitants)
             };
         }
     }

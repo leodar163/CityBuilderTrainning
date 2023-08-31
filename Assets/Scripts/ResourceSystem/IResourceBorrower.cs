@@ -4,30 +4,76 @@ namespace ResourceSystem
 {
     public interface IResourceBorrower
     {
-        public Dictionary<ResourceSlider, float> borrowedResources { get; }
-
-        public void BorrowResource(float quantity, ResourceType resource);
-
-
-        public void ReleaseResource(float quantityToRelease, ResourceType resource);
-
-        public virtual void BorrowResource(float quantityToBorrow, ResourceSlider slider)
+        public Dictionary<ResourceSlider, float> loaners { get; }
+        public IResourceBorrower selfBorrower { get; }
+        
+        
+        public float GetBorrowedQuantity(ResourceType resource)
         {
-            borrowedResources.TryAdd(slider, 0);
-            borrowedResources[slider] = slider.BorrowQuantity(quantityToBorrow, this);
+            float quantity = 0;
+
+            foreach (var pair in loaners)
+            {
+                if (pair.Key.resource == resource)
+                {
+                    quantity += pair.Value;
+                }
+            }
+
+            return quantity;
+        }
+
+        public void BorrowResource(float quantityToBorrow, ResourceSlider slider)
+        {
+            loaners.TryAdd(slider, 0);
+            loaners[slider] = slider.LoanQuantity(quantityToBorrow, this);
+        }
+
+        public void ReturnResourceAll(ResourceType resource)
+        {
+            foreach (var slider in loaners.Keys)
+            {
+                if (slider.resource == resource)
+                    ReturnResourceAll(slider);
+            }
         }
         
-        public virtual void ReleaseResource(float quantityToRelease, ResourceSlider slider)
+        public void ReturnResource(float quantityToReturn, ResourceType resource)
         {
-            if (!borrowedResources.TryGetValue(slider, out float borrowedQuantity)) return;
-
-            quantityToRelease = quantityToRelease > borrowedQuantity ? borrowedQuantity : quantityToRelease;
-            borrowedResources[slider] -= quantityToRelease;
+            if (quantityToReturn == 0) return;
             
-            slider.ReturnQuantity(quantityToRelease, this);
+            foreach (var slider in loaners.Keys)
+            {
+                if (slider.resource == resource)
+                {
+                    quantityToReturn -= ReturnResource(quantityToReturn, slider);
+                    if(quantityToReturn == 0) return;
+                }
+            }
+        }
 
-            if (borrowedResources[slider] == 0)
-                borrowedResources.Remove(slider);
+        public void ReturnResourceAll(ResourceSlider slider)
+        {
+            if (!loaners.TryGetValue(slider, out float borrowedQuantity)) return;
+
+            ReturnResource(borrowedQuantity, slider);
+        }
+        
+        public float ReturnResource(float quantityToReturn, ResourceSlider slider)
+        {
+            if (quantityToReturn == 0) return 0;
+            
+            if (!loaners.TryGetValue(slider, out float borrowedQuantity)) return 0;
+
+            quantityToReturn = quantityToReturn > borrowedQuantity ? borrowedQuantity : quantityToReturn;
+            loaners[slider] -= quantityToReturn;
+            
+            slider.RefundQuantity(quantityToReturn, this);
+
+            if (loaners[slider] == 0)
+                loaners.Remove(slider);
+
+            return quantityToReturn;
         }
     }
 }

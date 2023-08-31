@@ -4,15 +4,15 @@
     {
         public ResourceType resource;
         public float monthDelta;
-        public float availabilityDelta;
+        public float quantityDelta;
         public float maxDelta;
 
-        public ResourceDelta(ResourceType resource, float monthDelta, float availabilityDelta, float maxDelta)
+        public ResourceDelta(ResourceType resource, float monthDelta = 0, float quantityDelta = 0, float maxDelta = 0)
         {
             this.resource = resource;
             this.monthDelta = monthDelta;
-            this.availabilityDelta = availabilityDelta;
             this.maxDelta = maxDelta;
+            this.quantityDelta = quantityDelta;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace TerrainSystem
         {
             return new List<ResourceDelta>
             {
-                new(ResourceSet.Default.GetResource("resource_environment"), -1, 0,0)
+                new(ResourceSet.Default.GetResource("resource_environment"), -1)
             };
         }
     }
