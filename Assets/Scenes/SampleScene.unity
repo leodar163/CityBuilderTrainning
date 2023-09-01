@@ -810,6 +810,7 @@ MonoBehaviour:
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+  debug: 0
 --- !u!114 &299124869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3303,6 +3304,7 @@ MonoBehaviour:
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+  debug: 0
 --- !u!114 &777130832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7302,6 +7304,7 @@ MonoBehaviour:
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+  debug: 0
 --- !u!114 &1606778130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7964,6 +7967,15 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  _localizedAvailableQuantity:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 53746134044672
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   references:
     version: 2
     RefIds: []
@@ -8537,6 +8549,7 @@ MonoBehaviour:
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+  debug: 0
 --- !u!114 &1945750956
 MonoBehaviour:
   m_ObjectHideFlags: 0

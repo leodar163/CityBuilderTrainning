@@ -27,6 +27,10 @@ MonoBehaviour:
     m_Key: Var_Base
     m_Metadata:
       m_Items: []
+  - m_Id: 53746134044672
+    m_Key: Var_AvailableQuantity
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

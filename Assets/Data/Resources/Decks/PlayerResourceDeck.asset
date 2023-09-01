@@ -17,5 +17,5 @@ MonoBehaviour:
     _maxQuantity: Infinity
     _nativeQuantity: 10
   - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
-    _maxQuantity: Infinity
-    _nativeQuantity: 10
+    _maxQuantity: 1000
+    _nativeQuantity: 0

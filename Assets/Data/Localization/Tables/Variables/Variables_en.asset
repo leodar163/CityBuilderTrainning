@@ -30,6 +30,10 @@ MonoBehaviour:
     m_Localized: base
     m_Metadata:
       m_Items: []
+  - m_Id: 53746134044672
+    m_Localized: available quantity
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

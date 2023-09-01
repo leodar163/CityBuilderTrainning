@@ -7,6 +7,7 @@ namespace ResourceSystem
         public Dictionary<ResourceSlider, float> loaners { get; }
         public IResourceBorrower selfBorrower { get; }
         
+        public string borrowerName { get; }
         
         public float GetBorrowedQuantity(ResourceType resource)
         {

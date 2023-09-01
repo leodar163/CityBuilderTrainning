@@ -10,6 +10,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
     {
         public Dictionary<ResourceSlider, float> loaners { get; } = new();
         public IResourceBorrower selfBorrower => this;
+        public string borrowerName => facilityName;
 
         private static ResourceType s_populationResource;
         private static ResourceType s_workforceResource;
