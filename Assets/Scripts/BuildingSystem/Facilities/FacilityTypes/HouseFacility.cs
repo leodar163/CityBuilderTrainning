@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ResourceSystem;
-using ResourceSystem.Player;
+using ResourceSystem.Global;
 using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
@@ -33,8 +33,8 @@ namespace BuildingSystem.Facilities.FacilityTypes
             if (!s_habitationResource) 
                 s_habitationResource = ResourceSet.Default.GetResource("resource_habitation");
             
-            s_mainPopulationSlider ??= PlayerResourceDeck.deck.GetSlider(s_populationResource);
-            s_mainWorkForceSlider ??= PlayerResourceDeck.deck.GetSlider(s_workforceResource);
+            s_mainPopulationSlider ??= GlobalResourceDeck.deck.GetSlider(s_populationResource);
+            s_mainWorkForceSlider ??= GlobalResourceDeck.deck.GetSlider(s_workforceResource);
             
             loaners.Add(s_mainPopulationSlider,0);
             loaners.Add(s_mainWorkForceSlider,0);
@@ -58,11 +58,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
             selfBorrower.BorrowResource(maxPopulationCapacity - inhabitants, s_mainPopulationSlider);
         }
 
-        public override List<ResourceDelta> GetResourceDelta()
+        public override ResourceDelta[] GetResourceDelta()
         {
-            return new List<ResourceDelta>
+            return new ResourceDelta[]
             {
-                new ResourceDelta(s_workforceResource, quantityDelta: workForceRatio * inhabitants)
+                new ResourceDelta(s_workforceResource, quantityDelta: workForceRatio * inhabitants),
+                new ResourceDelta(s_habitationResource, quantityDelta: maxPopulationCapacity)
             };
         }
     }

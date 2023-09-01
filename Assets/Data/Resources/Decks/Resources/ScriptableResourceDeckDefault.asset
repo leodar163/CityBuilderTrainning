@@ -14,6 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sliders:
   - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
-    minQuantity: 0
-    maxQuantity: 100
-    _quantity: 50
+    _maxQuantity: 100
+    _nativeQuantity: 50
+  - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
+    _maxQuantity: Infinity
+    _nativeQuantity: 0
+  - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
+    _maxQuantity: Infinity
+    _nativeQuantity: 0
+  - resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
+    _maxQuantity: Infinity
+    _nativeQuantity: 0

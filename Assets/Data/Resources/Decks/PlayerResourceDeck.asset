@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sliders:
   - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
-    maxQuantity: 1000
-    _quantity: 10
+    _maxQuantity: Infinity
+    _nativeQuantity: 10
+  - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
+    _maxQuantity: Infinity
+    _nativeQuantity: 10

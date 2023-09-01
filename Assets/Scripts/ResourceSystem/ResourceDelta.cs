@@ -5,13 +5,13 @@
         public ResourceType resource;
         public float monthDelta;
         public float quantityDelta;
-        public float maxDelta;
+        public float maxQuantityDelta;
 
-        public ResourceDelta(ResourceType resource, float monthDelta = 0, float quantityDelta = 0, float maxDelta = 0)
+        public ResourceDelta(ResourceType resource, float monthDelta = 0, float quantityDelta = 0, float maxQuantityDelta = 0)
         {
             this.resource = resource;
             this.monthDelta = monthDelta;
-            this.maxDelta = maxDelta;
+            this.maxQuantityDelta = maxQuantityDelta;
             this.quantityDelta = quantityDelta;
         }
     }

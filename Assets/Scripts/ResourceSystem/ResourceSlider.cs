@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using GridSystem.Localization;
+using TimeSystem;
 using ToolTipSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ResourceSystem
 {
@@ -10,30 +13,32 @@ namespace ResourceSystem
     {
         public ResourceType resource;
         [SerializeField] private float _maxQuantity;
-        [SerializeField] private float _quantity;
+        [FormerlySerializedAs("_quantity")] [SerializeField] private float _nativeQuantity;
         private float _borrowedQuantity = 0;
         private List<IResourceModifier> _modifiers = new ();
         private readonly Dictionary<IResourceBorrower, float> _borrowers = new();
 
-        private float _modifierQuantity = 0;
-        private float _modifierMaxQuantity = 0;
+        private float _modifierQuantity;
+        private float _modifierMaxQuantity;
         
-        public float availableQuantity => _quantity - _borrowedQuantity;
+        public float availableQuantity => _nativeQuantity - _borrowedQuantity;
 
         public float maxQuantity
         {
             get => _maxQuantity + _modifierMaxQuantity;
             set => _maxQuantity = Mathf.Round(value * 100) / 100;
         }
+
+        public float totalQuantity => _nativeQuantity + Mathf.Clamp(_modifierQuantity, 0, maxQuantity - nativeQuantity);
         
-        public float quantity
+        public float nativeQuantity
         {
-            get => _quantity + Mathf.Clamp(_modifierQuantity, 0, maxQuantity);
+            get => _nativeQuantity;
             set
             {
-                _quantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
-                if (resource.borrowable && _borrowedQuantity > _quantity)
-                    CallBorrowersForRefund(_borrowedQuantity - _quantity);
+                _nativeQuantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
+                if (resource.borrowable && _borrowedQuantity > _nativeQuantity)
+                    CallBorrowersForRefund(_borrowedQuantity - _nativeQuantity);
             }
         }
 
@@ -43,7 +48,7 @@ namespace ResourceSystem
         {
             resource = template.resource;
             maxQuantity = template.maxQuantity;
-            quantity = template.quantity;
+            nativeQuantity = template.nativeQuantity;
         }
         
         public ResourceSlider(ResourceType resource,  float maxQuantity)
@@ -68,9 +73,10 @@ namespace ResourceSystem
 
             foreach (var modifier in _modifiers)
             {
-                List<ResourceDelta> resourceDeltas = modifier.GetResourceDelta();
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
                 if(resourceDeltas == null)
-                    break;
+                    continue;
+                
                 foreach (var resourceDelta in resourceDeltas)
                 {
                     if (resourceDelta.resource == resource)
@@ -83,27 +89,119 @@ namespace ResourceSystem
             return Mathf.Round(delta * 100) / 100;
         }
         
-        public float GetNextMonthResourceDelta(out string message)
+        public float GetNextMonthResourceDelta(out string message, bool collapse = true)
         {
             float delta = 0;
 
             message = "";
 
+            Dictionary<string, float> modifs = new();
+            Dictionary<string, float> modifsNbr = new();
+
             foreach (var modifier in _modifiers)
             {
-                foreach (var resourceDelta in modifier.GetResourceDelta())
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
+                if (resourceDeltas == null)
+                    continue;
+                
+            
+                foreach (var resourceDelta in resourceDeltas)
                 {
-                    if (resourceDelta.resource == resource)
+                    if (resourceDelta.resource == resource && resourceDelta.monthDelta != 0)
                     {
+                        if (collapse)
+                        {
+                            modifs.TryAdd(modifier.modifierName, 0);
+                            modifsNbr.TryAdd(modifier.modifierName, 0);
+                            modifs[modifier.modifierName] += resourceDelta.monthDelta;
+                            modifsNbr[modifier.modifierName] ++;
+                        }
+                        
                         delta += resourceDelta.monthDelta;
-                        string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.monthDelta == 0 ? Color.white :
-                            resourceDelta.monthDelta > 0 ? Color.green : Color.red);
-                        message += $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.monthDelta}</color>\n";
+                        if (!collapse)
+                        {
+                            string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.monthDelta == 0 
+                                ? Color.white
+                                : resourceDelta.monthDelta > 0
+                                    ? Color.green
+                                    : Color.red);
+                            message +=
+                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.monthDelta}</color>" +
+                                $"/{TimeManager.monthName}\n";
+                        }
                     }
                 }
             }
 
+            if(collapse)
+            {
+                foreach (var modif in modifs.Keys)
+                {
+                    string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
+                        modifs[modif] > 0 ? Color.green : Color.red);
+                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>" +
+                               $"/{TimeManager.monthName}\n";
+                }
+            }
             return Mathf.Round(delta * 100) / 100;
+        }
+
+        public float GetMaxQuantityFromModifiers(out string message, bool collapse = true)
+        {
+            float modifiersMaxQuantity = 0;
+            
+            message = "";
+
+            Dictionary<string, float> modifs = new();
+            Dictionary<string, float> modifsNbr = new();
+
+            foreach (var modifier in _modifiers)
+            {
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
+                if(resourceDeltas == null)
+                    continue;
+                
+                foreach (var resourceDelta in resourceDeltas)
+                {
+                    if (resourceDelta.resource == resource && resourceDelta.maxQuantityDelta != 0)
+                    {
+                        if (collapse)
+                        {
+                            modifs.TryAdd(modifier.modifierName, 0);
+                            modifs[modifier.modifierName] += resourceDelta.maxQuantityDelta;
+                            modifsNbr.TryAdd(modifier.modifierName, 0);
+                            modifsNbr[modifier.modifierName] ++;
+                        }
+                            
+                        modifiersMaxQuantity += resourceDelta.maxQuantityDelta;
+                        
+                        if (!collapse)
+                        {
+                            string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.maxQuantityDelta == 0 
+                                ? Color.white
+                                : resourceDelta.maxQuantityDelta > 0
+                                    ? Color.green
+                                    : Color.red);
+                            message +=
+                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.maxQuantityDelta}</color> " +
+                                $"{VariableManager.maxQuantityName}";
+                        }
+                    }
+                }
+            }
+
+            if(collapse)
+            {
+                foreach (var modif in modifs.Keys)
+                {
+                    string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
+                        modifs[modif] > 0 ? Color.green : Color.red);
+                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color> " +
+                               $"{VariableManager.maxQuantityName}";
+                }
+            }
+            
+            return modifiersMaxQuantity;
         }
 
         public float GetMaxQuantityFromModifiers()
@@ -112,16 +210,75 @@ namespace ResourceSystem
 
             foreach (var modifier in _modifiers)
             {
-                foreach (var resourceDelta in modifier.GetResourceDelta())
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
+                if(resourceDeltas == null)
+                    continue;
+                
+                foreach (var resourceDelta in resourceDeltas)
                 {
                     if (resourceDelta.resource == resource)
                     {
-                        modifiersMaxQuantity += resourceDelta.maxDelta;
+                        modifiersMaxQuantity += resourceDelta.maxQuantityDelta;
                     }
                 }
             }
 
             return modifiersMaxQuantity;
+        }
+
+        public float GetQuantityFromModifiers(out string message, bool collapse = true)
+        {
+            float modifiersQuantity = 0;
+            
+            message = "";
+
+            Dictionary<string, float> modifs = new();
+            Dictionary<string, float> modifsNbr = new();
+
+            foreach (var modifier in _modifiers)
+            {
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
+                if (resourceDeltas == null)
+                    continue;
+
+                foreach (var resourceDelta in resourceDeltas)
+                {
+                    if (resourceDelta.resource == resource && resourceDelta.quantityDelta != 0)
+                    {
+                        if (collapse)
+                        {
+                            modifs.TryAdd(modifier.modifierName, 0);
+                            modifs[modifier.modifierName] += resourceDelta.quantityDelta;
+                            modifsNbr.TryAdd(modifier.modifierName, 0);
+                            modifsNbr[modifier.modifierName] ++;
+                        }
+                        
+                        modifiersQuantity += resourceDelta.quantityDelta;
+                        
+                        if (!collapse)
+                        {
+                            string deltaColor = ColorUtility.ToHtmlStringRGBA(resourceDelta.quantityDelta == 0 
+                                ? Color.white
+                                : resourceDelta.quantityDelta > 0
+                                    ? Color.green
+                                    : Color.red);
+                            message +=
+                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.quantityDelta}</color>\n";
+                        }
+                    }
+                }
+            }
+            if(collapse)
+            {
+                foreach (var modif in modifs.Keys)
+                {
+                    string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
+                        modifs[modif] > 0 ? Color.green : Color.red);
+                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>\n";
+                }
+            }
+
+            return modifiersQuantity;
         }
 
         public float GetQuantityFromModifiers()
@@ -130,7 +287,11 @@ namespace ResourceSystem
 
             foreach (var modifier in _modifiers)
             {
-                foreach (var resourceDelta in modifier.GetResourceDelta())
+                ResourceDelta[] resourceDeltas = modifier.GetResourceDelta();
+                if(resourceDeltas == null)
+                    continue;
+                
+                foreach (var resourceDelta in resourceDeltas)
                 {
                     if (resourceDelta.resource == resource)
                     {
@@ -144,8 +305,8 @@ namespace ResourceSystem
         
         public void ApplyMonthDelta()
         {
-            _modifierMaxQuantity = GetMaxQuantityFromModifiers();
-            quantity += GetNextMonthResourceDelta();
+            if (_maxQuantity != float.PositiveInfinity) _modifierMaxQuantity = GetMaxQuantityFromModifiers();
+            _nativeQuantity += GetNextMonthResourceDelta();
             _modifierQuantity = GetQuantityFromModifiers();
         }
 
@@ -171,13 +332,31 @@ namespace ResourceSystem
 
         public ToolTipMessage ToToolTipMessage()
         {
-            float delta = GetNextMonthResourceDelta(out string message);
-            string deltaColor =
-                ColorUtility.ToHtmlStringRGBA(delta == 0 ? Color.white : delta > 0 ? Color.green : Color.red);
+            float monthDelta = GetNextMonthResourceDelta(out string monthDeltaMessage);
+            string monthDeltaColor =
+                ColorUtility.ToHtmlStringRGBA(monthDelta == 0 ? Color.white : monthDelta > 0 ? Color.green : Color.red);
+            monthDeltaMessage = monthDeltaMessage == "" ? "" :
+                $"<b>{TimeManager.previsionName} : <color=#{monthDeltaColor}>{(monthDelta > 0 ? "+" : "")}" +
+                $"{monthDelta}</color>/{TimeManager.monthName}</b>\n{monthDeltaMessage}";
+
+            GetQuantityFromModifiers(out string quantityMessage);
+            quantityMessage =
+                $"<b>{VariableManager.quantityName} : {totalQuantity}</b>\n   {VariableManager.baseName} : {_nativeQuantity}\n{quantityMessage}";
+
+            string maxQuantityMessage = "";
+            if (_maxQuantity != float.PositiveInfinity)
+            {
+                GetMaxQuantityFromModifiers(out maxQuantityMessage);
+                maxQuantityMessage =
+                    $"<b>{VariableManager.maxQuantityName} : {maxQuantity}</b>\n   {VariableManager.baseName} : {_maxQuantity}\n{maxQuantityMessage}";
+            }
+            
             return new ToolTipMessage
             {
                 title = resource.resourceName,
-                message = $"<color=#{deltaColor}>{(delta > 0 ? "+" : "")}{delta}</color>\n" + message
+                message = $"{quantityMessage}" +
+                          $"{(monthDeltaMessage != "" ? $"\n========\n{monthDeltaMessage}" :"")}" +
+                          $"{(maxQuantityMessage != "" ? $"\n========\n{maxQuantityMessage}" : "")}" 
             };
         }
 

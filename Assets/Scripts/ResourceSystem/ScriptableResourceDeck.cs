@@ -17,7 +17,7 @@ namespace ResourceSystem
             {
                 ResourceSlider sliderToChange = deck.GetSlider(slider.resource);
                 sliderToChange.maxQuantity = slider.maxQuantity;
-                sliderToChange.quantity = slider.quantity;
+                sliderToChange.nativeQuantity = slider.nativeQuantity;
             }
             return deck;
         }

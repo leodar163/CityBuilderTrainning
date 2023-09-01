@@ -61,15 +61,23 @@ namespace ResourceSystem.UI
             else
             {
                 onUpdateMaxValue.Invoke(_resourceSlider.maxQuantity);
-                onUpdateValue.Invoke(_resourceSlider.quantity);
+                onUpdateValue.Invoke(_resourceSlider.nativeQuantity);
                 if(resource.borrowable) onUpdateAvailableValue.Invoke(_resourceSlider.availableQuantity);
                 
                 if(_resourceName) _resourceName.text = _resourceSlider.resource.resourceName;
                 if (_maxValue) _maxValue.text = _resourceSlider.maxQuantity.ToString(CultureInfo.InvariantCulture);
-                if (_value) _value.text = _resourceSlider.quantity.ToString(CultureInfo.InvariantCulture);
+                if (_value) _value.text = _resourceSlider.totalQuantity.ToString(CultureInfo.InvariantCulture);
 
-                _resourceIcon.sprite = resource.icon;
+                if (_resourceIcon) _resourceIcon.sprite = resource.icon;
             }
+        }
+
+        [SerializeField] private bool debug;
+
+        private void Update()
+        {
+            if(debug && Input.GetKeyUp(KeyCode.O))
+                print(_resourceSlider.totalQuantity);
         }
 
         public ToolTipMessage ToToolTipMessage()

@@ -5,9 +5,9 @@ namespace TerrainSystem
 {
     public class Forest : TerrainType
     {
-        public override List<ResourceDelta> GetResourceDelta()
+        public override ResourceDelta[] GetResourceDelta()
         {
-            return new List<ResourceDelta>
+            return new ResourceDelta[]
             {
                 new(ResourceSet.Default.GetResource("resource_environment"), -1)
             };

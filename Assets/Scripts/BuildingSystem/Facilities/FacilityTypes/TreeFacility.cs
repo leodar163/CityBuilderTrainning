@@ -25,14 +25,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
             return terrainCondition;
         }
 
-        public override List<ResourceDelta> GetResourceDelta()
+        public override ResourceDelta[] GetResourceDelta()
         {
-            List<ResourceDelta> deltas = new()
+            return new ResourceDelta[]
             {
                 new ResourceDelta(environmentResource, 0.3f)
             };
-
-            return deltas;
         }
     }
 }

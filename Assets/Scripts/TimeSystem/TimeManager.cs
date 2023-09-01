@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace TimeSystem
@@ -9,7 +11,16 @@ namespace TimeSystem
         public static int timeSpeed = 1;
         public static bool isPaused;
         public const float secondPerMonth = 5;
+        
+        [Header("Localization")] 
+        [SerializeField] private LocalizedString _localizedMonth;
+        [SerializeField] private LocalizedString _localizedYear;
+        [SerializeField] private LocalizedString _localizedPrevision;
 
+        public static string monthName => Instance._localizedMonth.GetLocalizedString();
+        public static string yearName => Instance._localizedYear.GetLocalizedString();
+        public static string previsionName => Instance._localizedPrevision.GetLocalizedString();
+        
         public static event Action<InGameDate> onNewMonth;
         public static event Action<InGameDate> onNewYear;
         public static InGameDate date { get; private set; }

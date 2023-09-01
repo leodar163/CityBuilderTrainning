@@ -77,7 +77,7 @@ namespace BuildingSystem.Facilities
             };
         }
 
-        public virtual List<ResourceDelta> GetResourceDelta()
+        public virtual ResourceDelta[] GetResourceDelta()
         {
             return null;
         }

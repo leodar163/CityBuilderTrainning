@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using BuildingSystem.Facilities.FacilityTypes;
+using TimeSystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
-namespace ResourceSystem.Player
+namespace ResourceSystem.Global
 {
-    public class PlayerResourceDeck : Singleton<PlayerResourceDeck>
+    public class GlobalResourceDeck : Singleton<GlobalResourceDeck>
     {
         [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
         public readonly List<HouseFacility> houses = new();
@@ -37,32 +37,35 @@ namespace ResourceSystem.Player
             
             Facility.onFacilityBuild += RecordHouse;
             Facility.onFacilityDestroyed += ForgetHouse;
+
+            TimeManager.onNewMonth += _ => deck.ApplyDeltaToSliders();
         }
         
         
         private void Update()
         {
             float workforce = 0;
-            float habitations = 0;
+            //float habitations = 0;
             
             foreach (var house in houses)
             {
                 workforce += house.producedWorkForce;
-                habitations += house.maxPopulationCapacity;
+                //habitations += house.maxPopulationCapacity;
             }
 
             workforceSlider.maxQuantity = workforce;
-            workforceSlider.quantity = workforce;
+            workforceSlider.nativeQuantity = workforce;
 
-            habitationSlider.maxQuantity = habitations;
-            habitationSlider.quantity = habitations;
+            //habitationSlider.maxQuantity = habitations;
+            //habitationSlider.nativeQuantity = habitations;
         }
 
         private void RecordHouse(Facility facilityBuilt)
         {
-            if (facilityBuilt is HouseFacility house)
+            if (facilityBuilt is HouseFacility house && !houses.Contains(house))
             {
                 houses.Add(house);
+                habitationSlider.Sub(house);
             }
         }
 
@@ -71,6 +74,7 @@ namespace ResourceSystem.Player
             if (facilityDestroyed is HouseFacility house && houses.Contains(house))
             {
                 houses.Remove(house);
+                habitationSlider.Unsub(house);
             }
         }
     }
