@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Format;
 using Localization;
 using TimeSystem;
 using ToolTipSystem;
@@ -199,7 +200,7 @@ namespace ResourceSystem
                                     ? Color.green
                                     : Color.red);
                             message +=
-                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.monthDelta}</color>" +
+                                $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.monthDelta}</color>" +
                                 $"/{TimeManager.monthName}\n";
                         }
                     }
@@ -212,7 +213,7 @@ namespace ResourceSystem
                 {
                     string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
                         modifs[modif] > 0 ? Color.green : Color.red);
-                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>" +
+                    message += $"{modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>" +
                                $"/{TimeManager.monthName}\n";
                 }
             }
@@ -252,7 +253,7 @@ namespace ResourceSystem
                                     ? Color.green
                                     : Color.red);
                             message +=
-                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.quantityDelta}</color>\n";
+                                $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.quantityDelta}</color>\n";
                         }
                     }
                 }
@@ -263,7 +264,7 @@ namespace ResourceSystem
                 {
                     string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
                         modifs[modif] > 0 ? Color.green : Color.red);
-                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>\n";
+                    message += $"{modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color>\n";
                 }
             }
 
@@ -303,8 +304,8 @@ namespace ResourceSystem
                                     ? Color.green
                                     : Color.red);
                             message +=
-                                $"   {modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.maxQuantityDelta}</color> " +
-                                $"{VariableManager.maxQuantityName}";
+                                $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.maxQuantityDelta}</color> " +
+                                $"{VariableNameManager.maxQuantityName}";
                         }
                     }
                 }
@@ -316,8 +317,8 @@ namespace ResourceSystem
                 {
                     string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
                         modifs[modif] > 0 ? Color.green : Color.red);
-                    message += $"   {modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color> " +
-                               $"{VariableManager.maxQuantityName}";
+                    message += $"{modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color> " +
+                               $"{VariableNameManager.maxQuantityName}";
                 }
             }
             
@@ -343,7 +344,7 @@ namespace ResourceSystem
                 }
                 else
                 {
-                    message += $"   {borrower.borrowerName} : <color=#{colorRed}>-{_loans[borrower]}</color>\n";
+                    message += $"{borrower.borrowerName} : <color=#{colorRed}>-{_loans[borrower]}</color>\n";
                 }
             }
 
@@ -352,7 +353,7 @@ namespace ResourceSystem
                 foreach (var borrowerName in borrowers.Keys)
                 {
                     message +=
-                        $"   {borrowerName}({borrowersNbr[borrowerName]}) : <color=#{colorRed}>-{borrowers[borrowerName]}</color>\n";
+                        $"{borrowerName}({borrowersNbr[borrowerName]}) : <color=#{colorRed}>-{borrowers[borrowerName]}</color>\n";
                 }
             }
             
@@ -363,19 +364,19 @@ namespace ResourceSystem
         {
             string quantityMessage = GetQuantityModifierFormat();
             quantityMessage =
-                $"<b>{VariableManager.quantityName} : {totalQuantity}</b>\n   {VariableManager.baseName} : {_nativeQuantity}\n{quantityMessage}";
+                $"<b>{VariableNameManager.quantityName} : {totalQuantity}</b>\n" +
+                $"<indent=10%>{VariableNameManager.baseName} : {_nativeQuantity}\n{quantityMessage}</indent>";
 
-            string loanMessage = GetLoanFormat();
-            loanMessage =
-                $"<b>{VariableManager.availableQuantityName} : {availableQuantity}</b>\n{loanMessage}";
-                
             if (resource.borrowable)
             {
+                string loanMessage = GetLoanFormat();
+                loanMessage =
+                    $"<b>{VariableNameManager.availableQuantityName} : {availableQuantity}</b>\n<indent=10%>{loanMessage}</indent>";
                 
                 return new ToolTipMessage
                 {
                     title = resource.resourceName,
-                    message = $"{quantityMessage}\n========\n{loanMessage}"
+                    message = $"{quantityMessage}{FormatManager.separator}\n{loanMessage}"
                 };
             }
             else
@@ -385,7 +386,7 @@ namespace ResourceSystem
                     ColorUtility.ToHtmlStringRGBA(monthDelta == 0 ? Color.white : monthDelta > 0 ? Color.green : Color.red);
                 monthDeltaMessage = monthDeltaMessage == "" ? "" :
                     $"<b>{TimeManager.previsionName} : <color=#{monthDeltaColor}>{(monthDelta > 0 ? "+" : "")}" +
-                    $"{monthDelta}</color>/{TimeManager.monthName}</b>\n{monthDeltaMessage}";
+                    $"{monthDelta}</color>/{TimeManager.monthName}</b>\n<indent=10%>{monthDeltaMessage}</indent>";
 
                 string maxQuantityMessage = "";
                 
@@ -393,15 +394,16 @@ namespace ResourceSystem
                 {
                     maxQuantityMessage = GetMaxQuantityModifierFormat();
                     maxQuantityMessage =
-                        $"<b>{VariableManager.maxQuantityName} : {maxQuantity}</b>\n   {VariableManager.baseName} : {_maxQuantity}\n{maxQuantityMessage}";
+                        $"<b>{VariableNameManager.maxQuantityName} : {maxQuantity}</b>\n" +
+                        $"<indent=10%>{VariableNameManager.baseName} : {_maxQuantity}\n{maxQuantityMessage}</indent>";
                 }
             
                 return new ToolTipMessage
                 {
                     title = resource.resourceName,
                     message = $"{quantityMessage}" +
-                              $"{(monthDeltaMessage != "" ? $"\n========\n{monthDeltaMessage}" :"")}" +
-                              $"{(maxQuantityMessage != "" ? $"\n========\n{maxQuantityMessage}" : "")}" 
+                              $"{(monthDeltaMessage != "" ? $"{FormatManager.separator}\n{monthDeltaMessage}" : "")}" +
+                              $"{(maxQuantityMessage != "" ? $"{FormatManager.separator}\n{maxQuantityMessage}" : "")}" 
                 };
             }
         }
