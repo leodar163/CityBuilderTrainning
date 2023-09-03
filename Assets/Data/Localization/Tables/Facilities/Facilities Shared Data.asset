@@ -51,6 +51,10 @@ MonoBehaviour:
     m_Key: Fac_HouseDesc
     m_Metadata:
       m_Items: []
+  - m_Id: 6206128033501184
+    m_Key: Fac_FacilitiesName
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

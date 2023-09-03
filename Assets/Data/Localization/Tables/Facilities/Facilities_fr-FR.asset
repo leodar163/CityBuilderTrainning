@@ -58,6 +58,10 @@ MonoBehaviour:
     m_Localized: Un endroit pour loger les travailleurs
     m_Metadata:
       m_Items: []
+  - m_Id: 6206128033501184
+    m_Localized: "am\xE9nagements"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

@@ -58,6 +58,10 @@ MonoBehaviour:
     m_Localized: A place where workers can stay
     m_Metadata:
       m_Items: []
+  - m_Id: 6206128033501184
+    m_Localized: facilities
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

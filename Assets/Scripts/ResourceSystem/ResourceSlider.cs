@@ -448,7 +448,7 @@ namespace ResourceSystem
                 _loans[borrower] += quantityToBorrow;
             }
 
-            Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
+            //Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
             _borrowedQuantity += quantityToBorrow;
 
             UpdateModifiersQuantities();
@@ -468,7 +468,7 @@ namespace ResourceSystem
             if (_loans[borrower] <= 0)
             {
                 _loans.Remove(borrower);
-                Debug.Log(borrower.borrowerName + " is removed from loans");
+                //Debug.Log(borrower.borrowerName + " is removed from loans");
             }
             
             UpdateModifiersQuantities();

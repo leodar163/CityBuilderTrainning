@@ -21,6 +21,8 @@ namespace BuildingSystem.Facilities
         
         private static ToolTipMessage _toolTipMessage;
 
+        private bool _oneFacilityAsBeenPlaced;
+
         private void Awake()
         {
             selectedFacility = null;
@@ -30,12 +32,18 @@ namespace BuildingSystem.Facilities
         {
             if (!selectedFacility || !isActive) return;
 
+            if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+            {
+                EndPlacement();
+                return;
+            }
+            
             if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
                 && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
-                EndPlacement();   
+                EndPlacement();
             }
         }
 
@@ -74,6 +82,7 @@ namespace BuildingSystem.Facilities
             if (Instantiate(facilityToPlace.gameObject).TryGetComponent(out Facility newFacility) 
                 && cell.terrain.TryAddFacility(newFacility))
             {
+                Instance._oneFacilityAsBeenPlaced = true;
                 return true;
             }
 
@@ -86,6 +95,7 @@ namespace BuildingSystem.Facilities
         {
             Instance.isActive = false;
             selectedFacility = null;
+            Instance._oneFacilityAsBeenPlaced = false;
             GridManager.PaintCursor(Color.white);
         }
 

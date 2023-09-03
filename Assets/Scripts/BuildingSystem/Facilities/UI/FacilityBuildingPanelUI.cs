@@ -24,6 +24,16 @@ namespace BuildingSystem.Facilities.UI
             UpdateUI();
         }
 
+        private void Update()
+        {
+            if(!isOpen) return;
+            
+            if (Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Escape))
+            {
+                ClosePanel();
+            }
+        }
+
         private void UpdateUI()
         {
             if (!set) return;

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Utils.UI
 {
-    public abstract class PanelUI<T> : Singleton<T>, IPointerEnterHandler, IPointerExitHandler
+    public abstract class PanelUI<T> : Singleton<T>, IPointerEnterHandler, IPointerExitHandler, IPanel
         where T : PanelUI<T>
     {
         public bool isOpen { get; private set; }
