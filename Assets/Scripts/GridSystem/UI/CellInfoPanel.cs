@@ -80,6 +80,7 @@ namespace GridSystem.UI
             if (currentCell != null)
             {
                 CheckForFacilities();
+                _populationSlider.resourceSlider.nativeQuantity = GetPopNbr();
             }
         }
 
@@ -148,8 +149,6 @@ namespace GridSystem.UI
             _foodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_foodSlider.resource);
             _woodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_woodSlider.resource);
             _mineralsSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_mineralsSlider.resource);
-            
-            _populationSlider.resourceSlider.nativeQuantity = GetPopNbr();
         }
 
         private int GetPopNbr()

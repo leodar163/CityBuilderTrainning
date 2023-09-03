@@ -2,11 +2,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization;
+using UnityEngine.Serialization;
 
 namespace ToolTipSystem
 {
     public class ToolTipStringMessenger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IToolTipSpeaker
     {
+        [FormerlySerializedAs("message")] public LocalizedString title;
         public LocalizedString message;
 
         public bool isHovered { get; private set; }
@@ -33,7 +35,8 @@ namespace ToolTipSystem
         {
             return new ToolTipMessage
             {
-                title = message.GetLocalizedString()
+                title = title.GetLocalizedString(),
+                message = message.GetLocalizedString()
             };
         }
     }
