@@ -20,7 +20,7 @@ namespace GridSystem
                 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    CellPanel.Instance.OpenPanel();    
+                    CellInfoPanel.Instance.OpenPanel();    
                 }
             }
         }

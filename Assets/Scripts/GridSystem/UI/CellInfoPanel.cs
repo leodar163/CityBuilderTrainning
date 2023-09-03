@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using BuildingSystem.Facilities;
+using BuildingSystem.Facilities.FacilityTypes;
 using BuildingSystem.Facilities.UI;
 using ResourceSystem;
 using ResourceSystem.UI;
 using TimeSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.UI;
 
 namespace GridSystem.UI
 {
-    public class CellPanel : PanelUI<CellPanel>
+    public class CellInfoPanel : PanelUI<CellInfoPanel>
     {
         [SerializeField] private RectTransform _child;
 
@@ -24,37 +26,27 @@ namespace GridSystem.UI
         [SerializeField] private RectTransform _facilitiesLayout;
         [SerializeField] private FacilityInfoUI _facilityInfoUITemplate;
         private readonly List<FacilityInfoUI> _facilityInfoUIs = new ();
-        
-        [Header("Resources")]
-        [SerializeField] private RectTransform _resourcesLayout;
-        [SerializeField] private ResourceSliderUI _resourceSliderUITemplate;
-        private readonly List<ResourceSliderUI> _sliderUIs = new ();
+
+        [Header("Resources")] 
+        [SerializeField] private ResourceSliderUI _populationSlider;
+        [SerializeField] private ResourceSliderUI _habitationSlider;
+        [SerializeField] private ResourceSliderUI _workforceSlider;
+        [SerializeField] private ResourceSliderUI _environmentSlider;
+        [SerializeField] private ResourceSliderUI _foodSlider;
+        [SerializeField] private ResourceSliderUI _woodSlider; 
+        [SerializeField] private ResourceSliderUI _mineralsSlider;
 
         private Camera _mainCamera;
         public CellData currentCell { get; private set; }
-
-        private Action<InGameDate> _resourceCheck;
+        
 
         protected override void Awake()
         {
             base.Awake();
 
+            _populationSlider.resourceSlider = new ResourceSlider("resource_population",Mathf.Infinity);
+            
             _mainCamera = Camera.main;
-        }
-
-        private void Start()
-        {
-            InitResourceSliders();
-        }
-
-        private void OnEnable()
-        {
-            TimeManager.onNewMonth += _resourceCheck;
-        }
-
-        private void OnDisable()
-        {
-            TimeManager.onNewMonth -= _resourceCheck;
         }
 
         public override void OpenPanel()
@@ -101,24 +93,14 @@ namespace GridSystem.UI
             _facilityInfoUIs.Clear();
         }
 
-        private void ClearResourceLayout()
-        {
-            foreach (var slider in _sliderUIs)
-            {
-                Destroy(slider.gameObject);
-            }
 
-            _sliderUIs.Clear();
-        }
-        
-        
         private void DisplayCellInfos()
         {
             ClearFacilityLayout();
             
-            _coordinates.text = $"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}";
-            _terrainType.text = currentCell.terrain.terrainName;
-            _facilityCapacity.text = $"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}";
+            _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
+            _terrainType.SetText(currentCell.terrain.terrainName);
+            _facilityCapacity.SetText($"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}");
 
             for (int i = 0; i < currentCell.terrain.facilityCount; i++)
             {
@@ -142,19 +124,6 @@ namespace GridSystem.UI
 
             return false;
         }
-        
-        private bool TryAddResourceSlider(ResourceType resource)
-        {
-            if (Instantiate(_resourceSliderUITemplate, _resourcesLayout)
-                .TryGetComponent(out ResourceSliderUI resourceSliderUI))
-            {
-                resourceSliderUI.resource = resource;
-                _sliderUIs.Add(resourceSliderUI);
-                return true;
-            }
-
-            return false;
-        }
 
         private void CheckForFacilities()
         {
@@ -168,25 +137,34 @@ namespace GridSystem.UI
                 }
             }
             
-            _facilityCapacity.text = $"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}";
-        }
-        
-        private void InitResourceSliders()
-        {
-            ClearResourceLayout();
-            
-            foreach (var resource in ResourceSet.Default.resources)
-            {
-                TryAddResourceSlider(resource);
-            }
+            _facilityCapacity.SetText($"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}");
         }
 
         private void AssignSliders()
         {
-            foreach (var sliderUi in _sliderUIs)
+            _habitationSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_habitationSlider.resource);
+            _environmentSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_environmentSlider.resource);
+            _workforceSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_workforceSlider.resource);
+            _foodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_foodSlider.resource);
+            _woodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_woodSlider.resource);
+            _mineralsSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_mineralsSlider.resource);
+            
+            _populationSlider.resourceSlider.nativeQuantity = GetPopNbr();
+        }
+
+        private int GetPopNbr()
+        {
+            int popNbr = 0;
+
+            for (int i = 0; i < currentCell.terrain.facilityCount; i++)
             {
-                sliderUi.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(sliderUi.resource);
+                if (currentCell.terrain.GetFacility(i) is HouseFacility house)
+                {
+                    popNbr += house.inhabitants;
+                }
             }
+
+            return popNbr;
         }
     }
 }

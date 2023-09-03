@@ -15,7 +15,7 @@ namespace ResourceSystem
         public ResourceType resource;
         [SerializeField] private float _maxQuantity;
         [FormerlySerializedAs("_quantity")] [SerializeField] private float _nativeQuantity;
-        private float _borrowedQuantity = 0;
+        private float _borrowedQuantity;
         private List<IResourceModifier> _modifiers = new ();
         private Dictionary<IResourceBorrower, float> _loans = new();
 
@@ -24,10 +24,16 @@ namespace ResourceSystem
         
         public float availableQuantity => totalQuantity - _borrowedQuantity;
 
+        public event Action onValuesUpdate;
+
         public float maxQuantity
         {
             get => _maxQuantity + _modifierMaxQuantity;
-            set => _maxQuantity = Mathf.Round(value * 100) / 100;
+            set
+            {
+                _maxQuantity = Mathf.Round(value * 100) / 100;
+                onValuesUpdate?.Invoke();
+            }
         }
 
         public float totalQuantity => _nativeQuantity + Mathf.Clamp(_modifierQuantity, 0, maxQuantity - nativeQuantity);
@@ -40,6 +46,7 @@ namespace ResourceSystem
                 _nativeQuantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
                 if (resource.borrowable && _borrowedQuantity > _nativeQuantity)
                     AskRefundAll(_borrowedQuantity - _nativeQuantity);
+                onValuesUpdate?.Invoke();
             }
         }
 
@@ -138,25 +145,37 @@ namespace ResourceSystem
         
         public void ApplyMonthDelta()
         {
-            if (_maxQuantity != float.PositiveInfinity) _modifierMaxQuantity = GetMaxQuantityFromModifiers();
-            _nativeQuantity += GetNextMonthResourceDelta();
-            _modifierQuantity = GetQuantityFromModifiers();
+            nativeQuantity += GetNextMonthResourceDelta();
         }
 
+        private void UpdateModifiersQuantities()
+        {
+            if (_maxQuantity != float.PositiveInfinity) 
+                _modifierMaxQuantity = GetMaxQuantityFromModifiers();
+            _modifierQuantity = GetQuantityFromModifiers();
+            onValuesUpdate?.Invoke();
+        }
+        
         #endregion
 
         #region MODIFIER_SUBSCRIPTION
 
         public void Sub(IResourceModifier modifier)
         {
-            if(!_modifiers.Contains(modifier))
+            if (!_modifiers.Contains(modifier))
+            {
                 _modifiers.Add(modifier);
+                UpdateModifiersQuantities();
+            }
         }
 
         public void Unsub(IResourceModifier modifier)
         {
             if (_modifiers.Contains(modifier))
+            {
                 _modifiers.Remove(modifier);
+                UpdateModifiersQuantities();
+            }
         }
 
         #endregion
@@ -429,6 +448,8 @@ namespace ResourceSystem
             //Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
             _borrowedQuantity += quantityToBorrow;
 
+            UpdateModifiersQuantities();
+            
             return quantityToBorrow;
         }
 
@@ -446,6 +467,8 @@ namespace ResourceSystem
                 _loans.Remove(borrower);
                 //Debug.Log(borrower.borrowerName + " is removed from loans");
             }
+            
+            UpdateModifiersQuantities();
         }
 
         private void AskRefundAll(float quantityToRefund)
@@ -462,6 +485,8 @@ namespace ResourceSystem
 
                 if (_loans[borrower] <= 0) _loans.Remove(borrower);
             }
+            
+            UpdateModifiersQuantities();
         }
 
         #endregion
