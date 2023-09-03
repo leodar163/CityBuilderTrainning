@@ -30,6 +30,10 @@ MonoBehaviour:
     m_Localized: prevision
     m_Metadata:
       m_Items: []
+  - m_Id: 752600041263104
+    m_Localized: pause
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

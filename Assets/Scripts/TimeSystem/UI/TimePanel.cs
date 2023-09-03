@@ -1,16 +1,20 @@
 ﻿using TMPro;
 using Utils.UI;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 namespace TimeSystem.UI
 {
     public class TimePanel : PanelUI<TimePanel>
     {
+        [SerializeField] private LocalizedString _localizedPause;
+        [Space]
         [SerializeField] private Slider[] _monthSliders;
         [SerializeField] private Button _decreaseButton;
         [SerializeField] private Button _increaseButton;
         [SerializeField] private Button _pauseButton;
+        [SerializeField] private TextMeshProUGUI _pauseSign;
         [SerializeField] private TextMeshProUGUI _timeSpeedMonitor;
         [SerializeField] private TextMeshProUGUI _dateMonitor;
 
@@ -27,8 +31,10 @@ namespace TimeSystem.UI
         {
             UpdateSliders();
 
-            _timeSpeedMonitor.text = "X" + TimeManager.timeSpeed;
+            _pauseSign.SetText(TimeManager.isPaused ? "|>" : "||");
+            _timeSpeedMonitor.text = TimeManager.isPaused ? _localizedPause.GetLocalizedString() : "X" + TimeManager.timeSpeed;
             _dateMonitor.text = TimeManager.date.ToString();
+            
         }
         
         private void UpdateSliders()

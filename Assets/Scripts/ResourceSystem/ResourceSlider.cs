@@ -17,7 +17,7 @@ namespace ResourceSystem
         [FormerlySerializedAs("_quantity")] [SerializeField] private float _nativeQuantity;
         private float _borrowedQuantity;
         private List<IResourceModifier> _modifiers = new ();
-        private Dictionary<IResourceBorrower, float> _loans = new();
+        private Dictionary<IResourceBorrower, float> _loans = new ();
 
         private float _modifierQuantity;
         private float _modifierMaxQuantity;
@@ -145,6 +145,9 @@ namespace ResourceSystem
         
         public void ApplyMonthDelta()
         {
+            if (_maxQuantity != float.PositiveInfinity) 
+                _modifierMaxQuantity = GetMaxQuantityFromModifiers();
+            _modifierQuantity = GetQuantityFromModifiers();
             nativeQuantity += GetNextMonthResourceDelta();
         }
 
@@ -445,7 +448,7 @@ namespace ResourceSystem
                 _loans[borrower] += quantityToBorrow;
             }
 
-            //Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
+            Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
             _borrowedQuantity += quantityToBorrow;
 
             UpdateModifiersQuantities();
@@ -465,7 +468,7 @@ namespace ResourceSystem
             if (_loans[borrower] <= 0)
             {
                 _loans.Remove(borrower);
-                //Debug.Log(borrower.borrowerName + " is removed from loans");
+                Debug.Log(borrower.borrowerName + " is removed from loans");
             }
             
             UpdateModifiersQuantities();

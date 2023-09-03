@@ -27,6 +27,10 @@ MonoBehaviour:
     m_Key: Time_Prevision
     m_Metadata:
       m_Items: []
+  - m_Id: 752600041263104
+    m_Key: Time_Pause
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

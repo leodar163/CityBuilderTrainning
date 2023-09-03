@@ -69,7 +69,7 @@
 
         public override string ToString()
         {
-            return $"year: {years}, month: {months}";
+            return $"{TimeManager.monthName} : {months}, {TimeManager.yearName} : {years}";
         }
     }
 }
