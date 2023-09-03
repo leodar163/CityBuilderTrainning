@@ -13,9 +13,10 @@ namespace ResourceSystem.Global
         [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
         public readonly List<HouseFacility> houses = new();
 
-        public static ResourceDeck deck { get; private set; }
+        private ResourceDeck _deck;
+        public static ResourceDeck deck => Instance._deck;
 
-        [SerializeField] private ResourceType populationResource;
+            [SerializeField] private ResourceType populationResource;
         [SerializeField] private ResourceType workForceResource;
         [SerializeField] private ResourceType habitationResource;
 
@@ -25,7 +26,7 @@ namespace ResourceSystem.Global
 
         private void Awake()
         {
-            deck = _resourceDeckTemplate.GetResourceDeckCopy();
+            _deck = _resourceDeckTemplate.GetResourceDeckCopy();
             
             if (!populationResource) populationResource = ResourceSet.Default.GetResource("resource_population");
             if (!workForceResource) workForceResource = ResourceSet.Default.GetResource("resource_workforce");
@@ -44,17 +45,17 @@ namespace ResourceSystem.Global
         
         private void Update()
         {
-            float workforce = 0;
+            //float workforce = 0;
             //float habitations = 0;
             
-            foreach (var house in houses)
+            //foreach (var house in houses)
             {
-                workforce += house.producedWorkForce;
+               // workforce += house.producedWorkForce;
                 //habitations += house.maxPopulationCapacity;
             }
 
-            workforceSlider.maxQuantity = workforce;
-            workforceSlider.nativeQuantity = workforce;
+            //workforceSlider.maxQuantity = workforce;
+            //workforceSlider.nativeQuantity = workforce;
 
             //habitationSlider.maxQuantity = habitations;
             //habitationSlider.nativeQuantity = habitations;
@@ -66,6 +67,7 @@ namespace ResourceSystem.Global
             {
                 houses.Add(house);
                 habitationSlider.Sub(house);
+                workforceSlider.Sub(house);
             }
         }
 
@@ -75,6 +77,7 @@ namespace ResourceSystem.Global
             {
                 houses.Remove(house);
                 habitationSlider.Unsub(house);
+                workforceSlider.Unsub(house);
             }
         }
     }

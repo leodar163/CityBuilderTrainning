@@ -9,7 +9,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
     public class HouseFacility : Facility, IResourceBorrower
     {
         public Dictionary<ResourceSlider, float> loaners { get; } = new();
-        public IResourceBorrower selfBorrower => this;
+        private IResourceBorrower _selfBorrower => this;
         public string borrowerName => facilityName;
 
         private static ResourceType s_populationResource;
@@ -18,7 +18,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         private static ResourceSlider s_mainPopulationSlider;
         private static ResourceSlider s_mainWorkForceSlider;
 
-        public int inhabitants => (int)selfBorrower.GetBorrowedQuantity(s_populationResource);
+        public int inhabitants => (int)_selfBorrower.GetBorrowedQuantity(s_populationResource);
 
         public int maxPopulationCapacity = 4;
         public float workForceRatio = 1;
@@ -43,7 +43,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         private void OnDisable()
         {
-            selfBorrower.ReturnResource(inhabitants, s_mainPopulationSlider);
+            _selfBorrower.ReturnResourceAll();
         }
 
         private void Update()
@@ -56,11 +56,13 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         private void BorrowPopulation()
         {
-            selfBorrower.BorrowResource(maxPopulationCapacity - inhabitants, s_mainPopulationSlider);
+            _selfBorrower.BorrowResource(maxPopulationCapacity - inhabitants, s_mainPopulationSlider);
         }
 
         public override ResourceDelta[] GetResourceDelta()
         {
+            //print(name + _selfBorrower.GetBorrowedQuantity(s_populationResource));
+            
             return new ResourceDelta[]
             {
                 new ResourceDelta(s_workforceResource, quantityDelta: workForceRatio * inhabitants),

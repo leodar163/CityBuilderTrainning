@@ -17,12 +17,12 @@ namespace ResourceSystem
         [FormerlySerializedAs("_quantity")] [SerializeField] private float _nativeQuantity;
         private float _borrowedQuantity = 0;
         private List<IResourceModifier> _modifiers = new ();
-        private readonly Dictionary<IResourceBorrower, float> _loans = new();
+        private Dictionary<IResourceBorrower, float> _loans = new();
 
         private float _modifierQuantity;
         private float _modifierMaxQuantity;
         
-        public float availableQuantity => _nativeQuantity - _borrowedQuantity;
+        public float availableQuantity => totalQuantity - _borrowedQuantity;
 
         public float maxQuantity
         {
@@ -39,7 +39,7 @@ namespace ResourceSystem
             {
                 _nativeQuantity = Mathf.Round(Mathf.Clamp(value, 0, maxQuantity) * 100) / 100;
                 if (resource.borrowable && _borrowedQuantity > _nativeQuantity)
-                    CallBorrowersForRefund(_borrowedQuantity - _nativeQuantity);
+                    AskRefundAll(_borrowedQuantity - _nativeQuantity);
             }
         }
 
@@ -335,6 +335,9 @@ namespace ResourceSystem
             
             foreach (var borrower in _loans.Keys)
             {
+                if(_loans[borrower] == 0)
+                    continue;
+                
                 if (collapse)
                 {
                     borrowers.TryAdd(borrower.borrowerName, 0);
@@ -362,14 +365,14 @@ namespace ResourceSystem
         
         public ToolTipMessage ToToolTipMessage()
         {
-            string quantityMessage = GetQuantityModifierFormat();
+            string quantityMessage = GetQuantityModifierFormat(false);
             quantityMessage =
                 $"<b>{VariableNameManager.quantityName} : {totalQuantity}</b>\n" +
                 $"<indent=10%>{VariableNameManager.baseName} : {_nativeQuantity}\n{quantityMessage}</indent>";
 
             if (resource.borrowable)
             {
-                string loanMessage = GetLoanFormat();
+                string loanMessage = GetLoanFormat(false);
                 loanMessage =
                     $"<b>{VariableNameManager.availableQuantityName} : {availableQuantity}</b>\n<indent=10%>{loanMessage}</indent>";
                 
@@ -415,39 +418,49 @@ namespace ResourceSystem
         public float LoanQuantity(float quantityToBorrow, IResourceBorrower borrower)
         {
             if (!resource.borrowable) return 0;
-            
-            float quantityBorrowable = availableQuantity < quantityToBorrow ? availableQuantity : quantityToBorrow;
 
-            _loans.TryAdd(borrower, 0);
+            if (quantityToBorrow > availableQuantity) quantityToBorrow = availableQuantity;
 
-            _loans[borrower] += quantityBorrowable;
-            _borrowedQuantity += quantityBorrowable;
+            if (!_loans.TryAdd(borrower, quantityToBorrow))
+            {
+                _loans[borrower] += quantityToBorrow;
+            }
 
-            return quantityBorrowable;
+            //Debug.Log($"{borrower.borrowerName} borrow {quantityToBorrow} {resource.resourceName}" );
+            _borrowedQuantity += quantityToBorrow;
+
+            return quantityToBorrow;
         }
 
-        public void RefundQuantity(float QuantityToReturn, IResourceBorrower borrower)
+        public void RefundQuantity(float quantityToRefund, IResourceBorrower borrower)
         {
             if (!resource.borrowable || !_loans.TryGetValue(borrower, out float borrowedQuantity)) return;
 
-            QuantityToReturn = borrowedQuantity < QuantityToReturn ? borrowedQuantity : QuantityToReturn;
+            if (quantityToRefund > borrowedQuantity) quantityToRefund = borrowedQuantity;
 
-            _borrowedQuantity -= QuantityToReturn;
-            _loans[borrower] -= QuantityToReturn;
+            _borrowedQuantity -= quantityToRefund;
+            _loans[borrower] -= quantityToRefund;
 
-            if (_loans[borrower] == 0)
+            if (_loans[borrower] <= 0)
             {
                 _loans.Remove(borrower);
+                //Debug.Log(borrower.borrowerName + " is removed from loans");
             }
         }
 
-        private void CallBorrowersForRefund(float quantityToReturn)
+        private void AskRefundAll(float quantityToRefund)
         {
-            foreach (var pair in _loans)
+            List<IResourceBorrower> borrowers = new List<IResourceBorrower>(_loans.Keys);
+                
+            foreach (var borrower in borrowers)
             {
-                var quantityReturnable = pair.Value < quantityToReturn ? pair.Value : quantityToReturn;
-                pair.Key.ReturnResource(quantityReturnable, this);
-                quantityToReturn -= quantityReturnable;
+                float quantityReturnable = quantityToRefund;
+                if (quantityReturnable > _loans[borrower]) quantityReturnable = _loans[borrower];
+                
+                borrower.ReturnResource(quantityReturnable, this);
+                quantityToRefund -= quantityReturnable;
+
+                if (_loans[borrower] <= 0) _loans.Remove(borrower);
             }
         }
 
