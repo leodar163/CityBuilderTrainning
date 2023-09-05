@@ -1,13 +1,15 @@
-﻿using Cameras;
+﻿using System.Collections.Generic;
+using Cameras;
 using GridSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Utils.UI
 {
-    public abstract class PanelUI<T> : Singleton<T>, IPointerEnterHandler, IPointerExitHandler, IPanel
+    public abstract class PanelUI<T> : Singleton<T>, IPanel, IPointerEnterHandler, IPointerExitHandler
         where T : PanelUI<T>
     {
+
         public bool isOpen { get; private set; }
         [SerializeField] private bool _closeOnAwake;
 
@@ -33,12 +35,14 @@ namespace Utils.UI
         {
             if (isOpen) return;
             isOpen = true;
+            IPanel.PutFocusOnPanel(this);
         }
 
         public virtual void ClosePanel()
         {
             if (!isOpen) return;
             isOpen = false;
+            IPanel.NotifyClosingPanel(this);
         }
 
         public virtual void OnPointerEnter(PointerEventData eventData)

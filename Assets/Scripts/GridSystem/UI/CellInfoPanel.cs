@@ -71,11 +71,6 @@ namespace GridSystem.UI
         private void Update()
         {
             if(!isOpen) return;
-            
-            if (Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Escape))
-            {
-                ClosePanel();
-            }
 
             if (currentCell != null)
             {

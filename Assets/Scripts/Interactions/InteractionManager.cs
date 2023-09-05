@@ -2,6 +2,7 @@
 using BuildingSystem.Facilities;
 using BuildingSystem.Facilities.UI;
 using GridSystem;
+using Utils.UI;
 using Utils;
 
 namespace Interactions
@@ -41,7 +42,14 @@ namespace Interactions
         {
             if (_controls.InteractionMode.Return.WasReleasedThisFrame())
             {
-                ReturnToDefaultInteractor();
+                if (_currentInteractor != _defaultInteractor)
+                {
+                    ReturnToDefaultInteractor();
+                }
+                else if (IPanel.focusedPanel != null)
+                {
+                    IPanel.focusedPanel.ClosePanel();
+                }
             }
 
             if (_controls.InteractionMode.OpenFacilityBuildingMode.WasReleasedThisFrame())
