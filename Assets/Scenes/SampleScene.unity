@@ -765,9 +765,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 595113449}
   - {fileID: 664060784}
   - {fileID: 1125146935}
-  - {fileID: 595113449}
   - {fileID: 1008079637}
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -2455,7 +2455,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -4608,7 +4608,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 220, y: 0}
+  m_SizeDelta: {x: 260, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &820148284
 MonoBehaviour:
@@ -6732,7 +6732,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -30}
-  m_SizeDelta: {x: 0, y: -60}
+  m_SizeDelta: {x: -80, y: -60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1214775434
 MonoBehaviour:
@@ -6751,9 +6751,9 @@ MonoBehaviour:
     m_Right: 10
     m_Top: 10
     m_Bottom: 10
-  m_ChildAlignment: 4
-  m_Spacing: 10
-  m_ChildForceExpandWidth: 1
+  m_ChildAlignment: 3
+  m_Spacing: 30
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
@@ -8663,7 +8663,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -80}
   m_SizeDelta: {x: 0, y: 400}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1602682221
@@ -9731,7 +9731,7 @@ GameObject:
   - component: {fileID: 1801399671}
   - component: {fileID: 1801399670}
   m_Layer: 0
-  m_Name: VariableManager
+  m_Name: VariableNameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9781,6 +9781,42 @@ MonoBehaviour:
       m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
     m_TableEntryReference:
       m_KeyId: 53746134044672
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedIn:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 1483792463843328
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedOut:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 1483931916062720
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedProduction:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 1484016359985152
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedEfficiency:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 1508139274489856
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -10092,7 +10128,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: -160}
+  m_SizeDelta: {x: 400, y: -360}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1899860731
 MonoBehaviour:
@@ -10500,8 +10536,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 400}
+  m_AnchoredPosition: {x: 0, y: -480}
+  m_SizeDelta: {x: 0, y: 220}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &2003780545
 GameObject:
@@ -10990,6 +11026,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _separatorFormat: <align="center">==========</align>
+  _negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  _positiveColor: {r: 0, g: 1, b: 0, a: 1}
   _separatorColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.8}
 --- !u!1001 &2079089942
 PrefabInstance:

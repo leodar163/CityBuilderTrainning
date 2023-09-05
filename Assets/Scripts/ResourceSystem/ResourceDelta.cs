@@ -1,5 +1,8 @@
-﻿namespace ResourceSystem
+﻿using System;
+
+namespace ResourceSystem
 {
+    [Serializable]
     public struct ResourceDelta
     {
         public ResourceType resource;
@@ -13,6 +16,28 @@
             this.monthDelta = monthDelta;
             this.maxQuantityDelta = maxQuantityDelta;
             this.quantityDelta = quantityDelta;
+        }
+        
+        public static ResourceDelta operator*(ResourceDelta delta, float scale)
+        {
+            return new ResourceDelta
+            {
+                resource = delta.resource,
+                monthDelta = delta.monthDelta * scale,
+                quantityDelta = delta.quantityDelta * scale,
+                maxQuantityDelta = delta.maxQuantityDelta * scale
+            };
+        }
+        
+        public static ResourceDelta operator/(ResourceDelta delta, float scale)
+        {
+            return new ResourceDelta
+            {
+                resource = delta.resource,
+                monthDelta = delta.monthDelta / scale,
+                quantityDelta = delta.quantityDelta / scale,
+                maxQuantityDelta = delta.maxQuantityDelta / scale
+            };
         }
     }
 }

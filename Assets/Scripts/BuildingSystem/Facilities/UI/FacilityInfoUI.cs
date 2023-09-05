@@ -1,14 +1,15 @@
 ﻿using System;
+using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BuildingSystem.Facilities.UI
 {
-    public class FacilityInfoUI : MonoBehaviour
+    public class FacilityInfoUI : MonoBehaviour, IToolTipSpeaker
     {
-        private Facility _facility;
+        private FacilityType _facility;
         
-        public Facility facility
+        public FacilityType Facility
         {
             get => _facility;
             set
@@ -43,7 +44,10 @@ namespace BuildingSystem.Facilities.UI
                 Destroy(_facility.gameObject);
             });
         }
-        
-        
+
+        public ToolTipMessage ToToolTipMessage()
+        {
+            return _facility.ToToolTipMessage();
+        }
     }
 }

@@ -7,6 +7,6 @@ namespace BuildingSystem.Facilities
     [CreateAssetMenu(menuName = "Facilities/Facility Set", fileName = "NewFacilitySet")]
     public class FacilitySet : DefaultableScriptableObject<FacilitySet>
     {
-        public List<Facility> facilities = new();
+        public List<FacilityType> facilities = new();
     }
 }

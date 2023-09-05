@@ -49,6 +49,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collider: {fileID: 6363388185365044418}
   icon: {fileID: 21300000, guid: 250d488424020ed4c895e3704e43732b, type: 3}
+  _productionLines:
+  - _lineName:
+      m_TableReference:
+        m_TableCollectionName: GUID:652462a9514ae964a8c71d011f191f9c
+      m_TableEntryReference:
+        m_KeyId: 100906192896
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    _resourceIn: []
+    _resourceOut:
+    - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
+      monthDelta: 0.3
+      quantityDelta: 0
+      maxQuantityDelta: 0
   _facilityName:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0

@@ -16,7 +16,7 @@ namespace TerrainSystem
     {
         [SerializeField] private LocalizedString _terrainName;
         public Tile tile;
-        private readonly List<Facility> _facilities = new();
+        private readonly List<FacilityType> _facilities = new();
         public int maxFacilityCount = 10;
         public int facilityCount => _facilities.Count;
         public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
@@ -70,21 +70,21 @@ namespace TerrainSystem
             }
         }
 
-        public bool TryAddFacility(Facility facilityToAdd)
+        public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
-            if (_facilities.Contains(facilityToAdd)) return false;
+            if (_facilities.Contains(facilityTypeToAdd)) return false;
             if (cell != null)
             {
-                facilityToAdd.OnAddedToCell(cell);
+                facilityTypeToAdd.OnAddedToCell(cell);
             }
-            facilityToAdd.transform.parent = transform;
-            _facilities.Add(facilityToAdd);
-            PlaceFacility(facilityToAdd);
+            facilityTypeToAdd.transform.parent = transform;
+            _facilities.Add(facilityTypeToAdd);
+            PlaceFacility(facilityTypeToAdd);
             
             return true;
         }
 
-        private void PlaceFacility(Facility facilityToPlace)
+        private void PlaceFacility(FacilityType facilityTypeToPlace)
         {
             Vector3 position = new Vector3
             {
@@ -92,20 +92,20 @@ namespace TerrainSystem
                 z = Random.Range(-0.5f, 0.5f)
             };
 
-            facilityToPlace.transform.localPosition = position;
-            facilityToPlace.OnAddedToCell(cell);
+            facilityTypeToPlace.transform.localPosition = position;
+            facilityTypeToPlace.OnAddedToCell(cell);
         }
 
-        public void RemoveFacility(Facility facilityToRemove)
+        public void RemoveFacility(FacilityType facilityTypeToRemove)
         {
-            if (_facilities.Contains(facilityToRemove))
+            if (_facilities.Contains(facilityTypeToRemove))
             {
-                _facilities.Remove(facilityToRemove);
-                facilityToRemove.OnRemovedFromCell(cell);
+                _facilities.Remove(facilityTypeToRemove);
+                facilityTypeToRemove.OnRemovedFromCell(cell);
             }
         }
 
-        public Facility GetFacility(int index)
+        public FacilityType GetFacility(int index)
         {
             return index > _facilities.Count ? null : _facilities[index];
         }

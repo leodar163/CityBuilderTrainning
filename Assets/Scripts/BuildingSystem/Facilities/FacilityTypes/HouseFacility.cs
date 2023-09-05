@@ -6,11 +6,9 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class HouseFacility : Facility, IResourceBorrower
+    public class HouseFacility : FacilityType
     {
-        public Dictionary<ResourceSlider, float> loaners { get; } = new();
         private IResourceBorrower _selfBorrower => this;
-        public string borrowerName => facilityName;
 
         private static ResourceType s_populationResource;
         private static ResourceType s_workforceResource;
@@ -59,6 +57,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
             _selfBorrower.BorrowResource(maxPopulationCapacity - inhabitants, s_mainPopulationSlider);
         }
 
+        /*
         public override ResourceDelta[] GetResourceDelta()
         {
             //print(name + _selfBorrower.GetBorrowedQuantity(s_populationResource));
@@ -69,5 +68,6 @@ namespace BuildingSystem.Facilities.FacilityTypes
                 new ResourceDelta(s_habitationResource, quantityDelta: maxPopulationCapacity)
             };
         }
+        */
     }
 }

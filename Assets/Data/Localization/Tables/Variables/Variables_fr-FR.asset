@@ -34,6 +34,22 @@ MonoBehaviour:
     m_Localized: "quantit\xE9 disponible"
     m_Metadata:
       m_Items: []
+  - m_Id: 1483792463843328
+    m_Localized: "ent\xE9es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1483931916062720
+    m_Localized: sorties
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1484016359985152
+    m_Localized: production
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1508139274489856
+    m_Localized: "efficacit\xE9"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

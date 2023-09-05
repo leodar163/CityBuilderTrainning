@@ -36,8 +36,8 @@ namespace ResourceSystem.Global
             workforceSlider = deck.GetSlider(workForceResource);
             habitationSlider = deck.GetSlider(habitationResource);
             
-            Facility.onFacilityBuild += RecordHouse;
-            Facility.onFacilityDestroyed += ForgetHouse;
+            FacilityType.onFacilityBuild += RecordHouse;
+            FacilityType.onFacilityDestroyed += ForgetHouse;
 
             TimeManager.onNewMonth += _ => deck.ApplyDeltaToSliders();
         }
@@ -61,9 +61,9 @@ namespace ResourceSystem.Global
             //habitationSlider.nativeQuantity = habitations;
         }
 
-        private void RecordHouse(Facility facilityBuilt)
+        private void RecordHouse(FacilityType facilityTypeBuilt)
         {
-            if (facilityBuilt is HouseFacility house && !houses.Contains(house))
+            if (facilityTypeBuilt is HouseFacility house && !houses.Contains(house))
             {
                 houses.Add(house);
                 habitationSlider.Sub(house);
@@ -71,9 +71,9 @@ namespace ResourceSystem.Global
             }
         }
 
-        private void ForgetHouse(Facility facilityDestroyed)
+        private void ForgetHouse(FacilityType facilityTypeDestroyed)
         {
-            if (facilityDestroyed is HouseFacility house && houses.Contains(house))
+            if (facilityTypeDestroyed is HouseFacility house && houses.Contains(house))
             {
                 houses.Remove(house);
                 habitationSlider.Unsub(house);

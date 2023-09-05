@@ -1,10 +1,11 @@
 ﻿using System;
+using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BuildingSystem.Facilities.UI
 {
-    public class FacilityButton : MonoBehaviour
+    public class FacilityButton : MonoBehaviour, IToolTipSpeaker
     {
         [SerializeField] private Image _iconImage;
         [SerializeField] private Button _button;
@@ -12,22 +13,27 @@ namespace BuildingSystem.Facilities.UI
         
         private static readonly int animSelectionProperty = Animator.StringToHash("IsSelected");
 
-        public Facility facility { get; private set; }
+        public FacilityType Facility { get; private set; }
 
         private void Start()
         {
-            _button.onClick.AddListener(() => FacilityPlacer.SelectFacility(facility));
+            _button.onClick.AddListener(() => FacilityPlacer.SelectFacility(Facility));
         }
 
         private void Update()
         {
-            _animator.SetBool(animSelectionProperty, FacilityPlacer.selectedFacility == facility);
+            _animator.SetBool(animSelectionProperty, FacilityPlacer.SelectedFacilityType == Facility);
         }
 
-        public void AssignFacility(Facility facilityToAssign)
+        public void AssignFacility(FacilityType facilityTypeToAssign)
         {
-            facility = facilityToAssign;
-            _iconImage.sprite = facility.icon;
+            Facility = facilityTypeToAssign;
+            _iconImage.sprite = Facility.icon;
+        }
+
+        public ToolTipMessage ToToolTipMessage()
+        {
+            return Facility.ToToolTipMessage();
         }
     }
 }

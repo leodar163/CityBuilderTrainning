@@ -100,20 +100,20 @@ namespace GridSystem.UI
 
             for (int i = 0; i < currentCell.terrain.facilityCount; i++)
             {
-                Facility facilityToDisplay = currentCell.terrain.GetFacility(i);
+                FacilityType facilityTypeToDisplay = currentCell.terrain.GetFacility(i);
 
-                TryAddFacilityInfo(facilityToDisplay);
+                TryAddFacilityInfo(facilityTypeToDisplay);
             }
 
             AssignSliders();
         }
 
-        private bool TryAddFacilityInfo(Facility facility)
+        private bool TryAddFacilityInfo(FacilityType facilityType)
         {
             if (Instantiate(_facilityInfoUITemplate, _facilitiesLayout)
                 .TryGetComponent(out FacilityInfoUI facilityInfo))
             {
-                facilityInfo.facility = facility;
+                facilityInfo.Facility = facilityType;
                 _facilityInfoUIs.Add(facilityInfo);
                 return true;
             }

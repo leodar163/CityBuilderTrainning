@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class TreeFacility : Facility
+    public class TreeFacility : FacilityType
     {
         private static ResourceType environmentResource;
 
@@ -23,14 +23,6 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
             conditionsFormat = _placementConditions.GetLocalizedString();
             return terrainCondition;
-        }
-
-        public override ResourceDelta[] GetResourceDelta()
-        {
-            return new ResourceDelta[]
-            {
-                new ResourceDelta(environmentResource, 0.3f)
-            };
         }
     }
 }

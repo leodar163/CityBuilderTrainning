@@ -11,7 +11,7 @@ namespace BuildingSystem.Facilities
 {
     public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractionMode
     {
-        public static Facility selectedFacility { get; private set; }
+        public static FacilityType SelectedFacilityType { get; private set; }
 
         [Header("Messages")] 
         [SerializeField] private LocalizedString _notEnoughPlaceException;
@@ -25,12 +25,12 @@ namespace BuildingSystem.Facilities
 
         private void Awake()
         {
-            selectedFacility = null;
+            SelectedFacilityType = null;
         }
 
         private void Update()
         {
-            if (!selectedFacility || !isActive) return;
+            if (!SelectedFacilityType || !isActive) return;
 
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
@@ -38,22 +38,22 @@ namespace BuildingSystem.Facilities
                 return;
             }
             
-            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
+            if (CanPlaceFacility(SelectedFacilityType, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
-                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
+                && TryPlaceNewFacility(SelectedFacilityType, GridManager.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
             }
         }
 
-        public static void SelectFacility(Facility facilityToSelect)
+        public static void SelectFacility(FacilityType facilityTypeToSelect)
         {
-            selectedFacility = facilityToSelect;
+            SelectedFacilityType = facilityTypeToSelect;
             InteractionManager.SwitchInteractionMode(InteractionMode.FacilityPlacing);
         }
 
-        private static bool CanPlaceFacility(Facility facility, CellData cell)
+        private static bool CanPlaceFacility(FacilityType facilityType, CellData cell)
         {
             if (cell == null) return false;
             
@@ -63,7 +63,7 @@ namespace BuildingSystem.Facilities
             
             string conditionsFormat = notEnoughPlace ? Instance._notEnoughPlaceException.GetLocalizedString() : "";
             
-            bool canBePlaced = notEnoughPlace && facility.CanBePlaced(terrain, out conditionsFormat);
+            bool canBePlaced = notEnoughPlace && facilityType.CanBePlaced(terrain, out conditionsFormat);
 
             _toolTipMessage = new ToolTipMessage
             {
@@ -77,9 +77,9 @@ namespace BuildingSystem.Facilities
             return canBePlaced;
         }
         
-        private static bool TryPlaceNewFacility(Facility facilityToPlace, CellData cell)
+        private static bool TryPlaceNewFacility(FacilityType facilityTypeToPlace, CellData cell)
         {
-            if (Instantiate(facilityToPlace.gameObject).TryGetComponent(out Facility newFacility) 
+            if (Instantiate(facilityTypeToPlace.gameObject).TryGetComponent(out FacilityType newFacility) 
                 && cell.terrain.TryAddFacility(newFacility))
             {
                 Instance._oneFacilityAsBeenPlaced = true;
@@ -94,7 +94,7 @@ namespace BuildingSystem.Facilities
         private static void EndPlacement()
         {
             Instance.isActive = false;
-            selectedFacility = null;
+            SelectedFacilityType = null;
             Instance._oneFacilityAsBeenPlaced = false;
             GridManager.PaintCursor(Color.white);
         }
