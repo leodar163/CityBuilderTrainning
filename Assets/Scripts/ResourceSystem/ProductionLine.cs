@@ -34,7 +34,7 @@ namespace ResourceSystem
 
             foreach (var delta in _resourceIn)
             {
-                ResourceSlider slider = cell.terrain.resourceDeck.GetSlider(delta.resource);
+                ResourceSlider slider = cell.resourceDeck.GetSlider(delta.resource);
 
                 float askedQuantity = delta.resource.borrowable ? delta.quantityDelta : delta.monthDelta;
 

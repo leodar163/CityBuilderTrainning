@@ -14,6 +14,7 @@ namespace GridSystem
         public bool isBlocked => placedObject != null && placedObject.isPlaced;
         public Vector3Int cellCoordinates { get; }
         public Vector3 position { get; private set; }
+        public ResourceDeck resourceDeck { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
         public TerrainType terrain { get; private set; }
@@ -74,6 +75,10 @@ namespace GridSystem
         {
             terrain = terrainType;
             terrain.transform.position = position;
+
+            resourceDeck = terrain.deckTemplate == null 
+                ? ScriptableResourceDeck.Default.GetResourceDeckCopy() 
+                : terrain.deckTemplate.GetResourceDeckCopy();
         }
 
         public void DetachTerrain()
@@ -83,7 +88,7 @@ namespace GridSystem
 
         public void OnMonthUpdate()
         {
-            terrain.resourceDeck.ApplyDeltaToSliders();
+            resourceDeck.ApplyDeltaToSliders();
         }
     }
 }

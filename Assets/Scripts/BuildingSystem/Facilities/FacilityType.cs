@@ -48,7 +48,7 @@ namespace BuildingSystem.Facilities
         public virtual void OnAddedToCell(CellData cell)
         {
             this.cell = cell;
-            cell.terrain.resourceDeck.Sub(this);
+            cell.resourceDeck.Sub(this);
             onFacilityBuild?.Invoke(this);
             
             foreach (var line in _productionLines)
@@ -60,7 +60,7 @@ namespace BuildingSystem.Facilities
         public virtual void OnRemovedFromCell(CellData cell)
         {
             this.cell = null;
-            cell.terrain.resourceDeck.Unsub(this);
+            cell.resourceDeck.Unsub(this);
             onFacilityDestroyed?.Invoke(this);
             
             foreach (var line in _productionLines)

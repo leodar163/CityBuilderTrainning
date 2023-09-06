@@ -22,7 +22,6 @@ namespace TerrainSystem
         public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
         public CellData cell { get; private set; }
         [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
-        public ResourceDeck resourceDeck { get; private set; }
 
         [Header("Description")] 
         [SerializeField] private string _typeDescription = "This is a terrain";
@@ -30,14 +29,8 @@ namespace TerrainSystem
         
         public string terrainName => _terrainName.GetLocalizedString();
         public string modifierName => terrainName;
-
-        protected void Awake()
-        {
-            if (_resourceDeckTemplate == null) _resourceDeckTemplate = ScriptableResourceDeck.Default;
-            resourceDeck = _resourceDeckTemplate.GetResourceDeckCopy();
-            resourceDeck.Sub(this);
-        }
-
+        public ScriptableResourceDeck deckTemplate => _resourceDeckTemplate;
+        
         public virtual void OnAddedToCell(CellData cell)
         {
             this.cell = cell;

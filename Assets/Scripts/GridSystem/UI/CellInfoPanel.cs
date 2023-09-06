@@ -138,12 +138,12 @@ namespace GridSystem.UI
 
         private void AssignSliders()
         {
-            _habitationSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_habitationSlider.resource);
-            _environmentSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_environmentSlider.resource);
-            _workforceSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_workforceSlider.resource);
-            _foodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_foodSlider.resource);
-            _woodSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_woodSlider.resource);
-            _mineralsSlider.resourceSlider = currentCell.terrain.resourceDeck.GetSlider(_mineralsSlider.resource);
+            _habitationSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_habitationSlider.resource);
+            _environmentSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_environmentSlider.resource);
+            _workforceSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_workforceSlider.resource);
+            _foodSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_foodSlider.resource);
+            _woodSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_woodSlider.resource);
+            _mineralsSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_mineralsSlider.resource);
         }
 
         private int GetPopNbr()
