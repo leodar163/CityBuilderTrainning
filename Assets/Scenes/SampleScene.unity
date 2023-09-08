@@ -5075,7 +5075,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1773684168}
   m_HandleRect: {fileID: 1773684167}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9817,6 +9817,15 @@ MonoBehaviour:
       m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
     m_TableEntryReference:
       m_KeyId: 1508139274489856
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedMarket:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0

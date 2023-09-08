@@ -15,16 +15,18 @@ namespace Localization
         [SerializeField] private LocalizedString _localizedOut;
         [SerializeField] private LocalizedString _localizedProduction;
         [SerializeField] private LocalizedString _localizedEfficiency;
+        [SerializeField] private LocalizedString _localizedMarket;
         
 
-        public static string maxQuantityName => Instance._localizedMaxQuantity.GetLocalizedString();
-        public static string quantityName => Instance._localizedQuantity.GetLocalizedString();
-        public static string baseName => Instance._localizedBase.GetLocalizedString();
-        public static string availableQuantityName => Instance._localizedAvailableQuantity.GetLocalizedString();
+        public static string MaxQuantityName => Instance._localizedMaxQuantity.GetLocalizedString();
+        public static string QuantityName => Instance._localizedQuantity.GetLocalizedString();
+        public static string BaseName => Instance._localizedBase.GetLocalizedString();
+        public static string AvailableQuantityName => Instance._localizedAvailableQuantity.GetLocalizedString();
         public static string InName => Instance._localizedIn.GetLocalizedString();
         public static string OutName => Instance._localizedOut.GetLocalizedString();
         public static string ProductionName => Instance._localizedProduction.GetLocalizedString();
         public static string EfficiencyName => Instance._localizedEfficiency.GetLocalizedString();
+        public static string MarketName => Instance._localizedMarket.GetLocalizedString();
 
         
         

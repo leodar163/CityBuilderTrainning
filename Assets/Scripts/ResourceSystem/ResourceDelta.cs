@@ -39,5 +39,52 @@ namespace ResourceSystem
                 maxQuantityDelta = delta.maxQuantityDelta / scale
             };
         }
+
+        public static ResourceDelta operator +(ResourceDelta delta, float added)
+        {
+            return new ResourceDelta
+            {
+                resource = delta.resource,
+                monthDelta = delta.monthDelta + added,
+                quantityDelta = delta.quantityDelta + added,
+                maxQuantityDelta = delta.maxQuantityDelta + added
+            };
+        }        
+        
+        public static ResourceDelta operator -(ResourceDelta delta, float added)
+        {
+            return new ResourceDelta
+            {
+                resource = delta.resource,
+                monthDelta = delta.monthDelta - added,
+                quantityDelta = delta.quantityDelta - added,
+                maxQuantityDelta = delta.maxQuantityDelta - added
+            };
+        }        
+        public static ResourceDelta operator +(ResourceDelta deltaA, ResourceDelta deltaB)
+        {
+            if (deltaA.resource != deltaB.resource) return deltaA;
+            
+            return new ResourceDelta
+            {
+                resource = deltaA.resource,
+                monthDelta = deltaA.monthDelta + deltaB.monthDelta,
+                quantityDelta = deltaA.quantityDelta + deltaB.quantityDelta,
+                maxQuantityDelta = deltaA.maxQuantityDelta + deltaB.maxQuantityDelta
+            };
+        }
+        
+        public static ResourceDelta operator -(ResourceDelta deltaA, ResourceDelta deltaB)
+        {
+            if (deltaA.resource != deltaB.resource) return deltaA;
+            
+            return new ResourceDelta
+            {
+                resource = deltaA.resource,
+                monthDelta = deltaA.monthDelta - deltaB.monthDelta,
+                quantityDelta = deltaA.quantityDelta - deltaB.quantityDelta,
+                maxQuantityDelta = deltaA.maxQuantityDelta - deltaB.maxQuantityDelta
+            };
+        }
     }
 }

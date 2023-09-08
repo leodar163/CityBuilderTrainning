@@ -327,7 +327,7 @@ namespace ResourceSystem
                                     : Color.red);
                             message +=
                                 $"{modifier.modifierName} : <color=#{deltaColor}>{resourceDelta.maxQuantityDelta}</color> " +
-                                $"{VariableNameManager.maxQuantityName}";
+                                $"{VariableNameManager.MaxQuantityName}";
                         }
                     }
                 }
@@ -340,7 +340,7 @@ namespace ResourceSystem
                     string deltaColor = ColorUtility.ToHtmlStringRGBA(modifs[modif] == 0 ? Color.white :
                         modifs[modif] > 0 ? Color.green : Color.red);
                     message += $"{modif}({modifsNbr[modif]}) : <color=#{deltaColor}>{modifs[modif]}</color> " +
-                               $"{VariableNameManager.maxQuantityName}";
+                               $"{VariableNameManager.MaxQuantityName}";
                 }
             }
             
@@ -389,14 +389,14 @@ namespace ResourceSystem
         {
             string quantityMessage = GetQuantityModifierFormat(false);
             quantityMessage =
-                $"<b>{VariableNameManager.quantityName} : {totalQuantity}</b>\n" +
-                $"<indent=10%>{VariableNameManager.baseName} : {_nativeQuantity}\n{quantityMessage}</indent>";
+                $"<b>{VariableNameManager.QuantityName} : {totalQuantity}</b>\n" +
+                $"<indent=10%>{VariableNameManager.BaseName} : {_nativeQuantity}\n{quantityMessage}</indent>";
 
             if (resource.borrowable)
             {
                 string loanMessage = GetLoanFormat(false);
                 loanMessage =
-                    $"<b>{VariableNameManager.availableQuantityName} : {availableQuantity}</b>\n<indent=10%>{loanMessage}</indent>";
+                    $"<b>{VariableNameManager.AvailableQuantityName} : {availableQuantity}</b>\n<indent=10%>{loanMessage}</indent>";
                 
                 return new ToolTipMessage
                 {
@@ -419,8 +419,8 @@ namespace ResourceSystem
                 {
                     maxQuantityMessage = GetMaxQuantityModifierFormat();
                     maxQuantityMessage =
-                        $"<b>{VariableNameManager.maxQuantityName} : {maxQuantity}</b>\n" +
-                        $"<indent=10%>{VariableNameManager.baseName} : {_maxQuantity}\n{maxQuantityMessage}</indent>";
+                        $"<b>{VariableNameManager.MaxQuantityName} : {maxQuantity}</b>\n" +
+                        $"<indent=10%>{VariableNameManager.BaseName} : {_maxQuantity}\n{maxQuantityMessage}</indent>";
                 }
             
                 return new ToolTipMessage

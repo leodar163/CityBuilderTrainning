@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using ResourceSystem.Market;
 using UnityEngine;
 
 namespace ResourceSystem
 {
     [Serializable]
-    public class ResourceDeck
+    public class ResourceDeck : IResourceBorrower
     {
         [SerializeField] private List<ResourceSlider> _resourceSliders = new();
-        public List<ResourceSlider> resourceSliders => _resourceSliders;
 
+        public Dictionary<ResourceSlider, float> loaners { get; } = new();
+        public string borrowerName => "deck";
+        
+        public List<ResourceSlider> resourceSliders => _resourceSliders;
+        public ResourceMarket market { get; private set; }
         private List<IResourceModifier> _resourceModifiers = new();
         private List<IResourceModifier> _permanentResourceModifiers = new();
 
