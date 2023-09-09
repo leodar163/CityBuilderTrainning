@@ -52,19 +52,19 @@ namespace ResourceSystem.Transactions
 
         #region TRANSACTION_METHODS
 
-        public void AddOutput(ITransactor target, ResourceType resource, float quantity)
+        public void AddOutputTransaction(ITransactor target, ResourceType resource, float quantity)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.AddOutput(target, quantity);
+                container.AddOutputTransaction(target, quantity);
             }
         }
         
-        public void AddInput(ITransactor target, ResourceType resource, float quantity)
+        public void AddInputTransaction(ITransactor origin, ResourceType resource, float quantity)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.AddInput(target, quantity);
+                container.AddInputTransaction(origin, quantity);
             }
         }
         

@@ -105,7 +105,7 @@ namespace ResourceSystem.Transactions
 
         #region TRANSACTION_METHODS
 
-        public void AddOutput(ITransactor target, float quantity)
+        public void AddOutputTransaction(ITransactor target, float quantity)
         {
             quantity = Mathf.Abs(quantity);
             if (TryGetTransaction(target, true, out ResourceTransaction transaction))
@@ -115,6 +115,7 @@ namespace ResourceSystem.Transactions
             else
             {
                transaction = new ResourceTransaction(resource, transactor, target, quantity);   
+               outputs.Add(transaction);
             }
 
             deltaQuantity -= quantity;
@@ -122,7 +123,7 @@ namespace ResourceSystem.Transactions
             target.NotifyInputAdding(transaction);
         }
 
-        public void AddInput(ITransactor origin, float quantity)
+        public void AddInputTransaction(ITransactor origin, float quantity)
         {
             quantity = Mathf.Abs(quantity);
             if (TryGetTransaction(origin, false, out ResourceTransaction transaction))
@@ -132,6 +133,7 @@ namespace ResourceSystem.Transactions
             else
             {
                 transaction = new ResourceTransaction(resource, origin, transactor, quantity);   
+                inputs.Add(transaction);
             }
 
             deltaQuantity += quantity;
@@ -206,6 +208,11 @@ namespace ResourceSystem.Transactions
             {
                 nativeQuantity -= Mathf.Clamp(ProjectOutputGiving(transaction), 
                     0, transaction.target.ProjectInputReceiving(transaction));
+
+                if (totalQuantity < lentQuantity)
+                {
+                    AskForRefund(lentQuantity - totalQuantity);
+                }
             }
         }
         

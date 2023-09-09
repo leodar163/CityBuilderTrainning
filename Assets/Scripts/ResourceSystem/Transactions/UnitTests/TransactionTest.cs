@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ResourceSystem.Transactions.UnitTests
 {
     public class TransactionTest : MonoBehaviour
     {
-        private void Start()
-        {
-            //RunTestBeta();
-             //RunTestGamma();
-        }
-
         private void Update()
         {
             if (Input.GetKeyUp(KeyCode.A))
@@ -116,7 +108,7 @@ namespace ResourceSystem.Transactions.UnitTests
             }
         }
         
-        private void RunTestEta()
+        private void RunTestEpsilon()
         {
             ITransactor a = new TransactorTest();
             ITransactor b = new TransactorTest();
@@ -134,7 +126,7 @@ namespace ResourceSystem.Transactions.UnitTests
             c.BorrowTo(b,populationResource,5);
             d.BorrowTo(c,populationResource,5);
 
-            print("Test Êta");
+            print("Test Epsilon");
             
             if (a.TryGetContainer(populationResource, out ResourceContainer containerA))
             {
@@ -157,6 +149,67 @@ namespace ResourceSystem.Transactions.UnitTests
                 print($"<b>ContainerD</b>\nTotalQuantity : 3|{containerD.totalQuantity}\nNativeQuantity : 0|{containerD.nativeQuantity}\nLentQuantity : 0|{containerD.lentQuantity}\n" +
                       $"BorrowedQuantity : 3|{containerD.borrowedQuantity}\nDebts : 1|{containerD.debts.Count}");
             }
+        }
+
+        private void RunTestZeta()
+        {
+            ITransactor a = new TransactorTest();
+            ITransactor b = new TransactorTest();
+
+            ResourceType woodResource = ResourceSet.Default.GetResource("resource_wood");
+
+            a.AddResource(woodResource, 20);
+            b.AddResource(woodResource, 0);
+            a.AddOutputTransaction(b, woodResource, 1);
+            
+            b.AskInputs();
+            b.AskInputs();
+            b.AskInputs();
+
+            string message = "<b>Test Zeta</b>";
+
+            if (a.TryGetContainer(woodResource, out ResourceContainer containerA))
+            {
+                message += $"\nContainerA\ntotal: 17|{containerA.totalQuantity}\nnative: 17|{containerA.nativeQuantity}\noutputs: 1|{containerA.outputs.Count}";
+            }
+            if (b.TryGetContainer(woodResource, out ResourceContainer containerB))
+            {
+                message += $"\nContainerB\ntotal: 3|{containerB.totalQuantity}\nnative: 3|{containerB.nativeQuantity}\ninputs: 1|{containerB.inputs.Count}";
+            }
+            
+            
+            print(message);
+        }
+
+        private void RunTestEta()
+        {
+            ITransactor a = new TransactorTest();
+            ITransactor b = new TransactorTest();
+            
+            ResourceType woodResource = ResourceSet.Default.GetResource("resource_wood");
+
+            a.AddResource(woodResource, 20);
+            b.AddResource(woodResource, 0);
+            
+            b.BorrowTo(a, woodResource, 10);
+            b.AddInputTransaction(a, woodResource, 11);
+            
+            b.AskInputs(woodResource);
+            
+            string message = "<b>Test Eta</b>";
+
+            if (a.TryGetContainer(woodResource, out ResourceContainer containerA))
+            {
+                message += $"\n\n<b>ContainerA</b>\navailable : 0|{containerA.availableQuantity}\nnative : 9|{containerA.nativeQuantity}" +
+                           $"\nlent : 9|{containerA.lentQuantity}\ncredits : 1|{containerA.credits.Count}\noutputs : 1|{containerA.outputs.Count}";
+            }
+            if (b.TryGetContainer(woodResource, out ResourceContainer containerB))
+            {
+                message += $"\n\n<b>ContainerB</b>\ntotal : 20|{containerB.totalQuantity}\nnative : 11|{containerB.nativeQuantity}" +
+                           $"\nborrowed : 9|{containerB.borrowedQuantity}\ndebts : 1|{containerB.debts.Count}\ninputs : 1|{containerB.inputs.Count}";
+            }
+            
+            print(message);
         }
     }
 }
