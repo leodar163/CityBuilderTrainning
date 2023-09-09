@@ -17,7 +17,7 @@ namespace ResourceSystem.Transactions
         /// In the same spirit, the max quantity will be the biggest between the one in argument and the one of the already existing container.
         /// The function returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
         /// </summary>
-        public float AddResource(ResourceType resource, float quantity, float maxQuantity = float.PositiveInfinity)
+        public float AddResource(ResourceType resource, float quantity, float maxQuantity)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
                 
@@ -33,28 +33,146 @@ namespace ResourceSystem.Transactions
 
             return quantityDelta;
         }
-
-        #endregion
         
-        public float LoanTo(ITransactor debtor, ResourceType resourceToLoan, float quantityToLoan, out ResourceLoan contractedLoan)
+        public float AddResource(ResourceType resource, float quantity)
         {
-            if (TryGetContainer(resourceToLoan, out ResourceContainer container))
+            if (resource == null) throw new ArgumentNullException(nameof(resource));
+                
+            if (TryGetContainer(resource, out ResourceContainer container))
             {
-                return container.LoanTo(debtor, quantityToLoan, out contractedLoan);
+                return container.AddNativeQuantity(quantity);
             }
 
-            contractedLoan = null;
-            return 0;
+            registry.Add(new ResourceContainer(this, resource, quantity));
+
+            return quantity;
         }
 
-        public float LoanAllTo(ITransactor debtor, ResourceType resource, out ResourceLoan contractedLoan)
+        #endregion
+
+        #region TRANSACTION_METHODS
+
+        public void AddOutput(ITransactor target, ResourceType resource, float quantity)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                return container.LoanTo(debtor, container.availableQuantity, out contractedLoan);
+                container.AddOutput(target, quantity);
+            }
+        }
+        
+        public void AddInput(ITransactor target, ResourceType resource, float quantity)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.AddInput(target, quantity);
+            }
+        }
+        
+        public void NotifyInputAdding(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                container.NotifyInputAdding(transaction);
+            }
+        }
+        
+        public float ProjectInputReceiving(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                return container.ProjectInputReceiving(transaction);
             }
 
-            contractedLoan = null;
+            return 0;
+        }
+
+        public void NotifyInputReceiving(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                container.NotifyInputReceiving(transaction);
+            }
+        }
+        
+        public void AskInputs()
+        {
+            foreach (var container in registry)
+            {
+                container.AskInputs();
+            }
+        }
+
+        public void AskInputs(ResourceType resource)
+        {
+            foreach (var container in registry)
+            {
+                container.AskInputs();
+            }
+        }
+        
+        public void NotifyOutputAdding(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                container.NotifyOutputAdding(transaction);
+            }
+        }
+
+        public void NotifyOutputGiving(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                container.NotifyOutputGiving(transaction);
+            }
+        }
+
+        public float ProjectOutputGiving(ResourceTransaction transaction)
+        {
+            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            {
+                return container.ProjectOutputGiving(transaction);
+            }
+
+            return 0;
+        }
+
+        public void GiveOutputs()
+        {
+            foreach (var container in registry)
+            {
+                container.GiveOutputs();
+            }
+        }
+
+        public void GiveOutputs(ResourceType resource)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.GiveOutputs();
+            }
+        }
+        
+        #endregion
+        
+        public float LoanTo(ITransactor debtor, ResourceType resourceToLoan, float quantityToLoan, out ResourceTransaction contractedTransaction)
+        {
+            if (TryGetContainer(resourceToLoan, out ResourceContainer container))
+            {
+                return container.LoanTo(debtor, quantityToLoan, out contractedTransaction);
+            }
+
+            contractedTransaction = null;
+            return 0;
+        }
+
+        public float LoanAllTo(ITransactor debtor, ResourceType resource, out ResourceTransaction contractedTransaction)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                return container.LoanTo(debtor, container.availableQuantity, out contractedTransaction);
+            }
+
+            contractedTransaction = null;
             return 0;
         }
         

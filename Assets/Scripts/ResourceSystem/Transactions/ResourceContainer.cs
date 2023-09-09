@@ -24,8 +24,13 @@ namespace ResourceSystem.Transactions
 
         #region TRANSACTION_PROPERTIES
 
-        public readonly List<ResourceLoan> credits = new();
-        public readonly List<ResourceLoan> debts = new();
+        public readonly List<ResourceTransaction> credits = new();
+        public readonly List<ResourceTransaction> debts = new();
+
+        public readonly List<ResourceTransaction> inputs = new();
+        public readonly List<ResourceTransaction> outputs = new();
+        
+        public float deltaQuantity { get; private set; }
 
         #endregion
 
@@ -97,6 +102,124 @@ namespace ResourceSystem.Transactions
         }
         
         #endregion
+
+        #region TRANSACTION_METHODS
+
+        public void AddOutput(ITransactor target, float quantity)
+        {
+            quantity = Mathf.Abs(quantity);
+            if (TryGetTransaction(target, true, out ResourceTransaction transaction))
+            {
+                transaction.AddQuantity(quantity);
+            }
+            else
+            {
+               transaction = new ResourceTransaction(resource, transactor, target, quantity);   
+            }
+
+            deltaQuantity -= quantity;
+            
+            target.NotifyInputAdding(transaction);
+        }
+
+        public void AddInput(ITransactor origin, float quantity)
+        {
+            quantity = Mathf.Abs(quantity);
+            if (TryGetTransaction(origin, false, out ResourceTransaction transaction))
+            {
+                transaction.AddQuantity(quantity);
+            }
+            else
+            {
+                transaction = new ResourceTransaction(resource, origin, transactor, quantity);   
+            }
+
+            deltaQuantity += quantity;
+            
+            origin.NotifyOutputAdding(transaction);
+        }
+        
+        public void NotifyInputAdding(ResourceTransaction transaction)
+        {
+            if (transaction.target != transactor || transaction.resource != resource) return;
+
+            if (!inputs.Contains(transaction))
+            {
+                inputs.Add(transaction);    
+            }
+
+            deltaQuantity = CalculateTransactionDelta();
+        }
+
+        public void NotifyOutputAdding(ResourceTransaction transaction)
+        {
+            if (transaction.origin != transactor || transaction.resource != resource) return;
+
+            if (!outputs.Contains(transaction))
+            {
+                outputs.Add(transaction);
+            }
+
+            deltaQuantity = CalculateTransactionDelta();
+        }
+
+        public void AskInputs()
+        {
+            foreach (var input in inputs)
+            {
+                NotifyInputReceiving(input);
+                input.origin.NotifyOutputGiving(input);
+            }
+        }
+
+        public void NotifyInputReceiving(ResourceTransaction transaction)
+        {
+            if (inputs.Contains(transaction))
+            {
+                nativeQuantity += Mathf.Clamp(ProjectInputReceiving(transaction), 
+                    0, transaction.origin.ProjectOutputGiving(transaction));
+            }
+        }
+
+        public float ProjectInputReceiving(ResourceTransaction transaction)
+        {
+            if (inputs.Contains(transaction))
+            {
+                return Mathf.Clamp(transaction.quantity, 0, totalMaxQuantity - totalQuantity);
+            }
+
+            return 0;
+        }
+
+        public void GiveOutputs()
+        {
+            foreach (var output in outputs)
+            {
+                NotifyOutputGiving(output);
+                output.target.NotifyInputReceiving(output);
+            }
+        }
+        
+        public void NotifyOutputGiving(ResourceTransaction transaction)
+        {
+            if (outputs.Contains(transaction))
+            {
+                nativeQuantity -= Mathf.Clamp(ProjectOutputGiving(transaction), 
+                    0, transaction.target.ProjectInputReceiving(transaction));
+            }
+        }
+        
+        public float ProjectOutputGiving(ResourceTransaction transaction)
+        {
+            if (outputs.Contains(transaction))
+            {
+                return Mathf.Clamp(transaction.quantity, 0, nativeQuantity);
+            }
+
+            return 0;
+        }
+        
+        #endregion
         
         #region BORROWING_METHODS
         
@@ -106,14 +229,14 @@ namespace ResourceSystem.Transactions
         /// Returns the actual quantity that could have been lent.
         /// </summary>
         /// <returns>Actual quantity that could have been lent</returns>
-        public float LoanTo(ITransactor debtor, float quantityToLoan, out ResourceLoan contractedLoan)
+        public float LoanTo(ITransactor debtor, float quantityToLoan, out ResourceTransaction contractedTransaction)
         {
             quantityToLoan = Mathf.Clamp(quantityToLoan, 0, availableQuantity);
-            contractedLoan = null;
+            contractedTransaction = null;
 
             if (quantityToLoan != 0)
             {
-                contractedLoan = AddCredit(debtor, quantityToLoan);
+                contractedTransaction = AddCredit(debtor, quantityToLoan);
                 lentQuantity += quantityToLoan;
             }
 
@@ -127,7 +250,7 @@ namespace ResourceSystem.Transactions
         /// <returns>Quantity that could have been borrowed.</returns>
         public float BorrowTo(ITransactor creditor, float quantityToBorrow)
         {
-            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow, out ResourceLoan contractedLoan);
+            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow, out ResourceTransaction contractedLoan);
 
             if (quantityToBorrow != 0 && contractedLoan != null)
             {
@@ -147,7 +270,7 @@ namespace ResourceSystem.Transactions
         /// <returns>Quantity that could have been borrowed.</returns>
         public float BorrowAllTo(ITransactor creditor)
         {
-            float quantityToBorrow = creditor.LoanAllTo(transactor, resource, out ResourceLoan contractedLoan);
+            float quantityToBorrow = creditor.LoanAllTo(transactor, resource, out ResourceTransaction contractedLoan);
             
             if (quantityToBorrow != 0 && contractedLoan != null)
             {
@@ -170,12 +293,12 @@ namespace ResourceSystem.Transactions
         /// <returns>Returns quantity that have been refunded.</returns>
         public float Refund(ITransactor creditor, float quantity)
         {
-            if (TryGetLoan(creditor, false, out ResourceLoan loan))
+            if (TryGetLoan(creditor, false, out ResourceTransaction loan))
             {
-                quantity = Mathf.Clamp(quantity, 0, loan.lentQuantity);
+                quantity = Mathf.Clamp(quantity, 0, loan.quantity);
                 
                 creditor.BeRefundedBy(transactor, resource, quantity);
-                if (loan.lentQuantity == 0)
+                if (loan.quantity == 0)
                 {
                     debts.Remove(loan);
                 }
@@ -199,12 +322,12 @@ namespace ResourceSystem.Transactions
         /// <returns>Quantity that could have been refunded.</returns>
         public float BeRefundedBy(ITransactor debtor, float quantity)
         {
-            if (TryGetLoan(debtor, true, out ResourceLoan loan))
+            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
             {
-                quantity = Mathf.Clamp(quantity,0, loan.lentQuantity);
+                quantity = Mathf.Clamp(quantity,0, loan.quantity);
                 
-                loan.AddLentQuantity(-quantity);
-                if (loan.lentQuantity == 0)
+                loan.AddQuantity(-quantity);
+                if (loan.quantity == 0)
                     credits.Remove(loan);
 
                 lentQuantity -= quantity;
@@ -226,7 +349,7 @@ namespace ResourceSystem.Transactions
             
             foreach (var loan in credits.ToArray())
             {
-                remainingQuantity -= loan.debtor.Refund(transactor, resource, remainingQuantity);
+                remainingQuantity -= loan.target.Refund(transactor, resource, remainingQuantity);
                 if (remainingQuantity == 0) break;
             }
 
@@ -246,7 +369,7 @@ namespace ResourceSystem.Transactions
             
             foreach (var loan in debts.ToArray())
             {
-                remainingQuantity -= Refund(loan.creditor, remainingQuantity);
+                remainingQuantity -= Refund(loan.origin, remainingQuantity);
                 if (remainingQuantity == 0) break;
             }
 
@@ -255,13 +378,18 @@ namespace ResourceSystem.Transactions
 
         public void NotifyDebtDevaluation(ITransactor creditor, float devaluation)
         {
-            if (TryGetLoan(creditor, false, out ResourceLoan loan))
+            if (TryGetLoan(creditor, false, out ResourceTransaction loan))
             {
-                devaluation = Mathf.Clamp(devaluation, 0, loan.lentQuantity);
-                devaluation = Mathf.Abs(loan.AddLentQuantity(-devaluation));
+                devaluation = Mathf.Clamp(devaluation, 0, loan.quantity);
+                devaluation = Mathf.Abs(loan.AddQuantity(-devaluation));
                 borrowedQuantity -= devaluation;
-                if (loan.lentQuantity == 0)
+                if (loan.quantity == 0)
                     debts.Remove(loan);
+                
+                if (lentQuantity > totalQuantity)
+                {
+                    DevalueCredits(lentQuantity - totalQuantity);
+                }
             }
         }
         
@@ -270,16 +398,16 @@ namespace ResourceSystem.Transactions
             devaluation = Mathf.Clamp(devaluation, 0, lentQuantity);
             float remainingDevaluation = devaluation;
 
-            List<ResourceLoan> creditsToRemove = new();
+            List<ResourceTransaction> creditsToRemove = new();
 
             foreach (var credit in credits)
             {
-                float creditDevaluation = Mathf.Clamp(remainingDevaluation, 0, credit.lentQuantity);
+                float creditDevaluation = Mathf.Clamp(remainingDevaluation, 0, credit.quantity);
                 remainingDevaluation -= creditDevaluation;
                 
-                credit.debtor.NotifyDebtDevaluation(transactor,resource,creditDevaluation);
+                credit.target.NotifyDebtDevaluation(transactor,resource,creditDevaluation);
                 
-                if(credit.lentQuantity == 0) creditsToRemove.Add(credit);
+                if(credit.quantity == 0) creditsToRemove.Add(credit);
                 if (remainingDevaluation == 0) break;
             }
 
@@ -301,15 +429,15 @@ namespace ResourceSystem.Transactions
         /// Try do add a new loan to debts or credits. If loan already exists, add quantity to it.
         /// </summary>
         /// <returns>the loan add to debts or credits, or the loan that already exists in them</returns>
-        private ResourceLoan AddCredit(ITransactor debtor, float quantity)
+        private ResourceTransaction AddCredit(ITransactor debtor, float quantity)
         {
-            if (TryGetLoan(debtor, true, out ResourceLoan loan))
+            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
             {
-                loan.AddLentQuantity(quantity);
+                loan.AddQuantity(quantity);
             }
             else
             {
-                loan = new ResourceLoan(resource, transactor, debtor, quantity);
+                loan = new ResourceTransaction(resource, transactor, debtor, quantity);
 
                 credits.Add(loan);
             }
@@ -320,25 +448,62 @@ namespace ResourceSystem.Transactions
         /// <summary>
         /// Check if a loan already exists in credits or debts.
         /// </summary>
-        private bool TryGetLoan(ITransactor otherTransactor, bool inCredits, out ResourceLoan loanToGet)
+        private bool TryGetLoan(ITransactor otherTransactor, bool inCredits, out ResourceTransaction transactionToGet)
         {
-            List<ResourceLoan> loans = inCredits ? credits : debts;
+            List<ResourceTransaction> loans = inCredits ? credits : debts;
 
             foreach (var loan in loans)
             {
-                ITransactor loanTransactor = inCredits ? loan.debtor : loan.creditor;
+                ITransactor loanTransactor = inCredits ? loan.target : loan.origin;
 
                 if (loanTransactor == otherTransactor)
                 {
-                    loanToGet = loan;
+                    transactionToGet = loan;
                     return true;
                 }
             }
 
-            loanToGet = null;
+            transactionToGet = null;
             return false;
         }
 
+        private bool TryGetTransaction(ITransactor otherTransactor, bool inOutputs,
+            out ResourceTransaction transactionToGet)
+        {
+            List<ResourceTransaction> transactions = inOutputs ? outputs : inputs;
+
+            foreach (var transaction in transactions)
+            {
+                ITransactor other = inOutputs ? transaction.target : transaction.origin;
+
+                if (other == otherTransactor)
+                {
+                    transactionToGet = transaction;
+                    return true;
+                }
+            }
+
+            transactionToGet = null;
+            return false;
+        }
+
+        private float CalculateTransactionDelta()
+        {
+            float delta = 0;
+            
+            foreach (var input in inputs)
+            {
+                delta += input.quantity;
+            }
+
+            foreach (var output in outputs)
+            {
+                delta -= output.quantity;
+            }
+
+            return delta;
+        }
+        
         #endregion
     }
 }

@@ -16,7 +16,7 @@ namespace ResourceSystem.Transactions.UnitTests
         {
             if (Input.GetKeyUp(KeyCode.A))
             {
-                RunTestGamma();
+                RunTestEta();
             }
         }
 
@@ -116,5 +116,47 @@ namespace ResourceSystem.Transactions.UnitTests
             }
         }
         
+        private void RunTestEta()
+        {
+            ITransactor a = new TransactorTest();
+            ITransactor b = new TransactorTest();
+            ITransactor c = new TransactorTest();
+            ITransactor d = new TransactorTest();
+
+            ResourceType populationResource = ResourceSet.Default.GetResource("resource_population");
+
+            a.AddResource(populationResource, 20);
+            b.AddResource(populationResource, 0);
+            c.AddResource(populationResource, 0);
+            d.AddResource(populationResource, 0);
+            
+            b.BorrowTo(a,populationResource,10);
+            c.BorrowTo(b,populationResource,5);
+            d.BorrowTo(c,populationResource,5);
+
+            print("Test Êta");
+            
+            if (a.TryGetContainer(populationResource, out ResourceContainer containerA))
+            {
+                containerA.SetNativeMaxQuantity(3);
+                print($"<b>ContainerA</b>\nTotalQuantity : 3|{containerA.totalQuantity}\nNativeQuantity : 3|{containerA.nativeQuantity}\nLentQuantity : 3|{containerA.lentQuantity}\n" +
+                      $"BorrowedQuantity : 0|{containerA.borrowedQuantity}\nCredits : 1|{containerA.credits.Count}");
+            }
+            if (b.TryGetContainer(populationResource, out ResourceContainer containerB))
+            {
+                print($"<b>ContainerB</b>\nTotalQuantity : 3|{containerB.totalQuantity}\nNativeQuantity : 0|{containerB.nativeQuantity}\nLentQuantity : 3|{containerB.lentQuantity}\n" +
+                      $"BorrowedQuantity : 3|{containerB.borrowedQuantity}\nDebts : 1|{containerB.debts.Count}");
+            }
+            if (c.TryGetContainer(populationResource, out ResourceContainer containerC))
+            {
+                print($"<b>ContainerC</b>\nTotalQuantity : 3|{containerC.totalQuantity}\nNativeQuantity : 0|{containerC.nativeQuantity}\nLentQuantity : 3|{containerC.lentQuantity}\n" +
+                      $"BorrowedQuantity : 3|{containerC.borrowedQuantity}\nDebts : 1|{containerC.debts.Count}");
+            }
+            if (d.TryGetContainer(populationResource, out ResourceContainer containerD))
+            {
+                print($"<b>ContainerD</b>\nTotalQuantity : 3|{containerD.totalQuantity}\nNativeQuantity : 0|{containerD.nativeQuantity}\nLentQuantity : 0|{containerD.lentQuantity}\n" +
+                      $"BorrowedQuantity : 3|{containerD.borrowedQuantity}\nDebts : 1|{containerD.debts.Count}");
+            }
+        }
     }
 }
