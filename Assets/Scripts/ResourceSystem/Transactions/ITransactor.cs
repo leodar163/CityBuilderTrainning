@@ -6,7 +6,7 @@ namespace ResourceSystem.Transactions
 {
     public interface ITransactor
     {
-        public List<ResourceContainer> registry { get; }
+        protected List<ResourceContainer> registry { get; }
         public ITransactor transactorSelf { get; }
 
         #region DIRECT_RESOURCE_MANAGEMENT
@@ -15,7 +15,7 @@ namespace ResourceSystem.Transactions
         /// Add a container of a certain resource to the transactor.
         /// If a container with this resource exists already, the quantity will be added to it instead of create a new container.
         /// In the same spirit, the max quantity will be the biggest between the one in argument and the one of the already existing container.
-        /// The function returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
+        /// Returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
         /// </summary>
         public float AddResource(ResourceType resource, float quantity, float maxQuantity)
         {
@@ -34,6 +34,11 @@ namespace ResourceSystem.Transactions
             return quantityDelta;
         }
         
+        /// <summary>
+        /// Add a container of a certain resource to the transactor.
+        /// If a container with this resource exists already, the quantity will be added to it instead of create a new container.
+        /// Returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
+        /// </summary>
         public float AddResource(ResourceType resource, float quantity)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
@@ -48,49 +53,83 @@ namespace ResourceSystem.Transactions
             return quantity;
         }
 
+            #region ASSESSORS
+
+            public float GetRemainingCapacity(ResourceType resource)
+            {
+                if (TryGetContainer(resource, out ResourceContainer container))
+                {
+                    return container.remainingCapacity;
+                }
+
+                return -1;
+            }
+
+            public float GetRemainingDeltaCapacity(ResourceType resource)
+            {
+                if (TryGetContainer(resource, out ResourceContainer container))
+                {
+                    return container.remainingDeltaCapacity;
+                }
+
+                return -1;
+            }
+            
+            #endregion
+
         #endregion
 
         #region TRANSACTION_METHODS
 
-        public void AddOutputTransaction(ITransactor target, ResourceType resource, float quantity)
+        /// <summary>
+        /// Set output amount to target at quantity value for this resource.
+        /// Returns quantity that could be set to the transaction. -1 if there is no container of this resource.
+        /// </summary>
+        /// <returns>Quantity that could be set to the transaction. -1 if there is no container of this resource.</returns>
+        public float SetOutputTransaction(ITransactor target, ResourceType resource, float quantity)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.AddOutputTransaction(target, quantity);
+                return container.SetOutputTransaction(target, quantity);
             }
+
+            return -1;
         }
-        
-        public void AddInputTransaction(ITransactor origin, ResourceType resource, float quantity)
+
+        /// <summary>
+        /// Remove transaction of resource from this transactor to target, if exists.
+        /// </summary>
+        public void RemoveOutputTransaction(ITransactor target, ResourceType resource)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.AddInputTransaction(origin, quantity);
+                container.SetOutputTransaction(target, 0);
             }
         }
         
-        public void NotifyInputAdding(ResourceTransaction transaction)
+        /// <summary>
+        /// Set input amount from origin at quantity value for this resource.
+        /// Returns quantity that could be set to the transaction. -1 if there is no container of this resource.
+        /// </summary>
+        /// <returns>Quantity that could be set to the transaction. -1 if there is no container of this resource.</returns>
+        public float SetInputTransaction(ITransactor origin, ResourceType resource, float quantity)
         {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.NotifyInputAdding(transaction);
-            }
-        }
-        
-        public float ProjectInputReceiving(ResourceTransaction transaction)
-        {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
-            {
-                return container.ProjectInputReceiving(transaction);
+                return container.SetInputTransaction(origin, quantity);
             }
 
-            return 0;
+            return -1;
         }
 
-        public void NotifyInputReceiving(ResourceTransaction transaction)
+        /// <summary>
+        /// Remove transaction of resource from origin to this transactor, if exists.
+        /// </summary>
+        public void RemoveInputTransaction(ITransactor origin, ResourceType resource)
         {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
+            if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.NotifyInputReceiving(transaction);
+                container.SetInputTransaction(origin, 0);
             }
         }
         
@@ -110,32 +149,6 @@ namespace ResourceSystem.Transactions
             }
         }
         
-        public void NotifyOutputAdding(ResourceTransaction transaction)
-        {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
-            {
-                container.NotifyOutputAdding(transaction);
-            }
-        }
-
-        public void NotifyOutputGiving(ResourceTransaction transaction)
-        {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
-            {
-                container.NotifyOutputGiving(transaction);
-            }
-        }
-
-        public float ProjectOutputGiving(ResourceTransaction transaction)
-        {
-            if (TryGetContainer(transaction.resource, out ResourceContainer container))
-            {
-                return container.ProjectOutputGiving(transaction);
-            }
-
-            return 0;
-        }
-
         public void GiveOutputs()
         {
             foreach (var container in registry)
@@ -153,28 +166,43 @@ namespace ResourceSystem.Transactions
         }
         
         #endregion
-        
-        public float LoanTo(ITransactor debtor, ResourceType resourceToLoan, float quantityToLoan, out ResourceTransaction contractedTransaction)
+
+        #region LOANING_METHODS
+
+        #region CREDITOR_METHODS
+
+        public float LoanTo(ITransactor debtor, ResourceType resourceToLoan, float quantityToLoan)
         {
             if (TryGetContainer(resourceToLoan, out ResourceContainer container))
             {
-                return container.LoanTo(debtor, quantityToLoan, out contractedTransaction);
+                return container.LoanTo(debtor, quantityToLoan);
             }
 
-            contractedTransaction = null;
             return 0;
         }
 
-        public float LoanAllTo(ITransactor debtor, ResourceType resource, out ResourceTransaction contractedTransaction)
+        public float LoanAllTo(ITransactor debtor, ResourceType resource)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                return container.LoanTo(debtor, container.availableQuantity, out contractedTransaction);
+                return container.LoanTo(debtor, container.availableQuantity);
             }
-
-            contractedTransaction = null;
+            
             return 0;
         }
+
+        public void RemoveLoan(ResourceType resource, ITransactor debtor)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.RemoveLoan(debtor);
+            }
+        }
+        
+        #endregion
+        
+        
+        #region DEBTOR_METHODS
         
         public void BorrowTo(ITransactor creditor, ResourceType resourceToBorrow, float quantityToBorrow)
         {
@@ -196,6 +224,19 @@ namespace ResourceSystem.Transactions
             }
         }
 
+        public void RemoveBorrow(ResourceType resource, ITransactor creditor)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.RemoveBorrow(creditor);
+            }
+        }
+        
+        #endregion
+        
+
+        #region REFUND_METHODS
+
         public float Refund(ITransactor creditor, ResourceType resource, float quantityRefunded)
         {
             if (TryGetContainer(resource, out ResourceContainer container))
@@ -216,21 +257,10 @@ namespace ResourceSystem.Transactions
             return 0;
         }
 
-        public void BeRefundedBy(ITransactor debtor, ResourceType resource, float quantityRefunded)
-        {
-            if (TryGetContainer(resource, out ResourceContainer container))
-            {
-                container.BeRefundedBy(debtor, quantityRefunded);
-            }
-        }
+        #endregion
+
+        #endregion
         
-        public void NotifyDebtDevaluation(ITransactor creditor, ResourceType resource, float devaluation)
-        {
-            if (TryGetContainer(resource, out ResourceContainer container))
-            {
-                container.NotifyDebtDevaluation(creditor, devaluation);
-            }
-        }
 
         #region REGISTRY_ASSESSION
 

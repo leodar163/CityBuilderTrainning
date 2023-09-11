@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Format;
+using UnityEngine;
 
 namespace ResourceSystem.Transactions.UnitTests
 {
@@ -8,7 +9,13 @@ namespace ResourceSystem.Transactions.UnitTests
         {
             if (Input.GetKeyUp(KeyCode.A))
             {
-                RunTestEta();
+                //RunTestAlpha();
+                //RunTestBeta();
+                //RunTestGamma();
+                //RunTestEpsilon();
+                //RunTestZeta();
+                //RunTestEta();
+                RunTestTheta();
             }
         }
 
@@ -160,7 +167,7 @@ namespace ResourceSystem.Transactions.UnitTests
 
             a.AddResource(woodResource, 20);
             b.AddResource(woodResource, 0);
-            a.AddOutputTransaction(b, woodResource, 1);
+            a.SetOutputTransaction(b, woodResource, 1);
             
             b.AskInputs();
             b.AskInputs();
@@ -192,7 +199,7 @@ namespace ResourceSystem.Transactions.UnitTests
             b.AddResource(woodResource, 0);
             
             b.BorrowTo(a, woodResource, 10);
-            b.AddInputTransaction(a, woodResource, 11);
+            b.SetInputTransaction(a, woodResource, 11);
             
             b.AskInputs(woodResource);
             
@@ -209,6 +216,35 @@ namespace ResourceSystem.Transactions.UnitTests
                            $"\nborrowed : 9|{containerB.borrowedQuantity}\ndebts : 1|{containerB.debts.Count}\ninputs : 1|{containerB.inputs.Count}";
             }
             
+            print(message);
+        }
+
+        private void RunTestTheta()
+        {
+            ITransactor a = new TransactorTest();
+            ITransactor b = new TransactorTest();
+            
+            ResourceType woodResource = ResourceSet.Default.GetResource("resource_wood");
+
+            string message = "<b>Test Theta</b>\n\n";
+            
+            a.AddResource(woodResource, 5, 10);
+            b.AddResource(woodResource, 10,10);
+
+            b.SetOutputTransaction(a, woodResource,3);
+
+            if (a.TryGetContainer(woodResource, out ResourceContainer containerA))
+            {
+                message += $"<b>ContainerA</b>\nTime 1 : Remaining Delta capacity : 2|{containerA.remainingDeltaCapacity}";
+                b.LoanTo(a, woodResource, 3);
+                message += $"\nTime 2 : Remaining Delta capacity : 0|{containerA.remainingDeltaCapacity}";
+            }
+
+            if (b.TryGetContainer(woodResource, out ResourceContainer containerB))
+            {
+                message += $"\n===========\n<b>ContainerB</b>\ntransaction to A : 2|{containerB.outputs[0].quantity}";
+            }
+
             print(message);
         }
     }

@@ -22,13 +22,27 @@ namespace ResourceSystem.Transactions
 
         #endregion
         
+        /// <summary>
+        /// Add quantityToAdd to quantity.
+        /// Returns quantity that could be added.
+        /// </summary>
+        /// <returns>Quantity that could be added.</returns>
         public float AddQuantity(float quantityToAdd)
         {
             quantityToAdd = Mathf.Clamp(quantityToAdd, -quantity, quantityToAdd);
+            
             quantity += quantityToAdd;
 
             return quantityToAdd;
-            //notify debtor that quantity has changed ?
+        }
+
+        public float SetQuantity(float quantityToSet)
+        {
+            quantityToSet = Mathf.Abs(quantityToSet);
+
+            quantity = quantityToSet;
+
+            return quantity;
         }
     }
 }

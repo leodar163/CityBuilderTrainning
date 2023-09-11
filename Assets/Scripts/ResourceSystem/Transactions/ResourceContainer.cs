@@ -10,14 +10,20 @@ namespace ResourceSystem.Transactions
         
         #region QUANTITY_PROPERTIES
 
-        public float nativeQuantity { get; private set; }
-        public float borrowedQuantity { get; private set; }
-        public float lentQuantity { get; private set; }
-        public float totalQuantity => nativeQuantity + borrowedQuantity;
-        public float availableQuantity => totalQuantity - lentQuantity;
-        public float borrowedMaxQuantity { get; private set; }
-        public float nativeMaxQuantity { get; private set; }
-        public float totalMaxQuantity => borrowedMaxQuantity + nativeMaxQuantity;
+        private float _nativeQuantity;
+        private float _borrowedQuantity;
+        private float _lentQuantity;
+        private float _nativeMaxQuantity;
+        private float _borrowedMaxQuantity;
+
+        public float nativeQuantity => _nativeQuantity;
+        public float borrowedQuantity => _borrowedQuantity;
+        public float lentQuantity => _lentQuantity;
+        public float totalQuantity => _nativeQuantity + _borrowedQuantity;
+        public float availableQuantity => totalQuantity - _lentQuantity;
+        public float nativeMaxQuantity => _nativeMaxQuantity;
+        public float borrowedMaxQuantity => _borrowedMaxQuantity;
+        public float totalMaxQuantity => _borrowedMaxQuantity + _nativeMaxQuantity;
         public float remainingCapacity => totalMaxQuantity - totalQuantity;
 
         #endregion
@@ -29,8 +35,10 @@ namespace ResourceSystem.Transactions
 
         public readonly List<ResourceTransaction> inputs = new();
         public readonly List<ResourceTransaction> outputs = new();
-        
-        public float deltaQuantity { get; private set; }
+
+        private float _deltaQuantity;
+        public float deltaQuantity => _deltaQuantity;
+        public float remainingDeltaCapacity => remainingCapacity - _deltaQuantity;
 
         #endregion
 
@@ -40,8 +48,8 @@ namespace ResourceSystem.Transactions
         {
             transactor = owner;
             resource = resourceType;
-            nativeQuantity = quantity;
-            nativeMaxQuantity = maxQuantity;
+            _nativeQuantity = quantity;
+            _nativeMaxQuantity = maxQuantity;
         }
 
         #endregion
@@ -49,16 +57,16 @@ namespace ResourceSystem.Transactions
         #region DIRECT_QUANTITY_MANAGEMENT_METHODS
 
         /// <summary>
-        /// Add quantity to native quantity. Native quantity has priority over borrowed quantity,
+        /// Set native quantity. Native quantity has priority over borrowed quantity,
         /// which means that if adding native quantity exceeds max quantity, container will refund its debts.
-        /// Returns the quantity that could have been added.
+        /// Returns the quantity that could have been set.
         /// </summary>
-        /// <returns>Quantity that could have been added.</returns>
-        public float AddNativeQuantity(float quantity)
+        /// <returns>Quantity that could have been set.</returns>
+        public float SetNativeQuantity(float quantity)
         {
-            quantity = Mathf.Clamp(quantity, -nativeQuantity, totalMaxQuantity + remainingCapacity - nativeQuantity);
+            quantity = Mathf.Clamp(quantity, 0, totalMaxQuantity);
 
-            nativeQuantity += quantity;
+            _nativeQuantity = quantity;
             
             float overQuantity = totalQuantity - totalMaxQuantity; 
             
@@ -71,13 +79,30 @@ namespace ResourceSystem.Transactions
             {
                 DevalueCredits(lentQuantity - totalQuantity);
             }
+
+            RemoveInputsInExcess();
             
+            return quantity;
+        }
+
+        /// <summary>
+        /// Add quantity to native quantity. Native quantity has priority over borrowed quantity,
+        /// which means that if adding native quantity exceeds max quantity, container will refund its debts.
+        /// Returns the quantity that could have been added.
+        /// </summary>
+        /// <returns>Quantity that could have been added.</returns>
+        public float AddNativeQuantity(float quantity)
+        {
+            quantity = Mathf.Clamp(quantity, -nativeQuantity, totalQuantity + remainingCapacity - nativeQuantity);
+
+            SetNativeQuantity(nativeQuantity + quantity);
+
             return quantity;
         }
         
         public void SetNativeMaxQuantity(float newMaxQuantity)
         {
-            nativeMaxQuantity = Mathf.Abs(newMaxQuantity);
+            _nativeMaxQuantity = Mathf.Abs(newMaxQuantity);
             if (newMaxQuantity == float.PositiveInfinity) return;
             
             //The new max quantity could be lesser that the old one and total quantity might be higher than max quantity.
@@ -92,7 +117,7 @@ namespace ResourceSystem.Transactions
 
             if (overQuantity > 0)
             {
-                nativeQuantity -= overQuantity;
+                _nativeQuantity -= overQuantity;
             }
 
             if (lentQuantity > totalQuantity)
@@ -105,167 +130,220 @@ namespace ResourceSystem.Transactions
 
         #region TRANSACTION_METHODS
 
-        public void AddOutputTransaction(ITransactor target, float quantity)
-        {
-            quantity = Mathf.Abs(quantity);
-            if (TryGetTransaction(target, true, out ResourceTransaction transaction))
+            #region OUTPUT_METHODS
+
+            /// <summary>
+            /// Set output amount to target at quantity value.
+            /// If there's not yet any transaction to target, creates such transaction.
+            /// Returns quantity that could be set to the transaction.
+            /// </summary>
+            /// <returns>Quantity that could be set to the transaction.</returns>
+            public float SetOutputTransaction(ITransactor target, float quantity)
             {
-                transaction.AddQuantity(quantity);
-            }
-            else
-            {
-               transaction = new ResourceTransaction(resource, transactor, target, quantity);   
-               outputs.Add(transaction);
-            }
+                quantity = Mathf.Clamp(Mathf.Abs(quantity), 0, nativeQuantity);
+                quantity = Mathf.Clamp(quantity, 0, target.GetRemainingCapacity(resource));
 
-            deltaQuantity -= quantity;
-            
-            target.NotifyInputAdding(transaction);
-        }
-
-        public void AddInputTransaction(ITransactor origin, float quantity)
-        {
-            quantity = Mathf.Abs(quantity);
-            if (TryGetTransaction(origin, false, out ResourceTransaction transaction))
-            {
-                transaction.AddQuantity(quantity);
-            }
-            else
-            {
-                transaction = new ResourceTransaction(resource, origin, transactor, quantity);   
-                inputs.Add(transaction);
-            }
-
-            deltaQuantity += quantity;
-            
-            origin.NotifyOutputAdding(transaction);
-        }
-        
-        public void NotifyInputAdding(ResourceTransaction transaction)
-        {
-            if (transaction.target != transactor || transaction.resource != resource) return;
-
-            if (!inputs.Contains(transaction))
-            {
-                inputs.Add(transaction);    
-            }
-
-            deltaQuantity = CalculateTransactionDelta();
-        }
-
-        public void NotifyOutputAdding(ResourceTransaction transaction)
-        {
-            if (transaction.origin != transactor || transaction.resource != resource) return;
-
-            if (!outputs.Contains(transaction))
-            {
-                outputs.Add(transaction);
-            }
-
-            deltaQuantity = CalculateTransactionDelta();
-        }
-
-        public void AskInputs()
-        {
-            foreach (var input in inputs)
-            {
-                NotifyInputReceiving(input);
-                input.origin.NotifyOutputGiving(input);
-            }
-        }
-
-        public void NotifyInputReceiving(ResourceTransaction transaction)
-        {
-            if (inputs.Contains(transaction))
-            {
-                nativeQuantity += Mathf.Clamp(ProjectInputReceiving(transaction), 
-                    0, transaction.origin.ProjectOutputGiving(transaction));
-            }
-        }
-
-        public float ProjectInputReceiving(ResourceTransaction transaction)
-        {
-            if (inputs.Contains(transaction))
-            {
-                return Mathf.Clamp(transaction.quantity, 0, totalMaxQuantity - totalQuantity);
-            }
-
-            return 0;
-        }
-
-        public void GiveOutputs()
-        {
-            foreach (var output in outputs)
-            {
-                NotifyOutputGiving(output);
-                output.target.NotifyInputReceiving(output);
-            }
-        }
-        
-        public void NotifyOutputGiving(ResourceTransaction transaction)
-        {
-            if (outputs.Contains(transaction))
-            {
-                nativeQuantity -= Mathf.Clamp(ProjectOutputGiving(transaction), 
-                    0, transaction.target.ProjectInputReceiving(transaction));
-
-                if (totalQuantity < lentQuantity)
+                if (TryGetTransaction(target, true, out ResourceTransaction transaction))
                 {
-                    AskForRefund(lentQuantity - totalQuantity);
+                    _deltaQuantity += transaction.quantity;
+                    
+                    if (quantity == 0)
+                    {
+                        outputs.Remove(transaction);
+                    }
+                    else
+                    {
+                        transaction.SetQuantity(quantity);   
+                    }
+                }
+                else if (quantity != 0)
+                {
+                    transaction = new ResourceTransaction(resource, transactor, target, quantity);   
+                    outputs.Add(transaction);
+                }
+
+                _deltaQuantity -= quantity;
+
+                if (target.TryGetContainer(resource, out ResourceContainer container))
+                {
+                    container.NotifyInputChange(transaction);
+                }
+
+                return quantity;
+            }
+            
+            public void GiveOutputs()
+            {
+                foreach (var output in outputs.ToArray())
+                {
+                    GiveOutput(output);
                 }
             }
-        }
-        
-        public float ProjectOutputGiving(ResourceTransaction transaction)
-        {
-            if (outputs.Contains(transaction))
+
+            private void NotifyOutputChange(ResourceTransaction output)
             {
-                return Mathf.Clamp(transaction.quantity, 0, nativeQuantity);
+                if (output.resource != resource || output.origin != transactor) return;
+
+                if (!outputs.Contains(output))
+                {
+                    outputs.Add(output);
+                }
+                
+                if (output.quantity == 0)
+                {
+                    outputs.Remove(output);
+                }
+                
+                _deltaQuantity = CalculateTransactionDelta();
             }
 
-            return 0;
-        }
+            private void GiveOutput(ResourceTransaction output)
+            {
+                if (output.origin == transactor && outputs.Contains(output))
+                {
+                    RemoveOutputInExcess(output);
+
+                    if (output.quantity <= 0)
+                    {
+                        outputs.Remove(output);
+                        return;
+                    }
+                    
+                    _nativeQuantity -= Mathf.Clamp(output.quantity, 0, _nativeQuantity);
+
+                    if (output.target.TryGetContainer(resource, out ResourceContainer target))
+                    {
+                        target.NotifyInputReceiving(output);
+                    }
+
+                    if (totalQuantity < lentQuantity)
+                    {
+                        AskForRefund(lentQuantity - totalQuantity);
+                    }
+                }
+            }
+            
+            #endregion
+
+            #region INPUT_METHODS
+
+            /// <summary>
+            /// Set input amount from origin at quantity value.
+            /// If there's not yet any transaction from origin, creates such transaction.
+            /// Returns quantity that could be set to the transaction.
+            /// </summary>
+            /// <returns>Quantity that could be set to the transaction.</returns>
+            public float SetInputTransaction(ITransactor origin, float quantity)
+            {
+                return origin.SetOutputTransaction(transactor, resource, quantity);
+            }
         
+            private void NotifyInputChange(ResourceTransaction transaction)
+            {
+                if (transaction.target != transactor || transaction.resource != resource) return;
+
+                if (!inputs.Contains(transaction))
+                {
+                    inputs.Add(transaction);    
+                }
+
+                if (transaction.quantity <= 0)
+                {
+                    inputs.Remove(transaction);
+                }
+
+                _deltaQuantity = CalculateTransactionDelta();
+            }
+
+            public void AskInputs()
+            {
+                foreach (var input in inputs)
+                {
+                    if (input.origin.TryGetContainer(resource, out ResourceContainer container))
+                    {
+                        container.GiveOutput(input);
+                    }
+                }
+            }
+
+            private void NotifyInputReceiving(ResourceTransaction transaction)
+            {
+                if (inputs.Contains(transaction))
+                {
+                    _nativeQuantity += Mathf.Clamp(transaction.quantity, 0, remainingCapacity);
+                }
+            }
+
+            #endregion
+
         #endregion
         
-        #region BORROWING_METHODS
-        
+        #region LAONING_METHODS
+
+            #region CREDITOR_METHODS
+
         /// <summary>
         /// Loans a certain quantity of resource to a debtor.
-        /// Contracted Loan is ether a new loan, ether the one that already exists with this same debtor.
+        /// If a loan already exists, it replaces it. 
         /// Returns the actual quantity that could have been lent.
         /// </summary>
-        /// <returns>Actual quantity that could have been lent</returns>
-        public float LoanTo(ITransactor debtor, float quantityToLoan, out ResourceTransaction contractedTransaction)
+        /// <returns>Actual quantity that could be lent</returns>
+        public float LoanTo(ITransactor debtor, float quantityToLoan)
         {
-            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, availableQuantity);
-            contractedTransaction = null;
-
-            if (quantityToLoan != 0)
+            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
             {
-                contractedTransaction = AddCredit(debtor, quantityToLoan);
-                lentQuantity += quantityToLoan;
+                _lentQuantity -= loan.quantity;
+
+                if (quantityToLoan == 0)
+                {
+                    //to do: remove loan
+                    return 0;
+                }
+            }
+            else
+            {
+                loan = new ResourceTransaction(resource, transactor, debtor, 0);
+
+                credits.Add(loan);
+            }
+
+            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, availableQuantity);
+            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, debtor.GetRemainingCapacity(resource));
+            loan.SetQuantity(quantityToLoan);
+
+            _lentQuantity += quantityToLoan;
+
+            if (debtor.TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.NotifyBorrowing(loan);
             }
 
             return quantityToLoan;
         }
 
+        public void RemoveLoan(ITransactor debtor)
+        {
+            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
+            {
+                credits.Remove(loan);
+                _lentQuantity -= loan.quantity;
+                debtor.RemoveBorrow(resource, transactor);
+            }
+        }
+            #endregion
+
+            #region DEBTOR_METHODS
+
         /// <summary>
         /// Borrow an amount of resource to a creditor which cannot be the same as this container's.
         /// Returns the quantity that could have been borrowed.
         /// </summary>
-        /// <returns>Quantity that could have been borrowed.</returns>
+        /// <returns>Quantity that could be borrowed.</returns>
         public float BorrowTo(ITransactor creditor, float quantityToBorrow)
         {
-            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow, out ResourceTransaction contractedLoan);
+            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow);
 
-            if (quantityToBorrow != 0 && contractedLoan != null)
-            {
-                borrowedQuantity += quantityToBorrow;
-                
-                if(!debts.Contains(contractedLoan))
-                    debts.Add(contractedLoan);
-            }
+            RemoveInputsInExcess();
             
             return quantityToBorrow;
         }
@@ -274,21 +352,46 @@ namespace ResourceSystem.Transactions
         /// Borrow all the available quantity of resource a transactor.
         /// Returns the quantity that could have been borrowed.
         /// </summary>
-        /// <returns>Quantity that could have been borrowed.</returns>
+        /// <returns>Quantity that could be borrowed.</returns>
         public float BorrowAllTo(ITransactor creditor)
         {
-            float quantityToBorrow = creditor.LoanAllTo(transactor, resource, out ResourceTransaction contractedLoan);
-            
-            if (quantityToBorrow != 0 && contractedLoan != null)
-            {
-                borrowedQuantity += quantityToBorrow;
-                
-                if(!debts.Contains(contractedLoan))
-                    debts.Add(contractedLoan);
-            }
+            float quantityToBorrow = creditor.LoanAllTo(transactor, resource);
+
+            RemoveInputsInExcess();
             
             return quantityToBorrow;
         }
+
+        private void NotifyBorrowing(ResourceTransaction transaction)
+        {
+            if (transaction.resource != resource || transaction.target != transactor) return;
+
+            if (debts.Contains(transaction))
+            {
+                if (transaction.quantity == 0) debts.Remove(transaction);
+                CalculateBorrowedQuantity(out _borrowedQuantity);
+            }
+            else if (transaction.quantity != 0)
+            {
+                debts.Add(transaction);
+                _borrowedQuantity += transaction.quantity;
+            }
+            
+            RemoveInputsInExcess();
+        }
+
+        public void RemoveBorrow(ITransactor creditor)
+        {
+            if (TryGetLoan(creditor, false, out ResourceTransaction debt))
+            {
+                credits.Remove(debt);
+                _borrowedQuantity -= debt.quantity;
+                creditor.RemoveLoan(resource, transactor);
+            }
+        }
+
+            #endregion
+
         #endregion
 
         #region REFUNDING_METHODS
@@ -303,14 +406,18 @@ namespace ResourceSystem.Transactions
             if (TryGetLoan(creditor, false, out ResourceTransaction loan))
             {
                 quantity = Mathf.Clamp(quantity, 0, loan.quantity);
+
+                if (creditor.TryGetContainer(resource, out ResourceContainer container))
+                {
+                    container.BeRefundedBy(transactor, quantity);
+                }
                 
-                creditor.BeRefundedBy(transactor, resource, quantity);
                 if (loan.quantity == 0)
                 {
                     debts.Remove(loan);
                 }
 
-                borrowedQuantity -= quantity;
+                _borrowedQuantity -= quantity;
 
                 if (availableQuantity < 0)
                 {
@@ -327,7 +434,7 @@ namespace ResourceSystem.Transactions
         /// Else, returns the quantity that could have been refunded.
         /// </summary>
         /// <returns>Quantity that could have been refunded.</returns>
-        public float BeRefundedBy(ITransactor debtor, float quantity)
+        private float BeRefundedBy(ITransactor debtor, float quantity)
         {
             if (TryGetLoan(debtor, true, out ResourceTransaction loan))
             {
@@ -337,7 +444,7 @@ namespace ResourceSystem.Transactions
                 if (loan.quantity == 0)
                     credits.Remove(loan);
 
-                lentQuantity -= quantity;
+                _lentQuantity -= quantity;
                 return quantity;
             }
 
@@ -383,13 +490,13 @@ namespace ResourceSystem.Transactions
             return quantityToRefund - remainingQuantity;
         }
 
-        public void NotifyDebtDevaluation(ITransactor creditor, float devaluation)
+        private void NotifyDebtDevaluation(ITransactor creditor, float devaluation)
         {
             if (TryGetLoan(creditor, false, out ResourceTransaction loan))
             {
                 devaluation = Mathf.Clamp(devaluation, 0, loan.quantity);
                 devaluation = Mathf.Abs(loan.AddQuantity(-devaluation));
-                borrowedQuantity -= devaluation;
+                _borrowedQuantity -= devaluation;
                 if (loan.quantity == 0)
                     debts.Remove(loan);
                 
@@ -405,25 +512,21 @@ namespace ResourceSystem.Transactions
             devaluation = Mathf.Clamp(devaluation, 0, lentQuantity);
             float remainingDevaluation = devaluation;
 
-            List<ResourceTransaction> creditsToRemove = new();
-
-            foreach (var credit in credits)
+            foreach (var credit in credits.ToArray())
             {
                 float creditDevaluation = Mathf.Clamp(remainingDevaluation, 0, credit.quantity);
                 remainingDevaluation -= creditDevaluation;
-                
-                credit.target.NotifyDebtDevaluation(transactor,resource,creditDevaluation);
-                
-                if(credit.quantity == 0) creditsToRemove.Add(credit);
+
+                if (credit.target.TryGetContainer(resource, out ResourceContainer container))
+                {
+                    container.NotifyDebtDevaluation(transactor, creditDevaluation);
+                }
+
+                if(credit.quantity == 0) credits.Remove(credit);
                 if (remainingDevaluation == 0) break;
             }
 
-            foreach (var credit in creditsToRemove)
-            {
-                credits.Remove(credit);
-            }
-            
-            lentQuantity -= devaluation - remainingDevaluation;
+            _lentQuantity -= devaluation - remainingDevaluation;
             
             return devaluation - remainingDevaluation;
         }
@@ -432,26 +535,6 @@ namespace ResourceSystem.Transactions
         
         #region REGISTRY MANAGEMENT
 
-        /// <summary>
-        /// Try do add a new loan to debts or credits. If loan already exists, add quantity to it.
-        /// </summary>
-        /// <returns>the loan add to debts or credits, or the loan that already exists in them</returns>
-        private ResourceTransaction AddCredit(ITransactor debtor, float quantity)
-        {
-            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
-            {
-                loan.AddQuantity(quantity);
-            }
-            else
-            {
-                loan = new ResourceTransaction(resource, transactor, debtor, quantity);
-
-                credits.Add(loan);
-            }
-
-            return loan;
-        }
-        
         /// <summary>
         /// Check if a loan already exists in credits or debts.
         /// </summary>
@@ -494,6 +577,25 @@ namespace ResourceSystem.Transactions
             return false;
         }
 
+        private void CalculateLentQuantity(out float quantity)
+        {
+            quantity = 0;
+
+            foreach (var credit in credits)
+            {
+                quantity += credit.quantity;
+            }
+        }
+        
+        private void CalculateBorrowedQuantity(out float quantity)
+        {
+            quantity = 0;
+            foreach (var debt in debts)
+            {
+                quantity += debt.quantity;
+            }
+        }
+        
         private float CalculateTransactionDelta()
         {
             float delta = 0;
@@ -509,6 +611,44 @@ namespace ResourceSystem.Transactions
             }
 
             return delta;
+        }
+
+        private void RemoveInputsInExcess()
+        {
+            float transactionDevaluation = remainingDeltaCapacity;
+            
+            if (transactionDevaluation < 0)
+            {
+                foreach (var input in inputs)
+                {
+                    transactionDevaluation += input.AddQuantity(transactionDevaluation);
+
+                    if (input.origin.TryGetContainer(resource, out ResourceContainer container))
+                    {
+                        container.NotifyOutputChange(input);
+                    }
+                    
+                    if (transactionDevaluation == 0) break;
+                }
+            }
+
+            _deltaQuantity = CalculateTransactionDelta();
+        }
+        
+        private void RemoveOutputInExcess(ResourceTransaction output)
+        {
+            float transactionDevaluation = output.target.GetRemainingDeltaCapacity(resource);
+                    
+            if (transactionDevaluation < 0)
+            {
+                output.AddQuantity(transactionDevaluation);
+                _deltaQuantity += -transactionDevaluation;
+
+                if (output.target.TryGetContainer(resource, out ResourceContainer target))
+                {
+                    target.NotifyInputChange(output);
+                }
+            }
         }
         
         #endregion

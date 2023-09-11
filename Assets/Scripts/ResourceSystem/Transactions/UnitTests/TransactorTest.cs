@@ -4,7 +4,8 @@ namespace ResourceSystem.Transactions.UnitTests
 {
     public class TransactorTest : ITransactor
     {
-        public List<ResourceContainer> registry { get; } = new();
+        List<ResourceContainer> ITransactor.registry { get; } = new();
+
         public ITransactor transactorSelf => this;
     }
 }
