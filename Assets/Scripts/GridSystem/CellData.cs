@@ -1,14 +1,15 @@
-﻿using BuildingSystem;
+﻿using System.Collections.Generic;
+using BuildingSystem;
 using OptiCollections;
 using PathFinding;
 using ResourceSystem;
+using ResourceSystem.Transactions;
 using TerrainSystem;
-using ToolTipSystem;
 using UnityEngine;
 
 namespace GridSystem
 {
-    public class CellData : IHeapComparable<CellData>
+    public class CellData : IHeapComparable<CellData>, ITransactor
     {
         public PlaceableObject placedObject { get; private set; }
         public bool isBlocked => placedObject != null && placedObject.isPlaced;
@@ -19,6 +20,9 @@ namespace GridSystem
         public readonly PathNode pathNode = new ();
         public TerrainType terrain { get; private set; }
 
+        List<ResourceContainer> ITransactor.registry { get; } = new();
+        public ITransactor transactorSelf => this;
+        
         public CellData(Vector3Int cellCoordinates)
         {
             this.cellCoordinates = cellCoordinates;
@@ -76,9 +80,11 @@ namespace GridSystem
             terrain = terrainType;
             terrain.transform.position = position;
 
-            resourceDeck = terrain.deckTemplate == null 
-                ? ScriptableResourceDeck.Default.GetResourceDeckCopy() 
-                : terrain.deckTemplate.GetResourceDeckCopy();
+            transactorSelf.RemoveContainersAll();
+            
+            transactorSelf.InitContainers(terrain.deckTemplate == null 
+                ? ScriptableResourceDeck.Default 
+                : terrain.deckTemplate);
         }
 
         public void DetachTerrain()

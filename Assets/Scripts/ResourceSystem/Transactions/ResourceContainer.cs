@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ResourceSystem.Transactions
 {
+    [Serializable]
     public class ResourceContainer
     {
-        public ResourceType resource { get; private set; }
+        [SerializeField] private ResourceType _resource;
+        public ResourceType resource => _resource;
         public ITransactor transactor { get; private set; }
         
         #region QUANTITY_PROPERTIES
 
-        private float _nativeQuantity;
+        [SerializeField] private float _nativeQuantity;
         private float _borrowedQuantity;
         private float _lentQuantity;
-        private float _nativeMaxQuantity;
-        private float _borrowedMaxQuantity;
+        [SerializeField] private float _nativeMaxQuantity = float.PositiveInfinity;
+        private float _borrowedMaxQuantity = 0;
 
         public float nativeQuantity => _nativeQuantity;
         public float borrowedQuantity => _borrowedQuantity;
@@ -46,12 +49,23 @@ namespace ResourceSystem.Transactions
 
         public ResourceContainer(ITransactor owner, ResourceType resourceType, float quantity = 0, float maxQuantity = Mathf.Infinity)
         {
+            maxQuantity = Mathf.Abs(maxQuantity);
+            quantity = Mathf.Clamp(Mathf.Abs(quantity), 0, maxQuantity);
+            
             transactor = owner;
-            resource = resourceType;
+            _resource = resourceType;
             _nativeQuantity = quantity;
             _nativeMaxQuantity = maxQuantity;
         }
 
+        public ResourceContainer(ITransactor owner, ResourceContainer template)
+        {
+            transactor = owner;
+            _resource = template.resource;
+            _nativeQuantity = template._nativeQuantity;
+            _nativeMaxQuantity = template._nativeMaxQuantity;
+        }
+        
         #endregion
 
         #region DIRECT_QUANTITY_MANAGEMENT_METHODS
@@ -182,7 +196,7 @@ namespace ResourceSystem.Transactions
 
             private void NotifyOutputChange(ResourceTransaction output)
             {
-                if (output.resource != resource || output.origin != transactor) return;
+                if (output == null || output.resource != resource || output.origin != transactor) return;
 
                 if (!outputs.Contains(output))
                 {
@@ -240,7 +254,7 @@ namespace ResourceSystem.Transactions
         
             private void NotifyInputChange(ResourceTransaction transaction)
             {
-                if (transaction.target != transactor || transaction.resource != resource) return;
+                if (transaction == null || transaction.target != transactor || transaction.resource != resource) return;
 
                 if (!inputs.Contains(transaction))
                 {

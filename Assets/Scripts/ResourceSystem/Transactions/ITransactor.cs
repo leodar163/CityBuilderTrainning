@@ -15,29 +15,30 @@ namespace ResourceSystem.Transactions
         /// Add a container of a certain resource to the transactor.
         /// If a container with this resource exists already, the quantity will be added to it instead of create a new container.
         /// In the same spirit, the max quantity will be the biggest between the one in argument and the one of the already existing container.
-        /// Returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
+        /// <returns>Returns the quantity that could be added to the container.
+        /// or the delta between argument max quantity and argument quantity if quantity is higher than max quantity </returns>
         /// </summary>
         public float AddResource(ResourceType resource, float quantity, float maxQuantity)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
-                
+
             if (TryGetContainer(resource, out ResourceContainer container))
             {
                 container.SetNativeMaxQuantity(maxQuantity);
                 return container.AddNativeQuantity(quantity);
             }
-
-            float quantityDelta = Mathf.Clamp(quantity - maxQuantity, 0, maxQuantity);
             
-            registry.Add(new ResourceContainer(this, resource, quantity - quantityDelta, maxQuantity));
+            quantity = Mathf.Clamp(Mathf.Abs(quantity), quantity, Mathf.Abs(maxQuantity));
+            
+            registry.Add(new ResourceContainer(this, resource, quantity, maxQuantity));
 
-            return quantityDelta;
+            return quantity;
         }
         
         /// <summary>
         /// Add a container of a certain resource to the transactor.
         /// If a container with this resource exists already, the quantity will be added to it instead of create a new container.
-        /// Returns the quantity that couldn't have been added to the potentially existing container, or the delta between argument max quantity and argument quantity if quantity is higher than max quantity 
+        /// <returns>Returns the quantity that could be added to the container.</returns>
         /// </summary>
         public float AddResource(ResourceType resource, float quantity)
         {
@@ -53,8 +54,59 @@ namespace ResourceSystem.Transactions
             return quantity;
         }
 
-            #region ASSESSORS
+        public float SetResource(ResourceType resource, float quantity, float maxQuantity)
+        {
+            if (resource == null) throw new ArgumentNullException(nameof(resource));
 
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.SetNativeMaxQuantity(maxQuantity);
+                return container.SetNativeQuantity(quantity);
+            }
+            
+            float quantityDelta = Mathf.Clamp(quantity - maxQuantity, 0, maxQuantity);
+            
+            registry.Add(new ResourceContainer(this, resource, quantity - quantityDelta, maxQuantity));
+
+            return quantity;
+        }
+        
+        public float SetResource(ResourceType resource, float quantity)
+        {
+            if (resource == null) throw new ArgumentNullException(nameof(resource));
+
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                return container.SetNativeQuantity(quantity);
+            }
+            
+            registry.Add(new ResourceContainer(this, resource, quantity));
+
+            return quantity;
+        }
+
+        #region ASSESSORS
+
+            public float GetAvailableQuantity(ResourceType resource)
+            {
+                if (TryGetContainer(resource, out ResourceContainer container))
+                {
+                    return container.availableQuantity;
+                }
+
+                return -1;
+            }
+
+            public float GetTotalQuantity(ResourceType resource)
+            {
+                if (TryGetContainer(resource, out ResourceContainer container))
+                {
+                    return container.totalQuantity;
+                }
+
+                return -1;
+            }
+            
             public float GetRemainingCapacity(ResourceType resource)
             {
                 if (TryGetContainer(resource, out ResourceContainer container))
@@ -106,6 +158,17 @@ namespace ResourceSystem.Transactions
                 container.SetOutputTransaction(target, 0);
             }
         }
+
+        public void RemoveOutputsAll()
+        {
+            foreach (var container in registry)
+            {
+                foreach (var output in container.outputs.ToArray())
+                {
+                    container.SetOutputTransaction(output.target, 0);
+                }
+            }
+        }
         
         /// <summary>
         /// Set input amount from origin at quantity value for this resource.
@@ -130,6 +193,17 @@ namespace ResourceSystem.Transactions
             if (TryGetContainer(resource, out ResourceContainer container))
             {
                 container.SetInputTransaction(origin, 0);
+            }
+        }
+        
+        public void RemoveInputsAll()
+        {
+            foreach (var container in registry)
+            {
+                foreach (var input in container.inputs.ToArray())
+                {
+                    container.SetInputTransaction(input.origin, 0);
+                }
             }
         }
         
@@ -204,14 +278,16 @@ namespace ResourceSystem.Transactions
         
         #region DEBTOR_METHODS
         
-        public void BorrowTo(ITransactor creditor, ResourceType resourceToBorrow, float quantityToBorrow)
+        public float BorrowTo(ITransactor creditor, ResourceType resourceToBorrow, float quantityToBorrow)
         {
-            if (creditor == this || quantityToBorrow == 0) return;
+            if (creditor == this || quantityToBorrow == 0) return -1;
             
             if (TryGetContainer(resourceToBorrow, out ResourceContainer container))
             {
-                container.BorrowTo(creditor, quantityToBorrow);
+                return container.BorrowTo(creditor, quantityToBorrow);
             }
+
+            return -1;
         }
 
         public void BorrowAllTo(ITransactor creditor, ResourceType resourceToBorrow)
@@ -262,7 +338,7 @@ namespace ResourceSystem.Transactions
         #endregion
         
 
-        #region REGISTRY_ASSESSION
+        #region REGISTRY_MANAGEMENT
 
         public bool TryGetContainer(ResourceType resourceType, out ResourceContainer containerToGet)
         {
@@ -278,7 +354,32 @@ namespace ResourceSystem.Transactions
             containerToGet = null;
             return false;
         }
+        
+        public void InitContainers(ScriptableResourceDeck template)
+        {
+            foreach (var containerTemplate in template.containers)
+            {
+                SetResource(containerTemplate.resource, containerTemplate.nativeQuantity,
+                    containerTemplate.nativeMaxQuantity);
+            }
+        }
 
+        public void RemoveContainer(ResourceType resource)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                registry.Remove(container);
+            }
+        }
+
+        public void RemoveContainersAll()
+        {
+            foreach (var container in registry.ToArray())
+            {
+                registry.Remove(container);
+            }
+        }
+        
         #endregion
        
     }
