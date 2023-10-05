@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ResourceSystem.Transactions;
 using ResourceSystem.Transactions.UnitTests;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace ResourceSystem.Productions.UnitTests
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
-                //RunTestAlpha();    
+                RunTestAlpha();    
                 RunTestBeta();
             }
         }
@@ -125,8 +124,11 @@ namespace ResourceSystem.Productions.UnitTests
                 new (population, 3, true)
             }));
             
-            producer.Produce();
-            producer.Produce();
+            producer.RegisterIOs();
+
+            producer.DeliverOutputs();
+            
+            producer.ProduceOutputs();
 
             string message = "<b>Test Bêta</b>\n";
             message += "\n<b>transactor source</b>";

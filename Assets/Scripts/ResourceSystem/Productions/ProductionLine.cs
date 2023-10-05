@@ -9,8 +9,8 @@ namespace ResourceSystem.Productions
     public class ProductionLine
     {
         [SerializeField] private LocalizedString _localizedName;
-        [HideInInspector] public float efficiency;
-
+        public float efficiency { get; private set; }
+        
         public string lineName => _localizedName.GetLocalizedString();
 
         [Space]
@@ -23,20 +23,14 @@ namespace ResourceSystem.Productions
             this.inputs = inputs;
             this.outputs = outputs;
         }
-    }
 
-    [Serializable]
-    public struct ResourceProduction
-    {
-        public ResourceType resource;
-        public float amount;
-        public bool isLoan;
-
-        public ResourceProduction(ResourceType resource, float amount, bool isLoan = false)
+        public void CalculateEfficiency()
         {
-            this.resource = resource;
-            this.amount = amount;
-            this.isLoan = isLoan;
+            foreach (var input in inputs)
+            {
+                float localEfficiency = input.amount / (input.amount - input.expectedAmount);
+                if (localEfficiency < efficiency) efficiency = localEfficiency;
+            }
         }
     }
 }

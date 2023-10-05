@@ -19,6 +19,7 @@ namespace ResourceSystem.Productions
             if (!creditors.Contains(creditor))
             {
                 creditors.Add(creditor);
+                RegisterIOs();
             }
         }
 
@@ -27,9 +28,10 @@ namespace ResourceSystem.Productions
             if (creditors.Contains(creditor))
             {
                 creditors.Remove(creditor);
+                RegisterIOs();
             }
         }
-        
+
         public void AddDebtor(ITransactor debtor)
         {
             if (!debtors.Contains(debtor))
@@ -45,18 +47,19 @@ namespace ResourceSystem.Productions
                 debtors.Remove(debtor);
             }
         }
-        
+
         public void InitTransactor()
         {
             foreach (var line in productionLines)
             {
                 foreach (var input in line.inputs)
                 {
-                    transactor.AddResource(input.resource, 0);
+                    transactor.AddResource(input.resource, float.PositiveInfinity);
                 }
+
                 foreach (var output in line.outputs)
                 {
-                    transactor.AddResource(output.resource, 0);
+                    transactor.AddResource(output.resource, float.PositiveInfinity);
                 }
             }
         }
@@ -70,190 +73,90 @@ namespace ResourceSystem.Productions
 
             foreach (var input in lineToAdd.inputs)
             {
-                transactor.AddResource(input.resource, 0);
+                transactor.AddResource(input.resource, float.PositiveInfinity);
             }
+
             foreach (var output in lineToAdd.outputs)
             {
-                transactor.AddResource(output.resource, 0);
+                transactor.AddResource(output.resource, float.PositiveInfinity);
             }
         }
-        
-        public void Produce()
+
+        public void RegisterIOs()
         {
-            FetchInputResources();
-            ProduceResources();
-            ConsumeInputs();
-            DeliverProducedResources();
-        }
-        
-        private void FetchInputResources()
-        {
-            transactor.RemoveInputsAll();
-            
             foreach (var line in productionLines)
             {
-                line.efficiency = EvaluateEfficiency(line);
-
                 foreach (var input in line.inputs)
                 {
-                    float expectedInput = input.amount * line.efficiency;
-                    
+                    input.expectedAmount = input.amount;
+
                     foreach (var creditor in creditors)
                     {
                         if (input.isLoan)
                         {
-                            expectedInput -= creditor.LoanTo(transactor, input.resource, expectedInput);
+                            input.expectedAmount -= creditor.LoanTo(transactor, input.resource, input.expectedAmount);
                         }
                         else
                         {
-                            expectedInput -= creditor.SetOutputTransaction(transactor, input.resource, expectedInput);
+                            input.expectedAmount -=
+                                creditor.SetOutputTransaction(transactor, input.resource, input.expectedAmount);
                         }
-                        
-                        if (expectedInput == 0) break;    
                     }
-                }
-            }    
-            
-            transactor.AskInputs();
-        }
 
-        private void ProduceResources()
-        {
-            foreach (var line in productionLines)
-            {
-                foreach (var output in line.outputs)
-                {
-                    if (output.isLoan)
-                    {
-                        transactor.SetResource(output.resource, output.amount * line.efficiency);
-                    }
-                    else
-                    {
-                        transactor.AddResource(output.resource, output.amount * line.efficiency);
-                    }
+                    if (input.expectedAmount == 0) break;
                 }
+
+                line.CalculateEfficiency();
             }
-        }
-        
-        private void DeliverProducedResources()
-        {
-            transactor.RemoveOutputsAll();
-            
+
             foreach (var line in productionLines)
             {
                 foreach (var output in line.outputs)
                 {
-                    float expectedOutput = output.amount * line.efficiency;
-                    
+                    output.expectedAmount = output.amount * line.efficiency;
+
                     foreach (var debtor in debtors)
                     {
                         if (output.isLoan)
                         {
-                            expectedOutput -= debtor.BorrowTo(transactor, output.resource, expectedOutput);
+                            output.expectedAmount -=
+                                debtor.LoanTo(transactor, output.resource, output.expectedAmount);
                         }
                         else
                         {
-                            expectedOutput -= debtor.SetInputTransaction(transactor, output.resource, expectedOutput);
+                            output.expectedAmount -=
+                                debtor.SetInputTransaction(transactor, output.resource, output.expectedAmount);
                         }
-                        if (expectedOutput == 0) break;
-                    }
 
-                    if (expectedOutput > 0)
-                    {
-                        transactor.AddResource(output.resource, -expectedOutput);
+                        if (output.expectedAmount == 0) return;
                     }
                 }
             }
-            
+        }
+
+        public void ProduceOutputs()
+        {
+            transactor.AskInputs();
+
+            foreach (var line in productionLines)
+            {
+                foreach (var output in line.outputs)
+                {
+                    transactor.AddResource(output.resource, output.amount * line.efficiency);
+                }
+            }
+        }
+        
+        public void DeliverOutputs()
+        {
             transactor.GiveOutputs();
         }
 
-        private void ConsumeInputs()
+        public void Produce()
         {
-            foreach (var line in productionLines)
-            {
-                foreach (var input in line.inputs)
-                {
-                    if (!input.isLoan)
-                    {
-                        transactor.SetResource(input.resource, 0);
-                    }
-                }
-            }
-        }
-
-        private float EvaluateEfficiency(ProductionLine line)
-        {
-            if (creditors.Count == 0 || debtors.Count == 0)
-                return 0;
-            
-            float efficiency = 1;
-            
-            float localEfficiency;
-            
-            foreach (var input in line.inputs)
-            {
-                float expectedQuantity = input.amount;
-                
-                foreach (var creditor in creditors)
-                {
-                    if (input.isLoan)
-                    {
-                        float availableQuantity = creditor.GetAvailableQuantity(input.resource);
-
-                        if (availableQuantity < 0) return 0;
-
-                        expectedQuantity -= Mathf.Clamp(availableQuantity, 0,expectedQuantity);
-                    }
-                    else
-                    {
-                        float totalQuantity = creditor.GetTotalQuantity(input.resource);
-
-                        if (totalQuantity < 0) return 0;
-
-                        expectedQuantity -= Mathf.Clamp(totalQuantity, 0, expectedQuantity);
-                    }
-                    
-                    if (expectedQuantity == 0) break;
-                }
-
-                localEfficiency = (input.amount - expectedQuantity) / input.amount;
-
-                if (localEfficiency < efficiency) efficiency = localEfficiency;
-            }
-
-            foreach (var output in line.outputs)
-            {
-                float expectedQuantity = output.amount;
-                
-                foreach (var debtor in debtors)
-                {
-                    if (output.isLoan)
-                    {
-                        float remainingCapacity = debtor.GetRemainingCapacity(output.resource);
-
-                        if (remainingCapacity < 0) return 0;
-
-                            expectedQuantity -= Mathf.Clamp(remainingCapacity, 0,expectedQuantity);
-                    }
-                    else
-                    {
-                        float remainingDeltaCapacity = debtor.GetRemainingDeltaCapacity(output.resource);
-
-                        if (remainingDeltaCapacity < 0) return 0;
-                        
-                        expectedQuantity -= Mathf.Clamp(remainingDeltaCapacity, 0, expectedQuantity);
-                    }
-                    
-                    if (expectedQuantity == 0) break;
-                }
-
-                localEfficiency = (output.amount - expectedQuantity) / output.amount;
-
-                if (localEfficiency < efficiency) efficiency = localEfficiency;
-            }
-
-            return efficiency;
+            RegisterIOs();
+            ProduceOutputs();
+            DeliverOutputs();
         }
     }
 }

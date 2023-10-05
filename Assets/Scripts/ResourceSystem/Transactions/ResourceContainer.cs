@@ -39,12 +39,25 @@ namespace ResourceSystem.Transactions
         public readonly List<ResourceTransaction> inputs = new();
         public readonly List<ResourceTransaction> outputs = new();
 
+        public readonly List<ResourceTransaction> inputPromises = new();
+        public readonly List<ResourceTransaction> outputPromises = new();
+
         private float _deltaQuantity;
         public float deltaQuantity => _deltaQuantity;
         public float remainingDeltaCapacity => remainingCapacity - _deltaQuantity;
 
         #endregion
 
+        private enum transactionType
+        {
+            credit,
+            debt,
+            input,
+            output,
+            promiseInput,
+            promiseOutput
+        }
+        
         #region CONSTRUCTORS
 
         public ResourceContainer(ITransactor owner, ResourceType resourceType, float quantity = 0, float maxQuantity = Mathf.Infinity)
@@ -100,11 +113,11 @@ namespace ResourceSystem.Transactions
         }
 
         /// <summary>
-        /// Add quantity to native quantity. Native quantity has priority over borrowed quantity,
+        /// Add or remove quantity to native quantity. Native quantity has priority over borrowed quantity,
         /// which means that if adding native quantity exceeds max quantity, container will refund its debts.
-        /// Returns the quantity that could have been added.
+        /// Returns the quantity that could have been added or removed.
         /// </summary>
-        /// <returns>Quantity that could have been added.</returns>
+        /// <returns>Quantity that could have been added or removed.</returns>
         public float AddNativeQuantity(float quantity)
         {
             quantity = Mathf.Clamp(quantity, -nativeQuantity, totalQuantity + remainingCapacity - nativeQuantity);
@@ -142,6 +155,261 @@ namespace ResourceSystem.Transactions
         
         #endregion
 
+        #region LAONING_METHODS
+
+            #region CREDITOR_METHODS
+
+        /// <summary>
+        /// Loans a certain quantity of resource to a debtor.
+        /// If a loan already exists, it replaces it. 
+        /// Returns the actual quantity that could have been lent.
+        /// </summary>
+        /// <returns>Actual quantity that could be lent</returns>
+        public float LoanTo(ITransactor debtor, float quantityToLoan)
+        {
+            if (TryGetTransaction(debtor, transactionType.credit, out ResourceTransaction loan))
+            {
+                _lentQuantity -= loan.quantity;
+
+                if (quantityToLoan == 0)
+                {
+                    //to do: remove loan
+                    return 0;
+                }
+            }
+            else
+            {
+                loan = new ResourceTransaction(resource, transactor, debtor, 0);
+
+                credits.Add(loan);
+            }
+
+            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, availableQuantity);
+            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, debtor.GetRemainingCapacity(resource));
+            loan.SetQuantity(quantityToLoan);
+
+            _lentQuantity += quantityToLoan;
+
+            if (debtor.TryGetContainer(resource, out ResourceContainer container))
+            {
+                container.NotifyBorrowing(loan);
+            }
+
+            return quantityToLoan;
+        }
+
+        public void RemoveCredit(ITransactor debtor)
+        {
+            if (TryGetTransaction(debtor, transactionType.credit, out ResourceTransaction loan))
+            {
+                credits.Remove(loan);
+                _lentQuantity -= loan.quantity;
+                debtor.RemoveBorrow(resource, transactor);
+            }
+        }
+            #endregion
+
+            #region DEBTOR_METHODS
+
+        /// <summary>
+        /// Borrow an amount of resource to a creditor which cannot be the same as this container's.
+        /// Returns the quantity that could have been borrowed.
+        /// </summary>
+        /// <returns>Quantity that could be borrowed.</returns>
+        public float BorrowTo(ITransactor creditor, float quantityToBorrow)
+        {
+            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow);
+
+            RemoveInputsInExcess();
+            
+            return quantityToBorrow;
+        }
+
+        /// <summary>
+        /// Borrow all the available quantity of resource a transactor.
+        /// Returns the quantity that could have been borrowed.
+        /// </summary>
+        /// <returns>Quantity that could be borrowed.</returns>
+        public float BorrowAllTo(ITransactor creditor)
+        {
+            float quantityToBorrow = creditor.LoanAllTo(transactor, resource);
+
+            RemoveInputsInExcess();
+            
+            return quantityToBorrow;
+        }
+
+        private void NotifyBorrowing(ResourceTransaction transaction)
+        {
+            if (transaction.resource != resource || transaction.target != transactor) return;
+
+            if (debts.Contains(transaction))
+            {
+                if (transaction.quantity == 0) debts.Remove(transaction);
+                CalculateBorrowedQuantity(out _borrowedQuantity);
+            }
+            else if (transaction.quantity != 0)
+            {
+                debts.Add(transaction);
+                _borrowedQuantity += transaction.quantity;
+            }
+            
+            RemoveInputsInExcess();
+        }
+
+        public void RemoveDebt(ITransactor creditor)
+        {
+            if (TryGetTransaction(creditor, transactionType.debt, out ResourceTransaction debt))
+            {
+                credits.Remove(debt);
+                _borrowedQuantity -= debt.quantity;
+                creditor.RemoveLoan(resource, transactor);
+            }
+        }
+
+            #endregion
+
+        #endregion
+
+        #region REFUNDING_METHODS
+
+        /// <summary>
+        /// Refund a certain amount of resource to a creditor.
+        /// If the amount is bigger than what this container borrowed, it will be clamped.
+        /// </summary>
+        /// <returns>Returns quantity that have been refunded.</returns>
+        public float Refund(ITransactor creditor, float quantity)
+        {
+            if (TryGetTransaction(creditor, transactionType.debt, out ResourceTransaction loan))
+            {
+                quantity = Mathf.Clamp(quantity, 0, loan.quantity);
+
+                if (creditor.TryGetContainer(resource, out ResourceContainer container))
+                {
+                    container.BeRefundedBy(transactor, quantity);
+                }
+                
+                if (loan.quantity == 0)
+                {
+                    debts.Remove(loan);
+                }
+
+                _borrowedQuantity -= quantity;
+
+                if (availableQuantity < 0)
+                {
+                    AskForRefund(Mathf.Abs(availableQuantity));
+                }
+            }
+
+            return quantity;
+        }
+        
+        /// <summary>
+        /// Function that triggers the behavior of being refund by one of his debtor.
+        /// If the debtor isn't in contact with the transactor of the container, returns 0.
+        /// Else, returns the quantity that could have been refunded.
+        /// </summary>
+        /// <returns>Quantity that could have been refunded.</returns>
+        private float BeRefundedBy(ITransactor debtor, float quantity)
+        {
+            if (TryGetTransaction(debtor, transactionType.credit, out ResourceTransaction loan))
+            {
+                quantity = Mathf.Clamp(quantity,0, loan.quantity);
+                
+                loan.AddQuantity(-quantity);
+                if (loan.quantity == 0)
+                    credits.Remove(loan);
+
+                _lentQuantity -= quantity;
+                return quantity;
+            }
+
+            return 0;
+        }
+        
+        /// <summary>
+        /// Parse all debtors to demand to refund a certain amount.
+        /// Returns the quantity that could have been refunded.
+        /// </summary>
+        /// <returns>Quantity that could have been refunded.</returns>
+        public float AskForRefund(float quantityToRefund)
+        {
+            quantityToRefund = Mathf.Abs(quantityToRefund);
+            float remainingQuantity = quantityToRefund;
+            
+            foreach (var loan in credits.ToArray())
+            {
+                remainingQuantity -= loan.target.Refund(transactor, resource, remainingQuantity);
+                if (remainingQuantity == 0) break;
+            }
+
+            return quantityToRefund - remainingQuantity;
+        }
+
+        /// <summary>
+        /// Parse all creditors to refund a certain amount.
+        /// Returns the quantity that could have been refunded.
+        /// </summary>
+        /// <returns>Quantity that could have been refunded.</returns>
+        
+        public float RefundMultiple(float quantityToRefund)
+        {
+            quantityToRefund = Mathf.Abs(quantityToRefund);
+            float remainingQuantity = quantityToRefund;
+            
+            foreach (var loan in debts.ToArray())
+            {
+                remainingQuantity -= Refund(loan.origin, remainingQuantity);
+                if (remainingQuantity == 0) break;
+            }
+
+            return quantityToRefund - remainingQuantity;
+        }
+
+        private void NotifyDebtDevaluation(ITransactor creditor, float devaluation)
+        {
+            if (TryGetTransaction(creditor, transactionType.debt, out ResourceTransaction loan))
+            {
+                devaluation = Mathf.Clamp(devaluation, 0, loan.quantity);
+                devaluation = Mathf.Abs(loan.AddQuantity(-devaluation));
+                _borrowedQuantity -= devaluation;
+                if (loan.quantity == 0)
+                    debts.Remove(loan);
+                
+                if (lentQuantity > totalQuantity)
+                {
+                    DevalueCredits(lentQuantity - totalQuantity);
+                }
+            }
+        }
+        
+        private float DevalueCredits(float devaluation)
+        {
+            devaluation = Mathf.Clamp(devaluation, 0, lentQuantity);
+            float remainingDevaluation = devaluation;
+
+            foreach (var credit in credits.ToArray())
+            {
+                float creditDevaluation = Mathf.Clamp(remainingDevaluation, 0, credit.quantity);
+                remainingDevaluation -= creditDevaluation;
+
+                if (credit.target.TryGetContainer(resource, out ResourceContainer container))
+                {
+                    container.NotifyDebtDevaluation(transactor, creditDevaluation);
+                }
+
+                if(credit.quantity == 0) credits.Remove(credit);
+                if (remainingDevaluation == 0) break;
+            }
+
+            _lentQuantity -= devaluation - remainingDevaluation;
+            
+            return devaluation - remainingDevaluation;
+        }
+        
+        #endregion
+        
         #region TRANSACTION_METHODS
 
             #region OUTPUT_METHODS
@@ -157,7 +425,7 @@ namespace ResourceSystem.Transactions
                 quantity = Mathf.Clamp(Mathf.Abs(quantity), 0, nativeQuantity);
                 quantity = Mathf.Clamp(quantity, 0, target.GetRemainingCapacity(resource));
 
-                if (TryGetTransaction(target, true, out ResourceTransaction transaction))
+                if (TryGetTransaction(target, transactionType.output, out ResourceTransaction transaction))
                 {
                     _deltaQuantity += transaction.quantity;
                     
@@ -292,302 +560,117 @@ namespace ResourceSystem.Transactions
 
         #endregion
         
-        #region LAONING_METHODS
+        #region PROMISES_METHODS
 
-            #region CREDITOR_METHODS
-
-        /// <summary>
-        /// Loans a certain quantity of resource to a debtor.
-        /// If a loan already exists, it replaces it. 
-        /// Returns the actual quantity that could have been lent.
-        /// </summary>
-        /// <returns>Actual quantity that could be lent</returns>
-        public float LoanTo(ITransactor debtor, float quantityToLoan)
+        public bool TryPromiseTo(ITransactor target, float quantity)
         {
-            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
-            {
-                _lentQuantity -= loan.quantity;
+            if (target == transactor || !target.TryGetContainer(resource, out ResourceContainer targetContainer))
+                return false;
 
-                if (quantityToLoan == 0)
-                {
-                    //to do: remove loan
-                    return 0;
-                }
+            if (TryGetTransaction(target, transactionType.promiseOutput, out var transaction))
+            {
+                transaction.SetQuantity(quantity);
             }
             else
             {
-                loan = new ResourceTransaction(resource, transactor, debtor, 0);
-
-                credits.Add(loan);
-            }
-
-            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, availableQuantity);
-            quantityToLoan = Mathf.Clamp(quantityToLoan, 0, debtor.GetRemainingCapacity(resource));
-            loan.SetQuantity(quantityToLoan);
-
-            _lentQuantity += quantityToLoan;
-
-            if (debtor.TryGetContainer(resource, out ResourceContainer container))
-            {
-                container.NotifyBorrowing(loan);
-            }
-
-            return quantityToLoan;
-        }
-
-        public void RemoveLoan(ITransactor debtor)
-        {
-            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
-            {
-                credits.Remove(loan);
-                _lentQuantity -= loan.quantity;
-                debtor.RemoveBorrow(resource, transactor);
-            }
-        }
-            #endregion
-
-            #region DEBTOR_METHODS
-
-        /// <summary>
-        /// Borrow an amount of resource to a creditor which cannot be the same as this container's.
-        /// Returns the quantity that could have been borrowed.
-        /// </summary>
-        /// <returns>Quantity that could be borrowed.</returns>
-        public float BorrowTo(ITransactor creditor, float quantityToBorrow)
-        {
-            quantityToBorrow = creditor.LoanTo(transactor, resource, quantityToBorrow);
-
-            RemoveInputsInExcess();
-            
-            return quantityToBorrow;
-        }
-
-        /// <summary>
-        /// Borrow all the available quantity of resource a transactor.
-        /// Returns the quantity that could have been borrowed.
-        /// </summary>
-        /// <returns>Quantity that could be borrowed.</returns>
-        public float BorrowAllTo(ITransactor creditor)
-        {
-            float quantityToBorrow = creditor.LoanAllTo(transactor, resource);
-
-            RemoveInputsInExcess();
-            
-            return quantityToBorrow;
-        }
-
-        private void NotifyBorrowing(ResourceTransaction transaction)
-        {
-            if (transaction.resource != resource || transaction.target != transactor) return;
-
-            if (debts.Contains(transaction))
-            {
-                if (transaction.quantity == 0) debts.Remove(transaction);
-                CalculateBorrowedQuantity(out _borrowedQuantity);
-            }
-            else if (transaction.quantity != 0)
-            {
-                debts.Add(transaction);
-                _borrowedQuantity += transaction.quantity;
+                transaction = new ResourceTransaction(resource, transactor, target, quantity);
             }
             
-            RemoveInputsInExcess();
+            targetContainer.NotifyPromise(transaction);
+            return true;
         }
 
-        public void RemoveBorrow(ITransactor creditor)
+        private void NotifyPromise(ResourceTransaction transaction)
         {
-            if (TryGetLoan(creditor, false, out ResourceTransaction debt))
+            if (transaction.target != transactor) return;
+
+            if (!inputPromises.Contains(transaction))
             {
-                credits.Remove(debt);
-                _borrowedQuantity -= debt.quantity;
-                creditor.RemoveLoan(resource, transactor);
+                inputPromises.Add(transaction);
             }
         }
 
-            #endregion
-
-        #endregion
-
-        #region REFUNDING_METHODS
-
-        /// <summary>
-        /// Refund a certain amount of resource to a creditor.
-        /// If the amount is bigger than what this container borrowed, it will be clamped.
-        /// </summary>
-        /// <returns>Returns quantity that have been refunded.</returns>
-        public float Refund(ITransactor creditor, float quantity)
+        public void AskForAllPromises(bool consumePromises = false)
         {
-            if (TryGetLoan(creditor, false, out ResourceTransaction loan))
+            foreach (var promise in inputPromises)
             {
-                quantity = Mathf.Clamp(quantity, 0, loan.quantity);
-
-                if (creditor.TryGetContainer(resource, out ResourceContainer container))
-                {
-                    container.BeRefundedBy(transactor, quantity);
-                }
-                
-                if (loan.quantity == 0)
-                {
-                    debts.Remove(loan);
-                }
-
-                _borrowedQuantity -= quantity;
-
-                if (availableQuantity < 0)
-                {
-                    AskForRefund(Mathf.Abs(availableQuantity));
-                }
-            }
-
-            return quantity;
-        }
-        
-        /// <summary>
-        /// Function that triggers the behavior of being refund by one of his debtor.
-        /// If the debtor isn't in contact with the transactor of the container, returns 0.
-        /// Else, returns the quantity that could have been refunded.
-        /// </summary>
-        /// <returns>Quantity that could have been refunded.</returns>
-        private float BeRefundedBy(ITransactor debtor, float quantity)
-        {
-            if (TryGetLoan(debtor, true, out ResourceTransaction loan))
-            {
-                quantity = Mathf.Clamp(quantity,0, loan.quantity);
-                
-                loan.AddQuantity(-quantity);
-                if (loan.quantity == 0)
-                    credits.Remove(loan);
-
-                _lentQuantity -= quantity;
-                return quantity;
-            }
-
-            return 0;
-        }
-        
-        /// <summary>
-        /// Parse all debtors to demand to refund a certain amount.
-        /// Returns the quantity that could have been refunded.
-        /// </summary>
-        /// <returns>Quantity that could have been refunded.</returns>
-        public float AskForRefund(float quantityToRefund)
-        {
-            quantityToRefund = Mathf.Abs(quantityToRefund);
-            float remainingQuantity = quantityToRefund;
-            
-            foreach (var loan in credits.ToArray())
-            {
-                remainingQuantity -= loan.target.Refund(transactor, resource, remainingQuantity);
-                if (remainingQuantity == 0) break;
-            }
-
-            return quantityToRefund - remainingQuantity;
-        }
-
-        /// <summary>
-        /// Parse all creditors to refund a certain amount.
-        /// Returns the quantity that could have been refunded.
-        /// </summary>
-        /// <returns>Quantity that could have been refunded.</returns>
-        
-        public float RefundMultiple(float quantityToRefund)
-        {
-            quantityToRefund = Mathf.Abs(quantityToRefund);
-            float remainingQuantity = quantityToRefund;
-            
-            foreach (var loan in debts.ToArray())
-            {
-                remainingQuantity -= Refund(loan.origin, remainingQuantity);
-                if (remainingQuantity == 0) break;
-            }
-
-            return quantityToRefund - remainingQuantity;
-        }
-
-        private void NotifyDebtDevaluation(ITransactor creditor, float devaluation)
-        {
-            if (TryGetLoan(creditor, false, out ResourceTransaction loan))
-            {
-                devaluation = Mathf.Clamp(devaluation, 0, loan.quantity);
-                devaluation = Mathf.Abs(loan.AddQuantity(-devaluation));
-                _borrowedQuantity -= devaluation;
-                if (loan.quantity == 0)
-                    debts.Remove(loan);
-                
-                if (lentQuantity > totalQuantity)
-                {
-                    DevalueCredits(lentQuantity - totalQuantity);
-                }
+                AskPromiseFrom(promise.origin, consumePromises);
             }
         }
         
-        private float DevalueCredits(float devaluation)
+        public void AskPromiseFrom(ITransactor promising, bool consumePromise = false)
         {
-            devaluation = Mathf.Clamp(devaluation, 0, lentQuantity);
-            float remainingDevaluation = devaluation;
-
-            foreach (var credit in credits.ToArray())
+            if (TryGetTransaction(promising, transactionType.promiseInput, out ResourceTransaction promise))
             {
-                float creditDevaluation = Mathf.Clamp(remainingDevaluation, 0, credit.quantity);
-                remainingDevaluation -= creditDevaluation;
-
-                if (credit.target.TryGetContainer(resource, out ResourceContainer container))
+                if (promising.TryGetContainer(resource, out ResourceContainer promisingContainer))
                 {
-                    container.NotifyDebtDevaluation(transactor, creditDevaluation);
+                    float PromisedQuantity = Mathf.Clamp(promise.quantity, 0, totalMaxQuantity - nativeQuantity);
+                    PromisedQuantity = Mathf.Abs(promisingContainer.AddNativeQuantity(-PromisedQuantity));
+
+                    AddNativeQuantity(PromisedQuantity);
+
+                    if (consumePromise)
+                    {
+                        inputPromises.Remove(promise);
+                        promisingContainer.outputPromises.Remove(promise);
+                    }
                 }
-
-                if(credit.quantity == 0) credits.Remove(credit);
-                if (remainingDevaluation == 0) break;
             }
+        }
 
-            _lentQuantity -= devaluation - remainingDevaluation;
-            
-            return devaluation - remainingDevaluation;
+        public void GiveAllPromises(bool consumePromise = false)
+        {
+            foreach (var promise in outputPromises)
+            {
+                if (promise.target.TryGetContainer(resource, out ResourceContainer promisedContainer))
+                {
+                    promisedContainer.AskPromiseFrom(transactor, consumePromise);
+                }
+            }
+        }
+        public void GivePromiseTo(ITransactor promised, bool consumePromise = false)
+        {
+            if (TryGetTransaction(promised, transactionType.promiseOutput, out ResourceTransaction promise))
+            {
+                if (promised.TryGetContainer(resource, out ResourceContainer promisedContainer))
+                {
+                    promisedContainer.AskPromiseFrom(transactor, consumePromise);
+                }
+            }
         }
         
         #endregion
         
-        #region REGISTRY MANAGEMENT
+        #region REGISTRY_MANAGEMENT
 
-        /// <summary>
-        /// Check if a loan already exists in credits or debts.
-        /// </summary>
-        private bool TryGetLoan(ITransactor otherTransactor, bool inCredits, out ResourceTransaction transactionToGet)
+        private bool TryGetTransaction(ITransactor other, transactionType type, out ResourceTransaction transaction)
         {
-            List<ResourceTransaction> loans = inCredits ? credits : debts;
-
-            foreach (var loan in loans)
+            List<ResourceTransaction> transactions = type switch
             {
-                ITransactor loanTransactor = inCredits ? loan.target : loan.origin;
+                transactionType.credit => credits,
+                transactionType.debt => debts,
+                transactionType.input => inputs,
+                transactionType.output => outputs,
+                transactionType.promiseInput => inputPromises,
+                transactionType.promiseOutput => outputPromises,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
 
-                if (loanTransactor == otherTransactor)
+            foreach (var _transaction in transactions)
+            {
+                ITransactor transactionTransactor =
+                    type is transactionType.credit or transactionType.output or transactionType.promiseOutput
+                        ? _transaction.target
+                        : _transaction.origin;
+                
+                if (transactionTransactor == other)
                 {
-                    transactionToGet = loan;
+                    transaction = _transaction;
                     return true;
-                }
+                } 
             }
 
-            transactionToGet = null;
-            return false;
-        }
-
-        private bool TryGetTransaction(ITransactor otherTransactor, bool inOutputs,
-            out ResourceTransaction transactionToGet)
-        {
-            List<ResourceTransaction> transactions = inOutputs ? outputs : inputs;
-
-            foreach (var transaction in transactions)
-            {
-                ITransactor other = inOutputs ? transaction.target : transaction.origin;
-
-                if (other == otherTransactor)
-                {
-                    transactionToGet = transaction;
-                    return true;
-                }
-            }
-
-            transactionToGet = null;
+            transaction = null;
             return false;
         }
 

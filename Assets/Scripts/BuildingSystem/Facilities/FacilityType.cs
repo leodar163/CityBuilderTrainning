@@ -4,7 +4,10 @@ using Format;
 using GridSystem;
 using Localization;
 using ResourceSystem;
+using ResourceSystem.Productions;
+using ResourceSystem.Transactions;
 using TerrainSystem;
+using TimeSystem;
 using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -13,24 +16,21 @@ using UnityEngine.Localization.SmartFormat.PersistentVariables;
 namespace BuildingSystem.Facilities
 {
     [RequireComponent(typeof(BoxCollider))]
-    public abstract class FacilityType : MonoBehaviour , ICellModifier, IToolTipSpeaker, IResourceModifier, IResourceBorrower
+    public abstract class FacilityType : MonoBehaviour , IToolTipSpeaker, ITransactor, IProducer
     {
         [SerializeField] private BoxCollider _collider;
         public Sprite icon;
 
-        [Header("Production")] 
-        [SerializeField] protected ProductionLine[] _productionLines;
-       
-        
+
         [Header("Description")]
         [SerializeField] protected LocalizedString _facilityName;
         [SerializeField] protected LocalizedString _facilityDescription;
         [SerializeField] protected LocalizedString _resourceModifications;
         [SerializeField] protected LocalizedString _placementConditions;
+        [SerializeField] private List<ProductionLine> _productionLines;
 
-        public Dictionary<ResourceSlider, float> loaners { get; } = new();
-        public string borrowerName => facilityName;
-        
+        private Action<InGameDate> monthlyProduction;
+
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
 
@@ -40,33 +40,53 @@ namespace BuildingSystem.Facilities
         public string facilityName => _facilityName.GetLocalizedString();
         public string modifierName => facilityName;
 
+        List<ResourceContainer> ITransactor.registry { get; } = new();
+
+        public ITransactor transactorSelf => this;
+        public ITransactor transactor => this;
+        public IProducer producerSelf => this;
+
+        List<ProductionLine> IProducer.productionLines => _productionLines;
+
+        List<ITransactor> IProducer.creditors { get; } = new();
+
+        List<ITransactor> IProducer.debtors { get; } = new();
+
         private void OnValidate()
         {
             if (!_collider) TryGetComponent(out _collider);
         }
 
-        public virtual void OnAddedToCell(CellData cell)
+        protected void Awake()
         {
-            this.cell = cell;
-            cell.resourceDeck.Sub(this);
-            onFacilityBuild?.Invoke(this);
-            
-            foreach (var line in _productionLines)
-            {
-                line.Init(cell, this);
-            }
+            monthlyProduction = _ => producerSelf.Produce();
         }
 
-        public virtual void OnRemovedFromCell(CellData cell)
+        protected virtual void OnEnable()
         {
-            this.cell = null;
-            cell.resourceDeck.Unsub(this);
+            TimeManager.onNewMonth += monthlyProduction;
+        }
+
+        protected virtual void OnDisable()
+        {
+            TimeManager.onNewMonth -= monthlyProduction;
+            transactorSelf.ReleaseAll();
+        }
+
+        public virtual void OnAddedToCell(CellData cellAddedTo)
+        {
+            cell = cellAddedTo;
+            producerSelf.InitTransactor();
+            producerSelf.AddCreditor(cellAddedTo);
+            producerSelf.AddDebtor(cellAddedTo);
+            onFacilityBuild?.Invoke(this);
+        }
+
+        public virtual void OnRemovedFromCell(CellData cellRemovedFrom)
+        {
+            cell = null;
             onFacilityDestroyed?.Invoke(this);
-            
-            foreach (var line in _productionLines)
-            {
-                line.Init(null, null);
-            }
+            Destroy(gameObject);
         }
 
         public virtual bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
@@ -88,11 +108,7 @@ namespace BuildingSystem.Facilities
         private string FormatProductionLines()
         {
             string format = $"<b><uppercase>{VariableNameManager.ProductionName}</uppercase></b>";
-
-            foreach (var line in _productionLines)
-            {
-                format += $"\n<indent=5%>{line.GetProductionFormat()}</indent>\n";
-            }
+            
 
             return format;
         }
@@ -100,11 +116,7 @@ namespace BuildingSystem.Facilities
         private string FormatProductionLinesDelta()
         {
             string format = $"<b><uppercase>{VariableNameManager.ProductionName}</uppercase></b>";
-
-            foreach (var line in _productionLines)
-            {
-                format += $"\n<indent=5%>{ProductionLine.GetProductionFormat(line, line.GetResourceDeltaIn(), line.GetResourceDeltaOut(), true)}</indent>\n";
-            }
+            
 
             return format;
         }
@@ -127,24 +139,12 @@ namespace BuildingSystem.Facilities
         public virtual ResourceDelta[] GetResourceDelta()
         {
             ResourceDelta[] deltas = Array.Empty<ResourceDelta>();
-
-            foreach (var line in _productionLines)
-            {
-                ResourceDelta[] lineDeltas = line.GetResourceDelta();
-
-                ResourceDelta[] newDeltas = new ResourceDelta[deltas.Length + lineDeltas.Length];
-                deltas.CopyTo(newDeltas, 0);
-                lineDeltas.CopyTo(newDeltas, deltas.Length);
-
-                deltas = newDeltas;
-            }
+            
             return deltas;
         }
         
         
 
         #endregion
-
-        
     }
 }

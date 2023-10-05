@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ResourceSystem.Scriptables;
 using UnityEngine;
 
 namespace ResourceSystem.Transactions
@@ -245,6 +246,12 @@ namespace ResourceSystem.Transactions
 
         #region CREDITOR_METHODS
 
+        /// <summary>
+        /// Loans a certain quantity of resource to a debtor.
+        /// If a loan already exists, it replaces it. 
+        /// Returns the actual quantity that could have been lent.
+        /// </summary>
+        /// <returns>Actual quantity that could be lent</returns>
         public float LoanTo(ITransactor debtor, ResourceType resourceToLoan, float quantityToLoan)
         {
             if (TryGetContainer(resourceToLoan, out ResourceContainer container))
@@ -269,7 +276,7 @@ namespace ResourceSystem.Transactions
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.RemoveLoan(debtor);
+                container.RemoveCredit(debtor);
             }
         }
         
@@ -304,7 +311,7 @@ namespace ResourceSystem.Transactions
         {
             if (TryGetContainer(resource, out ResourceContainer container))
             {
-                container.RemoveBorrow(creditor);
+                container.RemoveDebt(creditor);
             }
         }
         
@@ -333,11 +340,67 @@ namespace ResourceSystem.Transactions
             return 0;
         }
 
+        public void ReleaseAll()
+        {
+            foreach (var container in registry)
+            {
+                container.AskForRefund(container.lentQuantity);
+                container.RefundMultiple(container.borrowedQuantity);
+                RemoveInputsAll();
+                RemoveOutputsAll();
+            }
+        }
+        
         #endregion
 
         #endregion
         
+        #region PROMISES_METHODS
 
+        public bool TryPromiseTo(ITransactor target, ResourceType resource, float quantity)
+        {
+            if (TryGetContainer(resource, out ResourceContainer container))
+            {
+                return container.TryPromiseTo(target, quantity);
+            }
+
+            return false;
+        }
+
+        public void AskAllPromises(bool consumePromises = false)
+        {
+            foreach (var container in registry)
+            {
+                container.AskForAllPromises(consumePromises);
+            }
+        }
+
+        public void AskAllPromisesFrom(ITransactor origin, bool consumePromises = false)
+        {
+            foreach (var container in registry)
+            {
+                container.AskPromiseFrom(origin, consumePromises);
+            }
+        }
+        
+        public void GiveAllPromises(bool consumePromises = false)
+        {
+            foreach (var container in registry)
+            {
+                container.GiveAllPromises(consumePromises);
+            }
+        }
+
+        public void GiveAllPromisesTo(ITransactor target, bool consumePromises = false)
+        {
+            foreach (var container in registry)
+            {
+                container.GivePromiseTo(target);
+            }
+        }
+        
+        #endregion
+        
         #region REGISTRY_MANAGEMENT
 
         public bool TryGetContainer(ResourceType resourceType, out ResourceContainer containerToGet)
@@ -355,7 +418,7 @@ namespace ResourceSystem.Transactions
             return false;
         }
         
-        public void InitContainers(ScriptableResourceDeck template)
+        public void InitContainers(ResourceDeck template)
         {
             foreach (var containerTemplate in template.containers)
             {

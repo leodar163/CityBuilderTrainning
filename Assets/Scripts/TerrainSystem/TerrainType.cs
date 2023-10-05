@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using GridSystem;
 using ResourceSystem;
+using ResourceSystem.Scriptables;
 using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -21,7 +22,7 @@ namespace TerrainSystem
         public int facilityCount => _facilities.Count;
         public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
         public CellData cell { get; private set; }
-        [SerializeField] private ScriptableResourceDeck _resourceDeckTemplate;
+        [SerializeField] private ResourceDeck _resourceDeckTemplate;
 
         [Header("Description")] 
         [SerializeField] private string _typeDescription = "This is a terrain";
@@ -29,7 +30,7 @@ namespace TerrainSystem
         
         public string terrainName => _terrainName.GetLocalizedString();
         public string modifierName => terrainName;
-        public ScriptableResourceDeck deckTemplate => _resourceDeckTemplate;
+        public ResourceDeck deckTemplate => _resourceDeckTemplate;
         
         public virtual void OnAddedToCell(CellData cell)
         {

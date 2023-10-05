@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 
-namespace ResourceSystem
+namespace ResourceSystem.Scriptables
 {
     [CreateAssetMenu(menuName = "Resources/Resource Deck", fileName = "NewResourceDeck")]
-    public class ScriptableResourceDeck : DefaultableScriptableObject<ScriptableResourceDeck>
+    public class ResourceDeck : DefaultableScriptableObject<ResourceDeck>
     {
         [SerializeField] public ResourceContainer[] containers;
     }

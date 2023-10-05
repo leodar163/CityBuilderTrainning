@@ -1,4 +1,6 @@
-﻿using ResourceSystem.UI;
+﻿using System;
+using ResourceSystem.UI;
+using TimeSystem;
 using UnityEngine;
 using Utils.UI;
 
@@ -6,14 +8,26 @@ namespace ResourceSystem.Global.UI
 {
     public class GlobalResourceDeckUI : PanelUI<GlobalResourceDeckUI>
     {
-        [SerializeField] private ResourceSliderUI[] _sliders; 
+        private Action<InGameDate> monthlyUpdate;
 
-        protected void Start()
+        private void OnEnable()
         {
-            foreach (var slider in _sliders)
-            {
-                slider.resourceSlider = GlobalResourceDeck.deck.GetSlider(slider.resource);
-            }
+            TimeManager.onNewMonth += monthlyUpdate;
+        }
+
+        private void OnDisable()
+        {
+            TimeManager.onNewMonth -= monthlyUpdate;
+        }
+
+        protected override void Awake()
+        {
+            monthlyUpdate = _ => CalculateResources();
+        }
+
+        private void CalculateResources()
+        {
+            
         }
     }
 }
