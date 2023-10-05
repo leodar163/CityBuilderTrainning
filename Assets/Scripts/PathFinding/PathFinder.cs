@@ -93,8 +93,8 @@ namespace PathFinding
                 throw new ArgumentOutOfRangeException("You're trying to find a path out of the grid size. Don't.",
                     new Exception());
             }
-            CellData origin = GridManager.GetCellDataFromCellId(currentCell);
-            CellData target = GridManager.GetCellDataFromCellId(targetCell);
+            GridManager.TryGetCellDataFromCellId(currentCell, out CellData origin);
+            GridManager.TryGetCellDataFromCellId(targetCell, out CellData target);
             
             s_openSet.Clear();
             s_closedSet.Clear();
@@ -117,10 +117,8 @@ namespace PathFinding
                     CellData neighbour = cursor.neighbours[i];
                     PathNode neighbourPathNode = neighbour.pathNode;
                     
-                    if (neighbour.isBlocked || s_closedSet.Contains(neighbour))
+                    if (s_closedSet.Contains(neighbour))
                         continue;
-
-                    
                     
                     float movementCostToNeighbour = 
                         cursor.pathNode.realCost + (cursor.DistanceFrom(neighbour) + 

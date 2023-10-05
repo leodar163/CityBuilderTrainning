@@ -3,6 +3,7 @@ using BuildingSystem;
 using OptiCollections;
 using PathFinding;
 using ResourceSystem;
+using ResourceSystem.Market;
 using ResourceSystem.Scriptables;
 using ResourceSystem.Transactions;
 using TerrainSystem;
@@ -12,14 +13,15 @@ namespace GridSystem
 {
     public class CellData : IHeapComparable<CellData>, ITransactor
     {
-        public PlaceableObject placedObject { get; private set; }
-        public bool isBlocked => placedObject != null && placedObject.isPlaced;
+        public Market market;
+        
         public Vector3Int cellCoordinates { get; }
         public Vector3 position { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
         public TerrainType terrain { get; private set; }
-
+        
+        
         List<ResourceContainer> ITransactor.registry { get; } = new();
         public ITransactor transactorSelf => this;
         
@@ -29,19 +31,9 @@ namespace GridSystem
             position = GridManager.GetCellCenter(cellCoordinates);
         }
         
-        public void PlaceObjectOn(PlaceableObject objectToPlace)
+       public void FindNeighbours()
         {
-            placedObject = objectToPlace;
-        }
-
-        public void RemoveObject()
-        {
-            placedObject = null;
-        }
-
-        public void FindNeighbours()
-        {
-            neighbours = GridManager.findNeighbours(this);
+            neighbours = GridManager.FindNeighbours(this);
             pathNode.movementCoefficientsToNeighbours = new float[neighbours.Length];
             pathNode.extraMovementCostsToNeighbours = new float[neighbours.Length];
             

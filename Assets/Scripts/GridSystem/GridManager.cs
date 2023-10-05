@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BuildingSystem;
 using GridSystem.UI;
+using ResourceSystem.Market;
 using TimeSystem;
 using ToolTipSystem;
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace GridSystem
             
             _gridRect = new RectInt(-_gridSize/2 +_positionOffset, _gridSize);
             _mainCamera = Camera.main;
-            InitCellData();
+            InitCellDatas();
         }
 
         /*
@@ -108,7 +109,7 @@ namespace GridSystem
             return GetCellCenter(cellData.cellCoordinates);
         }
         
-        private void InitCellData()
+        private void InitCellDatas()
         {
             _cellDatas = new CellData[_gridSize.x, _gridSize.y];
            
@@ -123,20 +124,137 @@ namespace GridSystem
             foreach (var cellData in _cellDatas)
             {
                 cellData.FindNeighbours();
+                MarketManager.AddMarket(cellData);
             }
         }
 
-        public static CellData[] findNeighbours(CellData originCell)
+        public static CellData[] GetOuterBorderOfArea(List<CellData> area)
         {
-            List<CellData> neighbours = new List<CellData>();
-            for (int i = -1; i < 2; i++)
+            List<CellData> border = new();
+
+            foreach (var cell in area)
             {
-                for (int j = -1; j < 2; j++)
+                CellData[] neighbours = cell.neighbours;
+
+                foreach (var neighbour in neighbours)
                 {
-                    Vector3Int neighbour = originCell.cellCoordinates + new Vector3Int(i, j);
-                    if(i == 0 && j == 0 || CellIsOutOfGrid(neighbour)) continue;
-                    neighbours.Add(GetCellDataFromCellId(neighbour));
+                    if (!area.Contains(neighbour))
+                    {
+                        border.Add(neighbour);
+                    }
                 }
+            }
+
+            return border.ToArray();
+        }
+        
+        public static CellData[] GetInnerBorderOfArea(List<CellData> area)
+        {
+            List<CellData> border = new();
+
+            foreach (var cell in area)
+            {
+                CellData[] neighbours = cell.neighbours;
+
+                foreach (var neighbour in neighbours)
+                {
+                    if (!area.Contains(neighbour))
+                    {
+                        border.Add(cell);
+                        break;
+                    }
+                }
+            }
+
+            return border.ToArray();
+        }
+
+        public static float GetMinDistanceBetweenAreas(CellData[] areaA, CellData[] areaB)
+        {
+            float distance = float.PositiveInfinity;
+
+            foreach (var borderA in areaA)
+            {
+                foreach (var borderB in areaB)
+                {
+                    float currentDistance = CellData.Distance(borderA, borderB);
+                    if (currentDistance < distance) distance = currentDistance;
+                    if (currentDistance == 0) goto Return;
+                }
+            }
+            
+            Return:
+            return distance;
+        }
+        
+        /// <summary>
+        /// Find neighbours in range using cell indices of the grid.
+        /// If CellData are already initialized, use GetNeighbours instead.
+        /// </summary>
+        /// <returns></returns>
+        public static CellData[] FindNeighbours(CellData originCell, int range = 1, bool includeOrigin = false)
+        {
+            switch (range)
+            {
+                case 0 when !includeOrigin:
+                case < 0:
+                    return null;
+                case 0:
+                    return new[] { originCell };
+            }
+
+            List<CellData> neighbours = new List<CellData>();
+
+            for (int i = -range; i <= range; i++)
+                for (int j = -range; j <= range; j++)
+                {
+                    if (i == 0 && j == 0 && !includeOrigin) continue;
+
+                    if (TryGetCellDataFromCellId(originCell.cellCoordinates + new Vector3Int(i, j),
+                            out CellData neighbour))
+                    {
+                        neighbours.Add(neighbour);
+                    }
+                }
+
+                return neighbours.ToArray();
+        }
+
+        /// <summary>
+        /// Find neighbours in range using neighbour list stored in CellData's properties.
+        /// If CellData are not initialized yet, use FindNeighbours instead.
+        /// </summary>
+        /// <returns></returns>
+        public static CellData[] GetNeighbours(CellData originCell, int range = 1, bool includeOrigin = false)
+        {
+            switch (range)
+            {
+                case 0 when !includeOrigin:
+                case < 0:
+                    return null;
+                case 0:
+                    return new[] { originCell };
+            }
+
+            List<CellData> neighbours = new();
+            Queue<CellData> openSet = new();
+
+            if (includeOrigin) neighbours.Add(originCell);
+            openSet.Enqueue(originCell);
+
+            while (range > 0 && openSet.Count > 0)
+            {
+                CellData cursor = openSet.Dequeue();
+
+                foreach (var neighbour in cursor.neighbours)
+                {
+                    if (neighbours.Contains(neighbour)) continue;
+
+                    neighbours.Add(neighbour);
+                    openSet.Enqueue(neighbour);
+                }
+
+                range--;
             }
 
             return neighbours.ToArray();
@@ -155,9 +273,8 @@ namespace GridSystem
                 hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax - 1);
                 hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax - 1);
 
-                hoveredCell = GetCellDataFromCellId(hoveredCellIndex);
-                
-                return true; 
+                if (TryGetCellDataFromCellId(hoveredCellIndex, out hoveredCell))
+                    return true; 
             }
 
             hoveredCell = null;
@@ -205,47 +322,6 @@ namespace GridSystem
         {
             Instance._cursorMat.color = color;
         }
-        
-        public static bool ObjectIsPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject)
-        {
-            foreach (var cell in placeableObject.GetAbsoluteCellRange(referentialCell))
-            {
-                if (CellIsBlocked(cell) || CellIsOutOfGrid(cell))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool ObjectIsPlaceable(Vector3Int referentialCell, PlaceableObject placeableObject,
-            out Vector3Int[] blockedCells, out Vector3Int[] freeCells)
-        {
-            bool isBlocked = false;
-            List<Vector3Int> blockedTiles = new List<Vector3Int>();
-            List<Vector3Int> freeTiles = new List<Vector3Int>();
-            
-            foreach (var cell in placeableObject.GetAbsoluteCellRange(referentialCell))
-            {
-                if (CellIsBlocked(cell))
-                {
-                    isBlocked = true;
-                    blockedTiles.Add(cell);
-                }
-                else if (CellIsOutOfGrid(cell))
-                {
-                    isBlocked = true;
-                }
-                else
-                {
-                    freeTiles.Add(cell);
-                }
-            }
-
-            blockedCells = blockedTiles.ToArray();
-            freeCells = freeTiles.ToArray();
-            return !isBlocked;
-        }
 
         public static bool CellIsOutOfGrid(Vector3Int cell)
         {
@@ -253,15 +329,17 @@ namespace GridSystem
                     cell.x > Instance._gridRect.xMax - 1 || cell.y > Instance._gridRect.yMax - 1;
         }
         
-        public static bool CellIsBlocked(Vector3Int cell)
-        {
-            return GetCellDataFromCellId(cell).isBlocked;
-        }
-
-        public static CellData GetCellDataFromCellId(Vector3Int cell)
+        public static bool TryGetCellDataFromCellId(Vector3Int cell, out CellData cellData)
         {
             //print($"{cell} : {cell.x - Instance._gridRect.xMin}, {cell.y - Instance._gridRect.yMin}");
-            return GetCellDataFromIndex(cell.x - Instance._gridRect.xMin, cell.y - Instance._gridRect.yMin);
+            if (CellIsOutOfGrid(cell))
+            {
+                cellData = null;
+                return false;
+            }
+            
+            cellData = GetCellDataFromIndex(cell.x - Instance._gridRect.xMin, cell.y - Instance._gridRect.yMin);
+            return true;
         }
 
         public static CellData GetCellDataFromIndex(Vector2Int index)
