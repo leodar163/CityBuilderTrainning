@@ -15,6 +15,9 @@ namespace ResourceSystem.Market
         public CellData[] innerBorder => _innerBorder;
         public CellData[] outerBorder => _outerBorder;
 
+        private List<ResourceOrder> orders = new();
+        private List<(ResourceType, float, float)> demandOffers = new();
+
         public void AddCell(CellData cell)
         {
             if (cells.Contains(cell)) return;
@@ -36,6 +39,44 @@ namespace ResourceSystem.Market
         {
             _innerBorder = GridManager.GetInnerBorderOfArea(cells);
             _outerBorder = GridManager.GetOuterBorderOfArea(cells);
+        }
+
+        public void Destroy()
+        {
+                    
+        }
+
+        private void ReleaseAllOrders()
+        {
+            
+        }
+        
+        public void NotifyOrderChange(ResourceOrder order)
+        {
+            if (order.market != this) return;
+
+            if (!orders.Contains(order)) orders.Add(order);
+            
+
+            //Else, add in orders if not already, else, juste calculate new demand/offer ratio
+        }
+
+        private float GetOrderAmount(ResourceType resource)
+        {
+            
+        }
+        
+        public float GetDemandOfferRatio(ResourceType resource)
+        {
+            foreach (var demandOffer in demandOffers)
+            {
+                if (demandOffer.Item1 == resource)
+                {
+                    return demandOffer.Item2 / demandOffer.Item3;
+                }
+            }
+
+            return 0;
         }
     }
 }
