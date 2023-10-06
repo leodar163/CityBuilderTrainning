@@ -9,15 +9,18 @@ using Utils;
 
 namespace BuildingSystem.Facilities
 {
-    public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractionMode
+    public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractor
     {
         public static FacilityType SelectedFacilityType { get; private set; }
+        public bool isActive { get; private set; }
 
         [Header("Messages")] 
         [SerializeField] private LocalizedString _notEnoughPlaceException;
 
         [SerializeField] private LocalizedString _CanBePlace;
         [SerializeField] private LocalizedString _CantBePlace;
+
+        public InteractionMode interactionMode => InteractionMode.FacilityPlacing;
         
         private static ToolTipMessage _toolTipMessage;
 
@@ -25,6 +28,7 @@ namespace BuildingSystem.Facilities
 
         private void Awake()
         {
+            IInteractor.onCreated?.Invoke(this);
             SelectedFacilityType = null;
         }
 
@@ -104,7 +108,7 @@ namespace BuildingSystem.Facilities
             return _toolTipMessage;
         }
 
-        public bool isActive { get; private set; }
+        
         
         public void ActivateMode()
         {

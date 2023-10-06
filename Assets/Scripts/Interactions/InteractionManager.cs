@@ -1,21 +1,19 @@
-﻿using System;
-using BuildingSystem.Facilities;
+﻿using System.Collections.Generic;
 using BuildingSystem.Facilities.UI;
 using GridSystem;
+using UnityEngine;
 using Utils.UI;
-using Utils;
 
 namespace Interactions
 {
-    public class InteractionManager : Singleton<InteractionManager>
+    public class InteractionManager : Utils.Singleton<InteractionManager>
     {
         private InteractionModeControls _controls;
 
-        private static IInteractionMode _defaultInteractor;
+        private static List<IInteractor> s_interactors;
+        private static IInteractor _currentInteractor;
 
-        private static IInteractionMode _currentInteractor;
-        
-        private static IInteractionMode _facilityPlacer;
+        [SerializeField] private InteractionMode defaultMode = InteractionMode.GridInteraction;
 
         private void OnEnable()
         {
@@ -30,19 +28,23 @@ namespace Interactions
         private void Awake()
         {
             _controls = new InteractionModeControls();
-            _defaultInteractor = GridInteractor.Instance;
-            _currentInteractor = _defaultInteractor;
-            _currentInteractor.ActivateMode();
-
-            _facilityPlacer = FacilityPlacer.Instance;
+            IInteractor.onCreated += interactor =>
+            {
+                if (!s_interactors.Contains(interactor))
+                {
+                    s_interactors.Add(interactor);
+                }
+            };
             
+            _currentInteractor = GridInteractor.Instance;
+            _currentInteractor.ActivateMode();
         }
 
         private void Update()
         {
             if (_controls.InteractionMode.Return.WasReleasedThisFrame())
             {
-                if (_currentInteractor != _defaultInteractor)
+                if (_currentInteractor.interactionMode != defaultMode)
                 {
                     ReturnToDefaultInteractor();
                 }
@@ -60,7 +62,7 @@ namespace Interactions
 
         private void LateUpdate()
         {
-            if (_currentInteractor == _facilityPlacer && !_facilityPlacer.isActive)
+            if (_currentInteractor.interactionMode ==  InteractionMode.FacilityPlacing && !_currentInteractor.isActive)
             {
                 ReturnToDefaultInteractor();
             }
@@ -68,17 +70,21 @@ namespace Interactions
 
         public static void SwitchInteractionMode(InteractionMode mode)
         {
-            IInteractionMode interactorToActivate = mode switch
-            {
-                InteractionMode.Default => _defaultInteractor,
-                InteractionMode.FacilityPlacing => _facilityPlacer,
-                _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
-            };
-            
-            SwitchInteractionMode(interactorToActivate);
+            SwitchInteractionMode(GetInteractor(mode));
         }
 
-        public static void SwitchInteractionMode(IInteractionMode mode)
+        public static IInteractor GetInteractor(InteractionMode mode)
+        {
+            foreach (var interactor in s_interactors)
+            {
+                if (interactor.interactionMode == mode)
+                    return interactor;
+            }
+
+            return null;
+        }
+        
+        public static void SwitchInteractionMode(IInteractor mode)
         {
             if (mode.isActive || mode == _currentInteractor) return;
             
@@ -89,7 +95,7 @@ namespace Interactions
 
         public static void ReturnToDefaultInteractor()
         {
-            SwitchInteractionMode(_defaultInteractor);
+            SwitchInteractionMode(Instance.defaultMode);
         }
     }
 }

@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GridSystem;
+using Interactions;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 
 namespace ResourceSystem.Market
 {
-    public class MarketManager : Singleton<MarketManager>
+    public class MarketManager : Singleton<MarketManager>, IInteractor
     {
+        public bool isActive { get; private set; }
+        public InteractionMode interactionMode => InteractionMode.MarketVue;
+        
         public static readonly List<Market> markets = new();
         
         [SerializeField] private int _maxDistanceToMerge = 5;
@@ -25,7 +30,12 @@ namespace ResourceSystem.Market
             overlapping,
             adjacent
         }
-        
+
+        private void Awake()
+        {
+            IInteractor.onCreated?.Invoke(this);
+        }
+
         public static Market AddMarket(CellData originCell, int range)
         {
             return AddMarket(GridManager.GetNeighbours(originCell, range, true));
@@ -198,5 +208,18 @@ namespace ResourceSystem.Market
 
             return areas;
         }
+
+        
+        public void ActivateMode()
+        {
+            isActive = true;
+        }
+
+        public void DeactivateMode()
+        {
+            isActive = false;
+        }
+
+        
     }
 }

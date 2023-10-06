@@ -2,7 +2,8 @@
 {
     public enum InteractionMode
     {
-        Default,
-        FacilityPlacing
+        GridInteraction,
+        FacilityPlacing,
+        MarketVue
     }
 }

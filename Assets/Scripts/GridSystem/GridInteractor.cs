@@ -1,4 +1,5 @@
-﻿using GridSystem.UI;
+﻿using System;
+using GridSystem.UI;
 using Interactions;
 using ToolTipSystem;
 using UnityEngine;
@@ -6,9 +7,15 @@ using Utils;
 
 namespace GridSystem
 {
-    public class GridInteractor : Singleton<GridInteractor>, IInteractionMode
+    public class GridInteractor : Singleton<GridInteractor>, IInteractor
     {
         public bool isActive { get; private set; }
+        public InteractionMode interactionMode => InteractionMode.GridInteraction;
+
+        private void Awake()
+        {
+            IInteractor.onCreated?.Invoke(this);
+        }
 
         private void Update()
         {
