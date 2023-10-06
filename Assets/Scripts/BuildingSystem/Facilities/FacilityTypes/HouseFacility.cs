@@ -20,8 +20,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
         public int maxPopulationCapacity = 4;
         public float workForceRatio = 1;
 
-        private void Awake()
+
+        
+        protected override void Awake()
         {
+            base.Awake();
+            
             if (!s_populationResource) 
                 s_populationResource = ResourceSet.Default.GetResource("resource_population");
             if (!s_workforceResource) 

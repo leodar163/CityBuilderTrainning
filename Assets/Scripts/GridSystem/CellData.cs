@@ -71,12 +71,13 @@ namespace GridSystem
         {
             terrain = terrainType;
             terrain.transform.position = position;
-
+/*
             transactorSelf.RemoveContainersAll();
             
             transactorSelf.InitContainers(terrain.deckTemplate == null 
                 ? ResourceDeck.Default 
-                : terrain.deckTemplate);
+              : terrain.deckTemplate);
+              */
         }
 
         public void DetachTerrain()

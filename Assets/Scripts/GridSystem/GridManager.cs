@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using BuildingSystem;
-using GridSystem.UI;
-using Interactions;
 using ResourceSystem.Market;
 using TimeSystem;
-using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
@@ -21,6 +17,7 @@ namespace GridSystem
         [Header("Tilemaps")]
         [SerializeField] private Tilemap _feedBackTileMap;
         [SerializeField] private Tilemap _terrainTileMap;
+        [SerializeField] private Tilemap _marketVueTileMap;
         
         [Header("Bounds")] 
         [SerializeField] private Vector2Int _gridSize = new (62, 62); 
@@ -48,6 +45,7 @@ namespace GridSystem
         public enum TileMapType
         {
             Feedback,
+            Market,
             Terrain
         }
 
@@ -305,20 +303,50 @@ namespace GridSystem
             {
                 TileMapType.Feedback => Instance._feedBackTileMap,
                 TileMapType.Terrain => Instance._terrainTileMap,
+                TileMapType.Market => Instance._marketVueTileMap,
                 _ => throw new ArgumentOutOfRangeException(nameof(tileMapType), tileMapType, null)
             };
         }
         
-        public static void PaintTilemap(Tile paintTile, TileMapType tilemap, params Vector3Int[] cellsToPaint)
+        public static void PaintTilemap(TileBase paintTile, TileMapType tilemap, params Vector3Int[] cellsToPaint)
+        {
+            PaintTilemap(paintTile, tilemap, Color.white, cellsToPaint);
+        }
+        
+        public static void PaintTilemap(TileBase paintTile, TileMapType tilemap, Color tint, params Vector3Int[] cellsToPaint)
         {
             Tilemap mapToPaint = GetTilemap(tilemap);
             foreach (var cell in cellsToPaint)
             {
-                if(CellIsOutOfGrid(cell)) break;
-                mapToPaint.SetTile(cell, paintTile);
+                PaintTile(paintTile, mapToPaint, tint, cell);
             }
         }
 
+        public static void PaintTilemap(TileBase paintTile, TileMapType tilemap, params CellData[] area)
+        {
+            PaintTilemap(paintTile, tilemap, Color.white, area);
+        }
+        
+        
+        public static void PaintTilemap(TileBase paintTile, TileMapType tilemap, Color tint, params CellData[] area)
+        {
+            Tilemap mapToPaint = GetTilemap(tilemap);
+            foreach (var cell in area)
+            {
+                Vector3Int cellIndex = cell.cellCoordinates;
+                PaintTile(paintTile, mapToPaint, tint, cellIndex);
+            }
+        }
+
+        public static void PaintTile(TileBase paintTile, Tilemap tilemap, Color tint, Vector3Int cellIndex)
+        {
+            if (CellIsOutOfGrid(cellIndex)) return;
+            
+            tilemap.SetTile(cellIndex, paintTile);
+            tilemap.SetTileFlags(cellIndex, TileFlags.None);
+            tilemap.SetColor(cellIndex, tint);
+        }
+        
         public static void PaintCursor(Color color)
         {
             Instance._cursorMat.color = color;
@@ -359,6 +387,11 @@ namespace GridSystem
             {
                 cell.OnMonthUpdate();
             }
+        }
+
+        public static void ShowTileMap(TileMapType tileMapType, bool show)
+        {
+            GetTilemap(tileMapType).gameObject.SetActive(show);
         }
     }
 }

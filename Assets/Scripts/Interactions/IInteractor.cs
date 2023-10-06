@@ -4,7 +4,7 @@ namespace Interactions
 {
     public interface IInteractor
     {
-        public static Action<IInteractor> onCreated;
+        public static Action<IInteractor> onEnable;
 
         public bool isActive { get;}
         public void ActivateMode();

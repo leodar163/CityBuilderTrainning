@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using BuildingSystem.Facilities;
 using GridSystem;
+using UnityEngine;
 
 namespace ResourceSystem.Market
 {
@@ -10,6 +10,8 @@ namespace ResourceSystem.Market
         private CellData[] _innerBorder;
         private CellData[] _outerBorder;
 
+        public Color color = Color.magenta;
+        
         public CellData[] innerBorder => _innerBorder;
         public CellData[] outerBorder => _outerBorder;
 

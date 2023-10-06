@@ -10,8 +10,9 @@ namespace BuildingSystem.Facilities.FacilityTypes
     {
         private static ResourceType environmentResource;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             if (!environmentResource) environmentResource = ResourceSet.Default.GetResource("resource_environment");
         }
 

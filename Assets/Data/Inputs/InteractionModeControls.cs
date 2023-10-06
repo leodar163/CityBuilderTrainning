@@ -44,6 +44,15 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenMarketVue"",
+                    ""type"": ""Button"",
+                    ""id"": ""46dcb384-3f67-41e0-a991-530cdaf8ef41"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -79,6 +88,17 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
                     ""action"": ""OpenFacilityBuildingMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8a881cc-9217-4066-b7f2-600283bc4e1c"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMarketVue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -89,6 +109,7 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
         m_InteractionMode = asset.FindActionMap("InteractionMode", throwIfNotFound: true);
         m_InteractionMode_Return = m_InteractionMode.FindAction("Return", throwIfNotFound: true);
         m_InteractionMode_OpenFacilityBuildingMode = m_InteractionMode.FindAction("OpenFacilityBuildingMode", throwIfNotFound: true);
+        m_InteractionMode_OpenMarketVue = m_InteractionMode.FindAction("OpenMarketVue", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -152,12 +173,14 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
     private List<IInteractionModeActions> m_InteractionModeActionsCallbackInterfaces = new List<IInteractionModeActions>();
     private readonly InputAction m_InteractionMode_Return;
     private readonly InputAction m_InteractionMode_OpenFacilityBuildingMode;
+    private readonly InputAction m_InteractionMode_OpenMarketVue;
     public struct InteractionModeActions
     {
         private @InteractionModeControls m_Wrapper;
         public InteractionModeActions(@InteractionModeControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Return => m_Wrapper.m_InteractionMode_Return;
         public InputAction @OpenFacilityBuildingMode => m_Wrapper.m_InteractionMode_OpenFacilityBuildingMode;
+        public InputAction @OpenMarketVue => m_Wrapper.m_InteractionMode_OpenMarketVue;
         public InputActionMap Get() { return m_Wrapper.m_InteractionMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -173,6 +196,9 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
             @OpenFacilityBuildingMode.started += instance.OnOpenFacilityBuildingMode;
             @OpenFacilityBuildingMode.performed += instance.OnOpenFacilityBuildingMode;
             @OpenFacilityBuildingMode.canceled += instance.OnOpenFacilityBuildingMode;
+            @OpenMarketVue.started += instance.OnOpenMarketVue;
+            @OpenMarketVue.performed += instance.OnOpenMarketVue;
+            @OpenMarketVue.canceled += instance.OnOpenMarketVue;
         }
 
         private void UnregisterCallbacks(IInteractionModeActions instance)
@@ -183,6 +209,9 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
             @OpenFacilityBuildingMode.started -= instance.OnOpenFacilityBuildingMode;
             @OpenFacilityBuildingMode.performed -= instance.OnOpenFacilityBuildingMode;
             @OpenFacilityBuildingMode.canceled -= instance.OnOpenFacilityBuildingMode;
+            @OpenMarketVue.started -= instance.OnOpenMarketVue;
+            @OpenMarketVue.performed -= instance.OnOpenMarketVue;
+            @OpenMarketVue.canceled -= instance.OnOpenMarketVue;
         }
 
         public void RemoveCallbacks(IInteractionModeActions instance)
@@ -204,5 +233,6 @@ public partial class @InteractionModeControls: IInputActionCollection2, IDisposa
     {
         void OnReturn(InputAction.CallbackContext context);
         void OnOpenFacilityBuildingMode(InputAction.CallbackContext context);
+        void OnOpenMarketVue(InputAction.CallbackContext context);
     }
 }

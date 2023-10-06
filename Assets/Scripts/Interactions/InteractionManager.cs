@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BuildingSystem.Facilities.UI;
-using GridSystem;
 using UnityEngine;
 using Utils.UI;
 
@@ -10,7 +10,7 @@ namespace Interactions
     {
         private InteractionModeControls _controls;
 
-        private static List<IInteractor> s_interactors;
+        private static List<IInteractor> s_interactors = new();
         private static IInteractor _currentInteractor;
 
         [SerializeField] private InteractionMode defaultMode = InteractionMode.GridInteraction;
@@ -28,15 +28,20 @@ namespace Interactions
         private void Awake()
         {
             _controls = new InteractionModeControls();
-            IInteractor.onCreated += interactor =>
+            s_interactors.Clear();
+            
+            IInteractor.onEnable += interactor =>
             {
                 if (!s_interactors.Contains(interactor))
                 {
                     s_interactors.Add(interactor);
                 }
             };
-            
-            _currentInteractor = GridInteractor.Instance;
+        }
+
+        private void Start()
+        {
+            _currentInteractor = GetInteractor(defaultMode);
             _currentInteractor.ActivateMode();
         }
 
@@ -54,6 +59,19 @@ namespace Interactions
                 }
             }
 
+            if (_controls.InteractionMode.OpenMarketVue.WasReleasedThisFrame())
+            {
+                if (_currentInteractor.interactionMode != InteractionMode.MarketVue)
+                {
+                    SwitchInteractionMode(InteractionMode.MarketVue);
+                }
+                else
+                {
+                    ReturnToDefaultInteractor();
+                }
+                
+            }
+
             if (_controls.InteractionMode.OpenFacilityBuildingMode.WasReleasedThisFrame())
             {
                 FacilityBuildingPanelUI.Instance.SwitchPanelOpening();
@@ -68,11 +86,6 @@ namespace Interactions
             }
         }
 
-        public static void SwitchInteractionMode(InteractionMode mode)
-        {
-            SwitchInteractionMode(GetInteractor(mode));
-        }
-
         public static IInteractor GetInteractor(InteractionMode mode)
         {
             foreach (var interactor in s_interactors)
@@ -82,6 +95,11 @@ namespace Interactions
             }
 
             return null;
+        }
+        
+        public static void SwitchInteractionMode(InteractionMode mode)
+        {
+            SwitchInteractionMode(GetInteractor(mode));
         }
         
         public static void SwitchInteractionMode(IInteractor mode)

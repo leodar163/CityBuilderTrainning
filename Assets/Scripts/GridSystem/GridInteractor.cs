@@ -12,11 +12,11 @@ namespace GridSystem
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.GridInteraction;
 
-        private void Awake()
+        private void OnEnable()
         {
-            IInteractor.onCreated?.Invoke(this);
+            IInteractor.onEnable?.Invoke(this);
         }
-
+        
         private void Update()
         {
             if (!isActive) return;

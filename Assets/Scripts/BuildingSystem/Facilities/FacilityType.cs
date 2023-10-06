@@ -57,7 +57,7 @@ namespace BuildingSystem.Facilities
             if (!_collider) TryGetComponent(out _collider);
         }
 
-        protected void Awake()
+        protected virtual void Awake()
         {
             monthlyProduction = _ => producerSelf.Produce();
         }

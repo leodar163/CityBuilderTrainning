@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb328ee4777142cfa9dc91d3b2360849, type: 3}
-  m_Name: ScriptableResourceDeckDefault
+  m_Name: ResourceDeckDefault
   m_EditorClassIdentifier: 
   _sliders:
   - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}

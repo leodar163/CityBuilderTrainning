@@ -28,8 +28,12 @@ namespace BuildingSystem.Facilities
 
         private void Awake()
         {
-            IInteractor.onCreated?.Invoke(this);
             SelectedFacilityType = null;
+        }
+
+        private void OnEnable()
+        {
+            IInteractor.onEnable?.Invoke(this);   
         }
 
         private void Update()

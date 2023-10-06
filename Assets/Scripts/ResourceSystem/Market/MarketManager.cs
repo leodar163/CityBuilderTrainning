@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using GridSystem;
 using Interactions;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace ResourceSystem.Market
 {
@@ -12,6 +13,7 @@ namespace ResourceSystem.Market
     {
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.MarketVue;
+        public TileBase marketTile;
         
         public static readonly List<Market> markets = new();
         
@@ -33,7 +35,12 @@ namespace ResourceSystem.Market
 
         private void Awake()
         {
-            IInteractor.onCreated?.Invoke(this);
+            DeactivateMode();
+        }
+
+        private void OnEnable()
+        {
+            IInteractor.onEnable?.Invoke(this);   
         }
 
         public static Market AddMarket(CellData originCell, int range)
@@ -43,12 +50,17 @@ namespace ResourceSystem.Market
 
         public static Market AddMarket(params CellData[] area)
         {
-            Market market = new();
+            Market market = new()
+            {
+                color = Random.ColorHSV()
+            };
 
             foreach (var cell in area)
             {
                 market.AddCell(cell);
             }
+            
+            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, market.color, area);
 
             markets.Add(market);
             
@@ -56,7 +68,7 @@ namespace ResourceSystem.Market
             
             return market;
         }
-        
+
         public static float GetDistanceBetweenMarkets(Market a, Market b)
         {
             return GridManager.GetMinDistanceBetweenAreas(a.innerBorder, b.innerBorder);
@@ -112,7 +124,11 @@ namespace ResourceSystem.Market
         {
             if (!CanMergeMarkets(origin, target, out error)) return;
 
-            foreach (var cell in target.cells)
+            CellData[] targetArea = target.cells.ToArray();
+            
+            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, origin.color, targetArea);
+            
+            foreach (var cell in targetArea)
             {
                 origin.AddCell(cell);
                 target.RemoveCell(cell);
@@ -134,7 +150,7 @@ namespace ResourceSystem.Market
             markets.Remove(marketToRemove);
         }
 
-        public static void RemoveCellsFromMarket(Market marketToAmputate, List<CellData> cellsToRemove)
+        public static void AmputateMarket(Market marketToAmputate, List<CellData> cellsToRemove)
         {
             foreach (var cell in cellsToRemove)
             {
@@ -213,11 +229,13 @@ namespace ResourceSystem.Market
         public void ActivateMode()
         {
             isActive = true;
+            GridManager.ShowTileMap(GridManager.TileMapType.Market, isActive);
         }
 
         public void DeactivateMode()
         {
             isActive = false;
+            GridManager.ShowTileMap(GridManager.TileMapType.Market, isActive);
         }
 
         
