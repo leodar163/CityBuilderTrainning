@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GridSystem;
 using Interactions;
 using UnityEngine;
@@ -16,7 +15,7 @@ namespace ResourceSystem.Market
         public TileBase marketTile;
         
         public static readonly List<Market> markets = new();
-        
+
         [SerializeField] private int _maxDistanceToMerge = 5;
 
         public static int MaxDistanceToMerge
@@ -25,7 +24,7 @@ namespace ResourceSystem.Market
             set => Instance._maxDistanceToMerge = value;
         }
 
-        public enum MergeError
+        public enum MergeCase
         {
             noError,
             tooFarAway,
@@ -43,6 +42,8 @@ namespace ResourceSystem.Market
             IInteractor.onEnable?.Invoke(this);   
         }
 
+        
+        
         public static Market AddMarket(CellData originCell, int range)
         {
             return AddMarket(GridManager.GetNeighbours(originCell, range, true));
@@ -58,6 +59,7 @@ namespace ResourceSystem.Market
             foreach (var cell in area)
             {
                 market.AddCell(cell);
+                cell.market = market;
             }
             
             GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, market.color, area);
@@ -94,17 +96,17 @@ namespace ResourceSystem.Market
             return false;
         }
         
-        public static bool CanMergeMarkets(Market origin, Market target, out MergeError error)
+        public static bool CanMergeMarkets(Market origin, Market target, out MergeCase mergeCase)
         {
             if (AreMarketOverlapping(origin, target))
             {
-                error = MergeError.overlapping;
+                mergeCase = MergeCase.overlapping;
                 return false;
             }
 
             if (AreMarketAdjacent(origin, target))
             {
-                error = MergeError.adjacent;
+                mergeCase = MergeCase.adjacent;
                 return true;
             }
             
@@ -112,17 +114,17 @@ namespace ResourceSystem.Market
 
             if (distance > Instance._maxDistanceToMerge)
             {
-                error = MergeError.tooFarAway;
+                mergeCase = MergeCase.tooFarAway;
                 return false;
             }
 
-            error = MergeError.noError;
+            mergeCase = MergeCase.noError;
             return true;
         }
 
-        public static void MergeMarkets(Market origin, Market target, out MergeError error)
+        public static void MergeMarkets(Market origin, Market target, out MergeCase mergeCase)
         {
-            if (!CanMergeMarkets(origin, target, out error)) return;
+            if (!CanMergeMarkets(origin, target, out mergeCase)) return;
 
             CellData[] targetArea = target.cells.ToArray();
             
