@@ -58,8 +58,13 @@ namespace ResourceSystem.Market
 
             foreach (var cell in area)
             {
+                Market oldMarket = cell.market;
+
                 market.AddCell(cell);
                 cell.market = market;
+                
+                oldMarket?.RemoveCell(cell);
+                if (oldMarket != null && oldMarket.cells.Count == 0) RemoveMarket(oldMarket); 
             }
             
             GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, market.color, area);

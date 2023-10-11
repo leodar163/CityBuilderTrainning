@@ -19,7 +19,6 @@ namespace ResourceSystem.Market
 
         private readonly List<ResourceOrder> _orders = new();
         private readonly List<ResourceValue> _resourceValues = new();
-        private readonly List<IEconomicActor> _economicActors = new();
 
         public void AddCell(CellData cell)
         {
@@ -40,7 +39,6 @@ namespace ResourceSystem.Market
             Parallel.ForEach(GetActorsByCell(cell), actor =>
             {
                 actor.NotifyMarketChange();
-                _economicActors.Remove(actor);
             });
         }
 
@@ -54,9 +52,9 @@ namespace ResourceSystem.Market
         {
             List<IEconomicActor> filteredActors = new();
 
-            Parallel.ForEach(_economicActors, actor =>
+            Parallel.ForEach(_orders, order =>
             {
-                if (actor.cell == cell) filteredActors.Add(actor);
+                if (order.sender.cell == cell) filteredActors.Add(order.sender);
             });
 
             return filteredActors;
@@ -69,16 +67,11 @@ namespace ResourceSystem.Market
             if (!_orders.Contains(order))
             {
                 _orders.Add(order);
-                if (!_economicActors.Contains(order.sender))
-                    _economicActors.Add(order.sender);
+                
             }
             else if (order.quantity == 0)
             {
                 _orders.Remove(order);
-                if (_economicActors.Contains(order.sender) && GetOrderNbrByActor(order.sender) <= 0)
-                {
-                    _economicActors.Remove(order.sender);
-                }
             }
 
             if (!TryGetResourceValue(order.resource, out ResourceValue resourceValue))
@@ -99,20 +92,6 @@ namespace ResourceSystem.Market
             }
         }
 
-        private int GetOrderNbrByActor(IEconomicActor actor)
-        {
-            if (!_economicActors.Contains(actor)) return -1;
-
-            int nbrOrder = 0;
-
-            Parallel.ForEach(_orders, order =>
-            {
-                if (order.sender == actor) nbrOrder++;
-            });
-            
-            return nbrOrder;
-        }
-        
         private void CalculateResourceValueAmount(ResourceValue resourceValue, OrderType orderType)
         {
             Parallel.ForEach(_orders, order =>
