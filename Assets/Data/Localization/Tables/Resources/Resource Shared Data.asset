@@ -43,6 +43,18 @@ MonoBehaviour:
     m_Key: Res_Habitation
     m_Metadata:
       m_Items: []
+  - m_Id: 22888606745645056
+    m_Key: Res_Demand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22888652190928896
+    m_Key: Res_Offer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22888675628699648
+    m_Key: Res_Ratio
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

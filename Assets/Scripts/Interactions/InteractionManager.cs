@@ -49,13 +49,13 @@ namespace Interactions
         {
             if (_controls.InteractionMode.Return.WasReleasedThisFrame())
             {
-                if (_currentInteractor.interactionMode != defaultMode)
-                {
-                    ReturnToDefaultInteractor();
-                }
-                else if (IPanel.focusedPanel != null)
+                if (IPanel.focusedPanel != null)
                 {
                     IPanel.focusedPanel.ClosePanel();
+                }
+                else if (_currentInteractor.interactionMode != defaultMode)
+                {
+                    ReturnToDefaultInteractor();
                 }
             }
 

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GridSystem;
 using Interactions;
+using ResourceSystem.Market.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
@@ -13,7 +15,12 @@ namespace ResourceSystem.Market
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.MarketVue;
         public TileBase marketTile;
-        
+        public TileBase highlightMarketTile;
+
+        private static Market s_selectedMarket;
+        private static Market s_highlightMarket;
+        public static Market SelectedMarket => s_selectedMarket;
+
         public static readonly List<Market> markets = new();
 
         [SerializeField] private int _maxDistanceToMerge = 5;
@@ -42,8 +49,42 @@ namespace ResourceSystem.Market
             IInteractor.onEnable?.Invoke(this);   
         }
 
-        
-        
+
+        private void Update()
+        {
+            if (!isActive) return;
+
+            Market hoveredMarket = GridManager.HoveredCell?.market;
+
+            if (hoveredMarket != null && Input.GetMouseButtonUp(0))
+            {
+                s_selectedMarket = hoveredMarket;
+                MarketInfoPanel.Instance.OpenPanel();
+            }
+            
+            Market highlightMarket = s_selectedMarket ?? hoveredMarket;
+            if (s_highlightMarket != null && highlightMarket != s_highlightMarket) UnHighlightMarket();
+
+            s_highlightMarket = highlightMarket;
+            HighlightMarket();
+        }
+
+        public static void HighlightMarket()
+        {
+            if (s_highlightMarket == null) return;
+
+            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market,
+                s_highlightMarket.color + Color.white * 0.2f, s_highlightMarket.cells.ToArray());
+        }
+
+        public static void UnHighlightMarket()
+        {
+            if (s_highlightMarket == null) return;
+            
+            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market,
+                s_highlightMarket.color, s_highlightMarket.cells.ToArray());
+        }
+
         public static Market AddMarket(CellData originCell, int range)
         {
             return AddMarket(GridManager.GetNeighbours(originCell, range, true));
@@ -242,9 +283,9 @@ namespace ResourceSystem.Market
         public void DeactivateMode()
         {
             isActive = false;
+            UnHighlightMarket();
             GridManager.ShowTileMap(GridManager.TileMapType.Market, isActive);
         }
 
-        
     }
 }

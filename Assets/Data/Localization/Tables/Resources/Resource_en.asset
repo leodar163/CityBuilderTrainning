@@ -46,6 +46,18 @@ MonoBehaviour:
     m_Localized: habitation
     m_Metadata:
       m_Items: []
+  - m_Id: 22888606745645056
+    m_Localized: demand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22888652190928896
+    m_Localized: offer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22888675628699648
+    m_Localized: ratio
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

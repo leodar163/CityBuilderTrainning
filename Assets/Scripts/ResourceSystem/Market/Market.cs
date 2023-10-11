@@ -8,6 +8,7 @@ namespace ResourceSystem.Market
 {
     public class Market
     {
+        public string name = "market_no_name";
         public readonly List<CellData> cells = new();
         private CellData[] _innerBorder;
         private CellData[] _outerBorder;
@@ -18,7 +19,7 @@ namespace ResourceSystem.Market
         public CellData[] outerBorder => _outerBorder;
 
         private readonly List<ResourceOrder> _orders = new();
-        private readonly List<ResourceValue> _resourceValues = new();
+        public readonly List<ResourceValue> _resourceValues = new();
 
         public void AddCell(CellData cell)
         {
