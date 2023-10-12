@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridSystem;
-using ResourceSystem.Market;
 using ResourceSystem.Markets;
 
 namespace BuildingSystem.Facilities.FacilityTypes
