@@ -55,6 +55,14 @@ MonoBehaviour:
     m_Key: Fac_FacilitiesName
     m_Metadata:
       m_Items: []
+  - m_Id: 19986754475544576
+    m_Key: Fac_Deposit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19987115957440512
+    m_Key: Fac_DepositDesc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

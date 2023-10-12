@@ -17,7 +17,7 @@ namespace BuildingSystem.Facilities.UI
 
         private void Start()
         {
-            _button.onClick.AddListener(() => FacilityPlacer.SelectFacility(Facility));
+            _button.onClick.AddListener(() => FacilityPlacer.SelectFacilityToPlace(Facility));
         }
 
         private void Update()

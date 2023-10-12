@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Interactions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,7 +87,7 @@ namespace ResourceSystem.Market.UI
         public override void OpenPanel()
         {
             base.OpenPanel();
-            _market = MarketManager.SelectedMarket;
+            _market = MarketInteractor.SelectedMarket;
             UpdateDisplay();
             _panel.gameObject.SetActive(true);
         }

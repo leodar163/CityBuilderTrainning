@@ -123,7 +123,7 @@ namespace GridSystem
             foreach (var cellData in _cellDatas)
             {
                 cellData.FindNeighbours();
-                MarketManager.AddMarket(cellData);
+                MarketManager.AddMarket(true, cellData);
             }
         }
 

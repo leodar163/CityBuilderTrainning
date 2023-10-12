@@ -9,6 +9,7 @@ namespace ResourceSystem.Market
     public class Market
     {
         public string name = "market_no_name";
+        public bool isEcosystem = true;
         public readonly List<CellData> cells = new();
         private CellData[] _innerBorder;
         private CellData[] _outerBorder;

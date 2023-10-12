@@ -12,11 +12,6 @@ namespace GridSystem
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.GridInteraction;
 
-        private void OnEnable()
-        {
-            IInteractor.onEnable?.Invoke(this);
-        }
-        
         private void Update()
         {
             if (!isActive) return;

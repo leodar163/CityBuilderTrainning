@@ -31,11 +31,6 @@ namespace BuildingSystem.Facilities
             SelectedFacilityType = null;
         }
 
-        private void OnEnable()
-        {
-            IInteractor.onEnable?.Invoke(this);   
-        }
-
         private void Update()
         {
             if (!SelectedFacilityType || !isActive) return;
@@ -55,7 +50,7 @@ namespace BuildingSystem.Facilities
             }
         }
 
-        public static void SelectFacility(FacilityType facilityTypeToSelect)
+        public static void SelectFacilityToPlace(FacilityType facilityTypeToSelect)
         {
             SelectedFacilityType = facilityTypeToSelect;
             InteractionManager.SwitchInteractionMode(InteractionMode.FacilityPlacing);

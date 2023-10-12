@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BuildingSystem.Facilities.UI;
 using UnityEngine;
 using Utils.UI;
@@ -10,6 +12,7 @@ namespace Interactions
     {
         private InteractionModeControls _controls;
 
+        [SerializeField] private MonoBehaviour[] _interactorsBase;
         private static List<IInteractor> s_interactors = new();
         private static IInteractor _currentInteractor;
 
@@ -25,24 +28,47 @@ namespace Interactions
             _controls.Disable();
         }
 
+        private void OnValidate()
+        {
+            List<MonoBehaviour> interactors = new();
+
+            foreach (var mono in _interactorsBase)
+            {
+                if (mono is IInteractor && !interactors.Contains(mono))
+                {
+                    interactors.Add(mono);
+                }
+            }
+
+            _interactorsBase = interactors.ToArray();
+        }
+
         private void Awake()
         {
             _controls = new InteractionModeControls();
+
             s_interactors.Clear();
-            
-            IInteractor.onEnable += interactor =>
+
+            foreach (var mono in _interactorsBase)
             {
-                if (!s_interactors.Contains(interactor))
+                if (mono is IInteractor interactor && !s_interactors.Contains(interactor))
                 {
                     s_interactors.Add(interactor);
                 }
-            };
+            }
         }
 
         private void Start()
         {
-            _currentInteractor = GetInteractor(defaultMode);
-            _currentInteractor.ActivateMode();
+            if (TryGetInteractor(defaultMode, out _currentInteractor))
+            {
+                _currentInteractor.ActivateMode();
+            }
+            else
+            {
+                throw new NullReferenceException(
+                    $"Miss a default interactor registered in {name} to properly initialize");
+            }
         }
 
         private void Update()
@@ -80,26 +106,37 @@ namespace Interactions
 
         private void LateUpdate()
         {
-            if (_currentInteractor.interactionMode ==  InteractionMode.FacilityPlacing && !_currentInteractor.isActive)
+            if (_currentInteractor is { interactionMode: InteractionMode.FacilityPlacing, isActive: false })
             {
                 ReturnToDefaultInteractor();
             }
         }
 
-        public static IInteractor GetInteractor(InteractionMode mode)
+        public static bool TryGetInteractor(InteractionMode mode, out IInteractor interactor)
         {
-            foreach (var interactor in s_interactors)
+            foreach (var _interactor in s_interactors)
             {
-                if (interactor.interactionMode == mode)
-                    return interactor;
+                if (_interactor.interactionMode != mode) continue;
+                interactor = _interactor;
+                return true;
             }
 
-            return null;
+            interactor = null;
+            return false;
         }
         
         public static void SwitchInteractionMode(InteractionMode mode)
         {
-            SwitchInteractionMode(GetInteractor(mode));
+            if (TryGetInteractor(mode, out IInteractor interactor))
+            {
+                SwitchInteractionMode(interactor);
+            }
+            else
+            {
+                throw new NullReferenceException(
+                    $"Try to switch to interaction mode '{Enum.GetName(typeof(InteractionMode), mode)}'" +
+                    $" but there is not interactor registered in {Instance.name}");
+            }
         }
         
         public static void SwitchInteractionMode(IInteractor mode)

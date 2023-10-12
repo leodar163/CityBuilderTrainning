@@ -15,3 +15,4 @@ MonoBehaviour:
   facilities:
   - {fileID: 5786086996527893849, guid: 51730d54449ded04ebb29d965f9dd87f, type: 3}
   - {fileID: 2756733645121397640, guid: c487eb8ec31081b46b15919e759c358e, type: 3}
+  - {fileID: 3037515107467219764, guid: 0379c165fd91f0d4c84a2a780c941210, type: 3}
