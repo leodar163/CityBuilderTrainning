@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using ResourceSystem;
+using ResourceSystem.Markets;
+using ResourceSystem.Productions;
 using TerrainSystem;
 using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class TreeFacility : FacilityType
+    public class TreeFacility : FacilityType, IProducer
     {
-        private static ResourceType environmentResource;
+        List<ResourceOrder> IEconomicActor.orders { get; } = new();
 
-        protected void Awake()
-        {
-            if (!environmentResource) environmentResource = ResourceSet.Default.GetResource("resource_environment");
-        }
+        public IEconomicActor economicActorSelf => this;
+        public IProducer producerSelf => this;
+
+        [Header("Production")] 
+        [SerializeField] private List<ProductionLine> _productionLines;
+        public List<ProductionLine> productionLines => _productionLines;
 
         public override bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
         {

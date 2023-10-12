@@ -1,5 +1,8 @@
-﻿namespace ResourceSystem
+﻿using System;
+
+namespace ResourceSystem
 {
+    [Serializable]
     public struct ResourceQuantity
     {
         public ResourceType resource;

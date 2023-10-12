@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using OptiCollections;
+﻿using OptiCollections;
 using PathFinding;
-using ResourceSystem.Market;
 using ResourceSystem.Markets;
-using ResourceSystem.Transactions;
 using TerrainSystem;
 using UnityEngine;
 
 namespace GridSystem
 {
-    public class CellData : IHeapComparable<CellData>, ITransactor
+    public class CellData : IHeapComparable<CellData>
     {
         public Market market;
         
@@ -18,11 +15,7 @@ namespace GridSystem
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
         public TerrainType terrain { get; private set; }
-        
-        
-        List<ResourceContainer> ITransactor.registry { get; } = new();
-        public ITransactor transactorSelf => this;
-        
+
         public CellData(Vector3Int cellCoordinates)
         {
             this.cellCoordinates = cellCoordinates;
@@ -85,8 +78,7 @@ namespace GridSystem
 
         public void OnMonthUpdate()
         {
-            transactorSelf.AskInputs();
-            transactorSelf.GiveOutputs();
+            
         }
     }
 }

@@ -20,7 +20,6 @@ namespace BuildingSystem.Facilities
         [Header("Description")]
         [SerializeField] protected LocalizedString _facilityName;
         [SerializeField] protected LocalizedString _facilityDescription;
-        [SerializeField] protected LocalizedString _resourceModifications;
         [SerializeField] protected LocalizedString _placementConditions;
 
         private Action<InGameDate> monthlyProduction;
@@ -109,11 +108,6 @@ namespace BuildingSystem.Facilities
                           $"\n{FormatManager.separator}\n{_placementConditions.GetLocalizedString()}"
             };
         }
-        #endregion
-        
-
-        #region PRODUCTION
-
         #endregion
     }
 }

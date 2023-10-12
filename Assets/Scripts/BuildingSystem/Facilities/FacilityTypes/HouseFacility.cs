@@ -1,53 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using GridSystem;
-using ResourceSystem;
-using ResourceSystem.Global;
-using ResourceSystem.Transactions;
+﻿using System.Collections.Generic;
+using ResourceSystem.Markets;
+using ResourceSystem.Productions;
 using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class HouseFacility : FacilityType
+    public class HouseFacility : FacilityType, IProducer
     {
-        private static ResourceType s_populationResource;
-        private static ResourceType s_workforceResource;
-        private static ResourceType s_habitationResource;
-        private ResourceContainer _popContainer;
+        List<ResourceOrder> IEconomicActor.orders { get; } = new();
 
-        public int inhabitants => (int)_popContainer.totalQuantity;
+        public IEconomicActor economicActorSelf => this;
+        public IProducer producerSelf => this;
 
-        public int maxPopulationCapacity = 4;
-        public float workForceRatio = 1;
-
-
-        
-        protected void Awake()
-        {
-            if (!s_populationResource) 
-                s_populationResource = ResourceSet.Default.GetResource("resource_population");
-            if (!s_workforceResource) 
-                s_workforceResource = ResourceSet.Default.GetResource("resource_workforce");
-            if (!s_habitationResource) 
-                s_habitationResource = ResourceSet.Default.GetResource("resource_habitation");
-            
-            /*
-            s_mainPopulationSlider ??= GlobalResourceDeck.deck.GetSlider(s_populationResource);
-            s_mainWorkForceSlider ??= GlobalResourceDeck.deck.GetSlider(s_workforceResource);
-            */
-        }
-
-        /*
-        public override ResourceDelta[] GetResourceDelta()
-        {
-            //print(name + _selfBorrower.GetBorrowedQuantity(s_populationResource));
-            
-            return new ResourceDelta[]
-            {
-                new ResourceDelta(s_workforceResource, quantityDelta: workForceRatio * inhabitants),
-                new ResourceDelta(s_habitationResource, quantityDelta: maxPopulationCapacity)
-            };
-        }
-        */
+        [Header("Production")] 
+        [SerializeField] private List<ProductionLine> _productionLines;
+        public List<ProductionLine> productionLines => _productionLines;
     }
 }

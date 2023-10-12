@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using BuildingSystem.Facilities;
-using BuildingSystem.Facilities.FacilityTypes;
 using BuildingSystem.Facilities.UI;
 using ResourceSystem;
+using ResourceSystem.Markets;
 using ResourceSystem.UI;
 using TMPro;
 using UnityEngine;
@@ -72,7 +72,8 @@ namespace GridSystem.UI
             if (currentCell != null)
             {
                 CheckForFacilities();
-                _populationSlider.resourceSlider.nativeQuantity = GetPopNbr();
+                _populationSlider.resourceSlider.nativeQuantity = 
+                    currentCell.market.GetResourceValueAmount(_populationSlider.resource, OrderType.Offer);
             }
         }
 
@@ -101,8 +102,6 @@ namespace GridSystem.UI
 
                 TryAddFacilityInfo(facilityTypeToDisplay);
             }
-
-            AssignSliders();
         }
 
         private bool TryAddFacilityInfo(FacilityType facilityType)
@@ -131,33 +130,6 @@ namespace GridSystem.UI
             }
             
             _facilityCapacity.SetText($"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}");
-        }
-
-        private void AssignSliders()
-        {
-            /*
-            _habitationSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_habitationSlider.resource);
-            _environmentSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_environmentSlider.resource);
-            _workforceSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_workforceSlider.resource);
-            _foodSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_foodSlider.resource);
-            _woodSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_woodSlider.resource);
-            _mineralsSlider.resourceSlider = currentCell.resourceDeck.GetSlider(_mineralsSlider.resource);
-            */
-        }
-
-        private int GetPopNbr()
-        {
-            int popNbr = 0;
-
-            for (int i = 0; i < currentCell.terrain.facilityCount; i++)
-            {
-                if (currentCell.terrain.GetFacility(i) is HouseFacility house)
-                {
-                    popNbr += house.inhabitants;
-                }
-            }
-
-            return popNbr;
         }
     }
 }

@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ResourceSystem.Markets;
 using UnityEngine;
 
 namespace ResourceSystem.Productions
 {
+    [Serializable]
     public class ProductionLine
     {
+        public string name;
         private float _efficiency;
 
         public float efficiency => _efficiency;
