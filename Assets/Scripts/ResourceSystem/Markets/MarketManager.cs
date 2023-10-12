@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GridSystem;
-using Interactions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
 using Random = UnityEngine.Random;
 
-namespace ResourceSystem.Market
+namespace ResourceSystem.Markets
 {
     public class MarketManager : Singleton<MarketManager>
     {
         public TileBase marketTile;
 
-        public static readonly List<Market> markets = new();
+        public static readonly List<Markets.Market> markets = new();
 
         [SerializeField] private int _maxDistanceToMerge = 5;
 
@@ -31,14 +29,14 @@ namespace ResourceSystem.Market
             adjacent
         }
 
-        public static Market AddMarket(CellData originCell, int range, bool isEcosystem = true)
+        public static Markets.Market AddMarket(CellData originCell, int range, bool isEcosystem = true)
         {
             return AddMarket(isEcosystem, GridManager.GetNeighbours(originCell, range, true));
         }
 
-        public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
+        public static Markets.Market AddMarket(bool isEcosystem = true, params CellData[] area )
         {
-            Market market = new()
+            Markets.Market market = new()
             {
                 color = Random.ColorHSV(),
                 isEcosystem = isEcosystem
@@ -46,7 +44,7 @@ namespace ResourceSystem.Market
 
             foreach (var cell in area)
             {
-                Market oldMarket = cell.market;
+                Markets.Market oldMarket = cell.market;
 
                 market.AddCell(cell);
                 cell.market = market;
@@ -64,12 +62,12 @@ namespace ResourceSystem.Market
             return market;
         }
 
-        public static float GetDistanceBetweenMarkets(Market a, Market b)
+        public static float GetDistanceBetweenMarkets(Markets.Market a, Markets.Market b)
         {
             return GridManager.GetMinDistanceBetweenAreas(a.innerBorder, b.innerBorder);
         }
 
-        public static bool AreMarketOverlapping(Market a, Market b)
+        public static bool AreMarketOverlapping(Markets.Market a, Markets.Market b)
         {
             foreach (var cell in a.cells)
             {
@@ -79,7 +77,7 @@ namespace ResourceSystem.Market
             return false;
         }
 
-        public static bool AreMarketAdjacent(Market a, Market b)
+        public static bool AreMarketAdjacent(Markets.Market a, Markets.Market b)
         {
             foreach (var border in a.outerBorder)
             {
@@ -89,7 +87,7 @@ namespace ResourceSystem.Market
             return false;
         }
         
-        public static bool CanMergeMarkets(Market origin, Market target, out MergeCase mergeCase)
+        public static bool CanMergeMarkets(Markets.Market origin, Markets.Market target, out MergeCase mergeCase)
         {
             if (AreMarketOverlapping(origin, target))
             {
@@ -115,7 +113,7 @@ namespace ResourceSystem.Market
             return true;
         }
 
-        public static void MergeMarkets(Market origin, Market target, out MergeCase mergeCase)
+        public static void MergeMarkets(Markets.Market origin, Markets.Market target, out MergeCase mergeCase)
         {
             if (!CanMergeMarkets(origin, target, out mergeCase)) return;
 
@@ -133,7 +131,7 @@ namespace ResourceSystem.Market
             RemoveMarket(target);
         }
         
-        public static void RemoveMarket(Market marketToRemove)
+        public static void RemoveMarket(Markets.Market marketToRemove)
         {
             if (!markets.Contains(marketToRemove)) return;
 
@@ -145,7 +143,7 @@ namespace ResourceSystem.Market
             markets.Remove(marketToRemove);
         }
 
-        public static void AmputateMarket(Market marketToAmputate, List<CellData> cellsToRemove)
+        public static void AmputateMarket(Markets.Market marketToAmputate, List<CellData> cellsToRemove)
         {
             foreach (var cell in cellsToRemove)
             {
@@ -183,7 +181,7 @@ namespace ResourceSystem.Market
             }
         }
 
-        public static List<CellData[]> GetMarketsIsolatedAreas(Market market)
+        public static List<CellData[]> GetMarketsIsolatedAreas(Markets.Market market)
         {
             List<CellData[]> areas = new();
             List<CellData> totalArea = new List<CellData>(market.cells);

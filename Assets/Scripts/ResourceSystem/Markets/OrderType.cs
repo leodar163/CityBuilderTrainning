@@ -1,4 +1,4 @@
-﻿namespace ResourceSystem.Market
+﻿namespace ResourceSystem.Markets
 {
     public enum OrderType
     {

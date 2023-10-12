@@ -2,6 +2,7 @@
 using OptiCollections;
 using PathFinding;
 using ResourceSystem.Market;
+using ResourceSystem.Markets;
 using ResourceSystem.Transactions;
 using TerrainSystem;
 using UnityEngine;

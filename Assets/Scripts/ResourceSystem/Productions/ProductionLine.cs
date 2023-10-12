@@ -1,36 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ResourceSystem.Markets;
 using UnityEngine;
-using UnityEngine.Localization;
 
 namespace ResourceSystem.Productions
 {
-    [Serializable]
     public class ProductionLine
     {
-        [SerializeField] private LocalizedString _localizedName;
-        public float efficiency { get; private set; }
+        private float _efficiency;
+
+        public float efficiency => _efficiency;
         
-        public string lineName => _localizedName.GetLocalizedString();
-
-        [Space]
-        public List<ResourceProduction> inputs;
-
-        public List<ResourceProduction> outputs;
-
-        public ProductionLine(List<ResourceProduction> inputs, List<ResourceProduction> outputs)
+        public List<ResourceQuantity> demands = new();
+        public List<ResourceQuantity> offers = new();
+        
+        public void SetEfficiency(Market market)
         {
-            this.inputs = inputs;
-            this.outputs = outputs;
-        }
-
-        public void CalculateEfficiency()
-        {
-            foreach (var input in inputs)
+            _efficiency = 1;
+            
+            foreach (var demand in demands)
             {
-                float localEfficiency = input.amount / (input.amount - input.expectedAmount);
-                if (localEfficiency < efficiency) efficiency = localEfficiency;
+                float availability = Mathf.Clamp(market.GetResourceAvailability(demand.resource), -1, 1);
+                if (availability <= 0)
+                {
+                    _efficiency = 0;
+                    return;
+                }
+                if (availability < _efficiency) _efficiency = availability;
             }
+
+            
         }
     }
 }

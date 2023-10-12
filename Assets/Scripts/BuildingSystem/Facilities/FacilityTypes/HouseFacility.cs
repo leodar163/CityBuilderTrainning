@@ -22,10 +22,8 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
 
         
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-            
             if (!s_populationResource) 
                 s_populationResource = ResourceSet.Default.GetResource("resource_population");
             if (!s_workforceResource) 
@@ -37,13 +35,6 @@ namespace BuildingSystem.Facilities.FacilityTypes
             s_mainPopulationSlider ??= GlobalResourceDeck.deck.GetSlider(s_populationResource);
             s_mainWorkForceSlider ??= GlobalResourceDeck.deck.GetSlider(s_workforceResource);
             */
-        }
-
-        public override void OnAddedToCell(CellData cellAddedTo)
-        {
-            base.OnAddedToCell(cellAddedTo);
-            transactorSelf.TryGetContainer(s_populationResource,out _popContainer);
-            producerSelf.AddCreditor(GlobalResourceDeck.Instance);
         }
 
         /*

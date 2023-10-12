@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GridSystem;
 
-namespace ResourceSystem.Market
+namespace ResourceSystem.Markets
 {
     public interface IEconomicActor
     {

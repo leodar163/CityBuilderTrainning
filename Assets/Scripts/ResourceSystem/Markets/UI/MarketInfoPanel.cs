@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Interactions;
+using ResourceSystem.Markets.Interactions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.UI;
 
-namespace ResourceSystem.Market.UI
+namespace ResourceSystem.Markets.UI
 {
     public class MarketInfoPanel : PanelUI<MarketInfoPanel>
     {

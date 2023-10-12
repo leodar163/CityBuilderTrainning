@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GridSystem;
 using UnityEngine;
 
-namespace ResourceSystem.Market
+namespace ResourceSystem.Markets
 {
     public class Market
     {
@@ -116,7 +116,7 @@ namespace ResourceSystem.Market
 
         private static void CalculateResourceValueRatio(ResourceValue resourceValue)
         {
-            resourceValue.ratio = resourceValue.offer == 0 ? -1 : resourceValue.demand / resourceValue.offer;
+            resourceValue.availability = resourceValue.offer == 0 ? -1 : resourceValue.demand / resourceValue.offer;
         }
 
         public float GetResourceValueAmount(ResourceType resource, OrderType orderType)
@@ -134,11 +134,11 @@ namespace ResourceSystem.Market
             return -1;
         }
         
-        public float GetResourceValueRatio(ResourceType resource)
+        public float GetResourceAvailability(ResourceType resource)
         {
             if (TryGetResourceValue(resource, out ResourceValue resourceValue))
             {
-                return resourceValue.ratio;
+                return resourceValue.availability;
             }
 
             return 0;

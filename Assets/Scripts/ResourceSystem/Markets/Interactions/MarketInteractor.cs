@@ -1,12 +1,11 @@
-﻿using System;
-using GridSystem;
-using ResourceSystem.Market;
-using ResourceSystem.Market.UI;
+﻿using GridSystem;
+using Interactions;
+using ResourceSystem.Markets.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
 
-namespace Interactions
+namespace ResourceSystem.Markets.Interactions
 {
     public class MarketInteractor : Singleton<MarketInteractor>, IInteractor
     {

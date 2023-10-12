@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ResourceSystem.Market.UI
+namespace ResourceSystem.Markets.UI
 {
     public class ResourceValueUI : MonoBehaviour
     {
@@ -29,7 +29,7 @@ namespace ResourceSystem.Market.UI
         {
             _demand.text = _resourceValue.demand.ToString(CultureInfo.InvariantCulture);
             _offer.text = _resourceValue.offer.ToString(CultureInfo.InvariantCulture);
-            _ratio.text = _resourceValue.ratio.ToString(CultureInfo.InvariantCulture);
+            _ratio.text = _resourceValue.availability.ToString(CultureInfo.InvariantCulture);
             _resourceIcon.sprite = _resourceValue.resource.icon;
         }
     }
