@@ -62,7 +62,7 @@ namespace BuildingSystem.Facilities
             
             TerrainType terrain = cell.terrain;
             
-            bool notEnoughPlace = terrain.freeFacilityPlacements > 0;
+            bool notEnoughPlace = cell.freeFacilityPlacements > 0;
             
             string conditionsFormat = notEnoughPlace ? Instance._notEnoughPlaceException.GetLocalizedString() : "";
             
@@ -83,7 +83,7 @@ namespace BuildingSystem.Facilities
         private static bool TryPlaceNewFacility(FacilityType facilityTypeToPlace, CellData cell)
         {
             if (Instantiate(facilityTypeToPlace.gameObject).TryGetComponent(out FacilityType newFacility) 
-                && cell.terrain.TryAddFacility(newFacility))
+                && cell.TryAddFacility(newFacility))
             {
                 Instance._oneFacilityAsBeenPlaced = true;
                 return true;

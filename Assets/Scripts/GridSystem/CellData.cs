@@ -1,4 +1,6 @@
-﻿using OptiCollections;
+﻿using System.Collections.Generic;
+using BuildingSystem.Facilities;
+using OptiCollections;
 using PathFinding;
 using ResourceSystem.Markets;
 using TerrainSystem;
@@ -16,6 +18,16 @@ namespace GridSystem
         public readonly PathNode pathNode = new ();
         public TerrainType terrain { get; private set; }
 
+        #region FACILITIES_PROPERTIES
+
+        public int maxFacilityCount = 9;
+        
+        private readonly List<FacilityType> _facilities = new();
+        public int facilityCount => _facilities.Count;
+        public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
+
+        #endregion
+        
         public CellData(Vector3Int cellCoordinates)
         {
             this.cellCoordinates = cellCoordinates;
@@ -58,23 +70,56 @@ namespace GridSystem
             return difference;
         }
 
-        public void AttachTerrain(TerrainType terrainType)
+        public void SetTerrain(TerrainType terrainToSet)
         {
-            terrain = terrainType;
-            terrain.transform.position = position;
-/*
-            transactorSelf.RemoveContainersAll();
+            if (terrainToSet != null && terrainToSet == terrain) return;
             
-            transactorSelf.InitContainers(terrain.deckTemplate == null 
-                ? ResourceDeck.Default 
-              : terrain.deckTemplate);
-              */
+            terrain?.OnRemovedFromCell();
+            terrain = terrainToSet;
+            terrain?.OnAddedToCell(this);
         }
 
-        public void DetachTerrain()
+        #region FACILITIES_METHODS
+
+        public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
-            terrain = null;
+            if (_facilities.Contains(facilityTypeToAdd)) return false;
+            
+            facilityTypeToAdd.OnAddedToCell(this);
+            
+            _facilities.Add(facilityTypeToAdd);
+            PlaceFacility(facilityTypeToAdd);
+            
+            return true;
         }
+
+        private void PlaceFacility(FacilityType facilityTypeToPlace)
+        {
+            Vector3 position = new Vector3
+            {
+                x = Random.Range(-0.5f, 0.5f),
+                z = Random.Range(-0.5f, 0.5f)
+            };
+
+            facilityTypeToPlace.transform.localPosition = position;
+            facilityTypeToPlace.OnAddedToCell(this);
+        }
+
+        public void RemoveFacility(FacilityType facilityTypeToRemove)
+        {
+            if (_facilities.Contains(facilityTypeToRemove))
+            {
+                _facilities.Remove(facilityTypeToRemove);
+                facilityTypeToRemove.OnRemovedFromCell(this);
+            }
+        }
+
+        public FacilityType GetFacility(int index)
+        {
+            return index > _facilities.Count ? null : _facilities[index];
+        }
+
+        #endregion
 
         public void OnMonthUpdate()
         {

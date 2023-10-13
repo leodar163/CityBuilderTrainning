@@ -40,7 +40,7 @@ namespace BuildingSystem.Facilities.UI
             
             _deleteButton.onClick.AddListener(() =>
             {
-                _facility.cell.terrain.RemoveFacility(_facility);
+                _facility.cell.RemoveFacility(_facility);
                 Destroy(_facility.gameObject);
             });
         }

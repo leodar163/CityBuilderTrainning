@@ -1202,6 +1202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
   _resourceIcon: {fileID: 1482185554}
   _resourceName: {fileID: 0}
@@ -1212,12 +1214,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 0
 --- !u!114 &299124869
@@ -3963,6 +3968,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
   _resourceIcon: {fileID: 1345051918}
   _resourceName: {fileID: 0}
@@ -3973,12 +3980,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 0
 --- !u!1001 &684062409
@@ -4284,6 +4294,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
   _resourceIcon: {fileID: 63996146}
   _resourceName: {fileID: 0}
@@ -4294,12 +4306,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 0
 --- !u!1 &744295199
@@ -4695,6 +4710,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
   _resourceIcon: {fileID: 648932616}
   _resourceName: {fileID: 0}
@@ -4705,12 +4722,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 0
 --- !u!114 &777130832
@@ -6815,36 +6835,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2079089942}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1104978251 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8901358875232505452, guid: a348272cce9d21241abd066b1025429e,
-    type: 3}
-  m_PrefabInstance: {fileID: 2079089942}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1105362708 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 621180902753636297, guid: a348272cce9d21241abd066b1025429e,
     type: 3}
   m_PrefabInstance: {fileID: 15827277}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1105362712 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8901358875232505452, guid: a348272cce9d21241abd066b1025429e,
-    type: 3}
-  m_PrefabInstance: {fileID: 15827277}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1105471690
 GameObject:
   m_ObjectHideFlags: 0
@@ -7593,18 +7589,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 954976058}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1229904086 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8901358875232505452, guid: a348272cce9d21241abd066b1025429e,
-    type: 3}
-  m_PrefabInstance: {fileID: 954976058}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1239641752
 GameObject:
   m_ObjectHideFlags: 0
@@ -9375,6 +9359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
   _resourceIcon: {fileID: 474919611}
   _resourceName: {fileID: 0}
@@ -9385,36 +9371,21 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 21168194}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
-        m_MethodName: set_value
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      - {m_Target: {fileID: 21168194}, m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI, m_MethodName: set_value, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0},
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0,
+          m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 21168194}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
-        m_MethodName: set_maxValue
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      - {m_Target: {fileID: 21168194}, m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI, m_MethodName: set_maxValue, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0},
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0,
+          m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 1
   displayAvailableQuantity: 0
 --- !u!224 &1562244950 stripped
@@ -10105,6 +10076,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
   _resourceIcon: {fileID: 1440458135}
   _resourceName: {fileID: 0}
@@ -10115,12 +10088,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 1
   displayAvailableQuantity: 0
 --- !u!114 &1606778130
@@ -11334,13 +11310,6 @@ MonoBehaviour:
   _facilitiesLayout: {fileID: 1288141583}
   _facilityInfoUITemplate: {fileID: 5483563059025235587, guid: 8450e6cbfa9dd5e49ac711ba36c29ffa,
     type: 3}
-  _populationSlider: {fileID: 679236757}
-  _habitationSlider: {fileID: 738890938}
-  _workforceSlider: {fileID: 1937478095}
-  _environmentSlider: {fileID: 1547417346}
-  _foodSlider: {fileID: 1105362712}
-  _woodSlider: {fileID: 1229904086}
-  _mineralsSlider: {fileID: 1104978251}
 --- !u!1 &1920436704
 GameObject:
   m_ObjectHideFlags: 0
@@ -11650,6 +11619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
   _resourceIcon: {fileID: 557021216}
   _resourceName: {fileID: 0}
@@ -11660,12 +11631,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 1
 --- !u!1 &1945750951
@@ -11760,6 +11734,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
+    _modifierQuantity: 0, _modifierMaxQuantity: 0}
   resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
   _resourceIcon: {fileID: 300121847}
   _resourceName: {fileID: 0}
@@ -11770,12 +11746,15 @@ MonoBehaviour:
   onUpdateValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateMaxValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   onUpdateAvailableValue:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   displayMaxQuantity: 0
   displayAvailableQuantity: 1
 --- !u!114 &1945750956

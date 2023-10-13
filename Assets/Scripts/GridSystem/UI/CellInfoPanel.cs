@@ -78,11 +78,11 @@ namespace GridSystem.UI
             
             _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
             _terrainType.SetText(currentCell.terrain.terrainName);
-            _facilityCapacity.SetText($"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}");
+            _facilityCapacity.SetText($"{currentCell.facilityCount}/{currentCell.maxFacilityCount}");
 
-            for (int i = 0; i < currentCell.terrain.facilityCount; i++)
+            for (int i = 0; i < currentCell.facilityCount; i++)
             {
-                FacilityType facilityTypeToDisplay = currentCell.terrain.GetFacility(i);
+                FacilityType facilityTypeToDisplay = currentCell.GetFacility(i);
 
                 TryAddFacilityInfo(facilityTypeToDisplay);
             }
@@ -103,17 +103,17 @@ namespace GridSystem.UI
 
         private void CheckForFacilities()
         {
-            if (_facilityInfoUIs.Count != currentCell.terrain.facilityCount)
+            if (_facilityInfoUIs.Count != currentCell.facilityCount)
             {
                 ClearFacilityLayout();
                 
-                for (int i = 0; i < currentCell.terrain.facilityCount; i++)
+                for (int i = 0; i < currentCell.facilityCount; i++)
                 {
-                    TryAddFacilityInfo(currentCell.terrain.GetFacility(i));
+                    TryAddFacilityInfo(currentCell.GetFacility(i));
                 }
             }
             
-            _facilityCapacity.SetText($"{currentCell.terrain.facilityCount}/{currentCell.terrain.maxFacilityCount}");
+            _facilityCapacity.SetText($"{currentCell.facilityCount}/{currentCell.maxFacilityCount}");
         }
     }
 }
