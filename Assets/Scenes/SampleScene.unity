@@ -804,29 +804,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
-    _modifierQuantity: 0, _modifierMaxQuantity: 0}
-  resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
-  _resourceIcon: {fileID: 1482185554}
-  _resourceName: {fileID: 0}
-  _value: {fileID: 1519070875}
-  _quantityEvolutionFB: {fileID: 0}
-  _increaseFeedback: {fileID: 0}
-  _decreaseFeedback: {fileID: 0}
-  onUpdateValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateMaxValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateAvailableValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  displayMaxQuantity: 0
-  displayAvailableQuantity: 0
 --- !u!114 &299124869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3750,29 +3727,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
-    _modifierQuantity: 0, _modifierMaxQuantity: 0}
-  resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
-  _resourceIcon: {fileID: 648932616}
-  _resourceName: {fileID: 0}
-  _value: {fileID: 1651247017}
-  _quantityEvolutionFB: {fileID: 0}
-  _increaseFeedback: {fileID: 0}
-  _decreaseFeedback: {fileID: 0}
-  onUpdateValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateMaxValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateAvailableValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  displayMaxQuantity: 0
-  displayAvailableQuantity: 0
 --- !u!114 &777130832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4579,7 +4533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marketTile: {fileID: 11400000, guid: a6c0b5c1b76d33443a98d4d5a96fcced, type: 2}
-  _maxDistanceToMerge: 5
+  _maxDistanceToMerge: 0
 --- !u!1001 &884007242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7371,9 +7325,9 @@ MonoBehaviour:
   onClose:
     m_PersistentCalls:
       m_Calls: []
-  set: {fileID: 0}
+  facilitySet: {fileID: 0}
   _child: {fileID: 1730781935}
-  _facilityButtonTemplate: {fileID: 4324926363708560275, guid: f400dde75b22b0c47a2e21520942be0b,
+  facilityBuildingButtonTemplate: {fileID: 4324926363708560275, guid: f400dde75b22b0c47a2e21520942be0b,
     type: 3}
   _buttonLayout: {fileID: 2110087478}
 --- !u!1 &1482185552
@@ -8481,29 +8435,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
-    _modifierQuantity: 0, _modifierMaxQuantity: 0}
-  resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
-  _resourceIcon: {fileID: 1440458135}
-  _resourceName: {fileID: 0}
-  _value: {fileID: 744295201}
-  _quantityEvolutionFB: {fileID: 0}
-  _increaseFeedback: {fileID: 0}
-  _decreaseFeedback: {fileID: 0}
-  onUpdateValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateMaxValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateAvailableValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  displayMaxQuantity: 1
-  displayAvailableQuantity: 0
 --- !u!114 &1606778130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9574,29 +9505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878f335537824401b6599fbdc586c498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceSlider: {resource: {fileID: 0}, _maxQuantity: 0, _nativeQuantity: 0, _borrowedQuantity: 0,
-    _modifierQuantity: 0, _modifierMaxQuantity: 0}
-  resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
-  _resourceIcon: {fileID: 300121847}
-  _resourceName: {fileID: 0}
-  _value: {fileID: 848919767}
-  _quantityEvolutionFB: {fileID: 0}
-  _increaseFeedback: {fileID: 0}
-  _decreaseFeedback: {fileID: 0}
-  onUpdateValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateMaxValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onUpdateAvailableValue:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  displayMaxQuantity: 0
-  displayAvailableQuantity: 1
 --- !u!114 &1945750956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9647,7 +9555,7 @@ MonoBehaviour:
   _feedBackTileMap: {fileID: 611090939}
   _terrainTileMap: {fileID: 735809933}
   _marketVueTileMap: {fileID: 1133274972}
-  _gridSize: {x: 3, y: 3}
+  _gridSize: {x: 10, y: 10}
   _positionOffset: {x: 0, y: 0}
   _cursor: {fileID: 654916889}
 --- !u!156049354 &2004770302
@@ -9713,7 +9621,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3, y: 0.01, z: 3}
+  m_Size: {x: 10, y: 0.01, z: 10}
   m_Center: {x: 0.5, y: 0, z: 0.5}
 --- !u!1 &2012967158
 GameObject:

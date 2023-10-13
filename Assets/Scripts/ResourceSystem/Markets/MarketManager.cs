@@ -13,7 +13,7 @@ namespace ResourceSystem.Markets
 
         public static readonly List<Market> markets = new();
 
-        [SerializeField] private int _maxDistanceToMerge = 5;
+        [SerializeField] private int _maxDistanceToMerge = 1;
 
         public static int MaxDistanceToMerge
         {
@@ -113,7 +113,7 @@ namespace ResourceSystem.Markets
             return true;
         }
 
-        public static void MergeMarkets(Markets.Market origin, Markets.Market target, out MergeCase mergeCase)
+        public static void MergeMarkets(Market origin, Market target, out MergeCase mergeCase)
         {
             if (!CanMergeMarkets(origin, target, out mergeCase)) return;
 
@@ -131,7 +131,7 @@ namespace ResourceSystem.Markets
             RemoveMarket(target);
         }
         
-        public static void RemoveMarket(Markets.Market marketToRemove)
+        public static void RemoveMarket(Market marketToRemove)
         {
             if (!markets.Contains(marketToRemove)) return;
 
@@ -143,7 +143,7 @@ namespace ResourceSystem.Markets
             markets.Remove(marketToRemove);
         }
 
-        public static void AmputateMarket(Markets.Market marketToAmputate, List<CellData> cellsToRemove)
+        public static void AmputateMarket(Market marketToAmputate, List<CellData> cellsToRemove)
         {
             foreach (var cell in cellsToRemove)
             {
@@ -163,6 +163,7 @@ namespace ResourceSystem.Markets
             while (marketAreas.Count > 1)
             {
                 CellData[] area = marketAreas[0];
+                marketAreas.Remove(area);
                 
                 float distance = float.NegativeInfinity;
                 
@@ -176,33 +177,24 @@ namespace ResourceSystem.Markets
                 {
                     AddMarket(false, area);
                 }
-
-                marketAreas.Remove(area);
             }
         }
 
-        public static List<CellData[]> GetMarketsIsolatedAreas(Markets.Market market)
+        public static List<CellData[]> GetMarketsIsolatedAreas(Market market)
         {
             List<CellData[]> areas = new();
             List<CellData> totalArea = new List<CellData>(market.cells);
             List<CellData> currentArea = new();
             Queue<CellData> openSet = new();
 
-            while (totalArea.Count > 0)
+            openSet.Enqueue(totalArea[0]);
+            currentArea.Add(totalArea[0]);
+
+            do
             {
-                if (openSet.Count == 0)
-                {
-                    if (currentArea.Count > 0)
-                    {
-                        areas.Add(currentArea.ToArray());
-                        currentArea.Clear();
-                    }
-                    
-                    openSet.Enqueue(totalArea[0]);
-                    totalArea.RemoveAt(0);
-                }
-                
                 CellData cell = openSet.Dequeue();
+
+                if (totalArea.Contains(cell)) totalArea.Remove(cell);
 
                 foreach (var neighbour in cell.neighbours)
                 {
@@ -213,7 +205,23 @@ namespace ResourceSystem.Markets
                         openSet.Enqueue(neighbour);
                     }
                 }
-            }
+                
+                if (openSet.Count == 0 || totalArea.Count == 0)
+                {
+                    if (currentArea.Count > 0)
+                    {
+                        areas.Add(currentArea.ToArray());
+                        currentArea.Clear();
+                    }
+
+                    if (totalArea.Count > 0)
+                    {
+                        openSet.Enqueue(totalArea[0]);
+                        currentArea.Add(totalArea[0]);
+                    }
+                }
+                
+            } while (totalArea.Count > 0);
 
             return areas;
         }

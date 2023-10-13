@@ -123,6 +123,10 @@ namespace GridSystem
             foreach (var cellData in _cellDatas)
             {
                 cellData.FindNeighbours();
+            }
+
+            foreach (var cellData in _cellDatas)
+            {
                 MarketManager.AddMarket(true, cellData);
             }
         }
@@ -137,7 +141,7 @@ namespace GridSystem
 
                 foreach (var neighbour in neighbours)
                 {
-                    if (!area.Contains(neighbour))
+                    if (!area.Contains(neighbour) && !border.Contains(neighbour))
                     {
                         border.Add(neighbour);
                     }
@@ -153,6 +157,12 @@ namespace GridSystem
 
             foreach (var cell in area)
             {
+                if (cell.neighbours.Length < 8)
+                {
+                    border.Add(cell);
+                    continue;
+                }
+                
                 CellData[] neighbours = cell.neighbours;
 
                 foreach (var neighbour in neighbours)
