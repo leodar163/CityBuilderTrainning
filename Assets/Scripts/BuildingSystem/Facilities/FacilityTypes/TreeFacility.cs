@@ -21,7 +21,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         public override bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
         {
-            bool terrainCondition = terrain.id == "terran_forest";
+            bool terrainCondition = terrain.id == "terrain_forest";
 
             FormatCondition("terrainCondition", terrainCondition);
 

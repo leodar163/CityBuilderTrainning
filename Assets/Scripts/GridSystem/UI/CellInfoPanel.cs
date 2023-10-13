@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using BuildingSystem.Facilities.UI;
+using Interactions;
+using ResourceSystem.Markets.Interactions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils.UI;
 
 namespace GridSystem.UI
@@ -11,6 +14,10 @@ namespace GridSystem.UI
     {
         [SerializeField] private RectTransform _child;
 
+        [Header("Market")] 
+        [SerializeField] private TextMeshProUGUI _marketName;
+        [SerializeField] private Button _marketLink;
+        
         [Header("Terrain")]
         [SerializeField] private TextMeshProUGUI _coordinates;
         [SerializeField] private TextMeshProUGUI _terrainType;
@@ -20,18 +27,24 @@ namespace GridSystem.UI
         [SerializeField] private RectTransform _facilitiesLayout;
         [SerializeField] private FacilityInfoUI _facilityInfoUITemplate;
         private readonly List<FacilityInfoUI> _facilityInfoUIs = new ();
-
-       private Camera _mainCamera;
-        public CellData currentCell { get; private set; }
         
+        public CellData currentCell { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
-
-            _mainCamera = Camera.main;
+            _marketLink.onClick.AddListener(OpenCellMarket);
         }
 
+        private void OpenCellMarket()
+        {
+            if (currentCell != null)
+            {
+                InteractionManager.SwitchInteractionMode(InteractionMode.MarketVue);
+                MarketInteractor.SelectMarket(currentCell.market);
+            }
+        }
+        
         public override void OpenPanel()
         {
             if (GridManager.HoveredCell == null)
@@ -75,6 +88,8 @@ namespace GridSystem.UI
         private void DisplayCellInfos()
         {
             ClearFacilityLayout();
+            
+            _marketName.SetText(currentCell.market.name);
             
             _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
             _terrainType.SetText(currentCell.terrain.terrainName);

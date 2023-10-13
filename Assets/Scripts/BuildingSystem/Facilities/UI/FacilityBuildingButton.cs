@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BuildingSystem.Facilities.UI
 {
-    public class FacilityButton : MonoBehaviour, IToolTipSpeaker
+    public class FacilityBuildingButton : MonoBehaviour, IToolTipSpeaker
     {
         [SerializeField] private Image _iconImage;
         [SerializeField] private Button _button;
@@ -13,27 +13,27 @@ namespace BuildingSystem.Facilities.UI
         
         private static readonly int animSelectionProperty = Animator.StringToHash("IsSelected");
 
-        public FacilityType Facility { get; private set; }
+        public FacilityType facility { get; private set; }
 
         private void Start()
         {
-            _button.onClick.AddListener(() => FacilityPlacer.SelectFacilityToPlace(Facility));
+            _button.onClick.AddListener(() => FacilityPlacer.SelectFacilityToPlace(facility));
         }
 
         private void Update()
         {
-            _animator.SetBool(animSelectionProperty, FacilityPlacer.SelectedFacilityType == Facility);
+            _animator.SetBool(animSelectionProperty, FacilityPlacer.selectedFacility == facility);
         }
 
         public void AssignFacility(FacilityType facilityTypeToAssign)
         {
-            Facility = facilityTypeToAssign;
-            _iconImage.sprite = Facility.icon;
+            facility = facilityTypeToAssign;
+            _iconImage.sprite = facility.icon;
         }
 
         public ToolTipMessage ToToolTipMessage()
         {
-            return Facility.ToToolTipMessage();
+            return facility.ToToolTipMessage();
         }
     }
 }

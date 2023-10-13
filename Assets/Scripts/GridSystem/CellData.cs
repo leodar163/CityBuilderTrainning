@@ -95,13 +95,13 @@ namespace GridSystem
 
         private void PlaceFacility(FacilityType facilityTypeToPlace)
         {
-            Vector3 position = new Vector3
+            Vector3 positionOffset = new Vector3
             {
                 x = Random.Range(-0.5f, 0.5f),
                 z = Random.Range(-0.5f, 0.5f)
             };
 
-            facilityTypeToPlace.transform.localPosition = position;
+            facilityTypeToPlace.transform.position = position + positionOffset;
             facilityTypeToPlace.OnAddedToCell(this);
         }
 

@@ -11,7 +11,7 @@ namespace ResourceSystem.Markets
     {
         public TileBase marketTile;
 
-        public static readonly List<Markets.Market> markets = new();
+        public static readonly List<Market> markets = new();
 
         [SerializeField] private int _maxDistanceToMerge = 5;
 
@@ -29,14 +29,14 @@ namespace ResourceSystem.Markets
             adjacent
         }
 
-        public static Markets.Market AddMarket(CellData originCell, int range, bool isEcosystem = true)
+        public static Market AddMarket(CellData originCell, int range, bool isEcosystem = true)
         {
             return AddMarket(isEcosystem, GridManager.GetNeighbours(originCell, range, true));
         }
 
-        public static Markets.Market AddMarket(bool isEcosystem = true, params CellData[] area )
+        public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
         {
-            Markets.Market market = new()
+            Market market = new()
             {
                 color = Random.ColorHSV(),
                 isEcosystem = isEcosystem
@@ -44,7 +44,7 @@ namespace ResourceSystem.Markets
 
             foreach (var cell in area)
             {
-                Markets.Market oldMarket = cell.market;
+                Market oldMarket = cell.market;
 
                 market.AddCell(cell);
                 cell.market = market;
@@ -62,7 +62,7 @@ namespace ResourceSystem.Markets
             return market;
         }
 
-        public static float GetDistanceBetweenMarkets(Markets.Market a, Markets.Market b)
+        public static float GetDistanceBetweenMarkets(Market a, Market b)
         {
             return GridManager.GetMinDistanceBetweenAreas(a.innerBorder, b.innerBorder);
         }

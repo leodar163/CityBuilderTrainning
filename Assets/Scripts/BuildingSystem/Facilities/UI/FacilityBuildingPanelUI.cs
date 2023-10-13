@@ -2,26 +2,27 @@
 using System.Collections.Generic;
 using Utils.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BuildingSystem.Facilities.UI
 {
     public class FacilityBuildingPanelUI : PanelUI<FacilityBuildingPanelUI>
     {
-        [Tooltip("If null, will be equal to 'FacilitySet.Default'")]
-        public FacilitySet set;
+        [FormerlySerializedAs("set")] [Tooltip("If null, will be equal to 'FacilitySet.Default'")]
+        public FacilitySet facilitySet;
         [SerializeField] private RectTransform _child;
-        [SerializeField] private FacilityButton _facilityButtonTemplate;
+        [FormerlySerializedAs("_facilityButtonTemplate")] [SerializeField] private FacilityBuildingButton facilityBuildingButtonTemplate;
         [SerializeField] private RectTransform _buttonLayout;
-        private List<FacilityButton> _buttons = new ();
+        private List<FacilityBuildingButton> _buttons = new ();
         
 
         protected override void Awake()
         {
             base.Awake();
             
-            if (!set) set = FacilitySet.Default;
+            if (!facilitySet) facilitySet = FacilitySet.Default;
             
-            UpdateUI();
+            InitUI();
         }
 
         private void Update()
@@ -29,13 +30,13 @@ namespace BuildingSystem.Facilities.UI
             if(!isOpen) return;
         }
 
-        private void UpdateUI()
+        private void InitUI()
         {
-            if (!set) return;
+            if (!facilitySet) return;
 
-            foreach (var facility in set.facilities)
+            foreach (var facility in facilitySet.facilities)
             {
-                if (Instantiate(_facilityButtonTemplate.gameObject, _buttonLayout).TryGetComponent(out FacilityButton newButton))
+                if (Instantiate(facilityBuildingButtonTemplate.gameObject, _buttonLayout).TryGetComponent(out FacilityBuildingButton newButton))
                 {
                     newButton.AssignFacility(facility);
                     _buttons.Add(newButton);

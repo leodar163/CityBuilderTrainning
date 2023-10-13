@@ -11,7 +11,7 @@ namespace BuildingSystem.Facilities
 {
     public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractor
     {
-        public static FacilityType SelectedFacilityType { get; private set; }
+        public static FacilityType selectedFacility { get; private set; }
         public bool isActive { get; private set; }
 
         [Header("Messages")] 
@@ -28,12 +28,12 @@ namespace BuildingSystem.Facilities
 
         private void Awake()
         {
-            SelectedFacilityType = null;
+            selectedFacility = null;
         }
 
         private void Update()
         {
-            if (!SelectedFacilityType || !isActive) return;
+            if (!selectedFacility || !isActive) return;
 
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
@@ -41,9 +41,9 @@ namespace BuildingSystem.Facilities
                 return;
             }
             
-            if (CanPlaceFacility(SelectedFacilityType, GridManager.HoveredCell) 
+            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
-                && TryPlaceNewFacility(SelectedFacilityType, GridManager.HoveredCell)
+                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
@@ -52,7 +52,7 @@ namespace BuildingSystem.Facilities
 
         public static void SelectFacilityToPlace(FacilityType facilityTypeToSelect)
         {
-            SelectedFacilityType = facilityTypeToSelect;
+            selectedFacility = facilityTypeToSelect;
             InteractionManager.SwitchInteractionMode(InteractionMode.FacilityPlacing);
         }
 
@@ -97,7 +97,7 @@ namespace BuildingSystem.Facilities
         private static void EndPlacement()
         {
             Instance.isActive = false;
-            SelectedFacilityType = null;
+            selectedFacility = null;
             Instance._oneFacilityAsBeenPlaced = false;
             GridManager.PaintCursor(Color.white);
         }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42a1d575bc1b4801baed6e15b4280721, type: 3}
   m_Name: TerrainSetDefault
   m_EditorClassIdentifier: 
-  terrains:
-  - {fileID: 8831265832801137467, guid: c5c3a0a3d849fa342ac70e46061d57ec, type: 3}
-  - {fileID: 2688972387240771374, guid: fa6c24399fe56e34aaefc8adede9567d, type: 3}
-  - {fileID: 6124798951610448587, guid: 3b5b97c911e820d4f837157b1754e480, type: 3}
+  _terrainScripts:
+  - {fileID: 11400000, guid: af60c5323ac343b438146e742ef08429, type: 2}
+  - {fileID: 11400000, guid: a8d6d6195c294bb4f87147284fa7ab31, type: 2}
+  - {fileID: 11400000, guid: 2a5e3b2f500d0f24393aba3cdacc5e77, type: 2}

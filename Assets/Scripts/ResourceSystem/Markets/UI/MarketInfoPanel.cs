@@ -44,7 +44,7 @@ namespace ResourceSystem.Markets.UI
 
         public void UpdateDisplay()
         {
-            _marketName.text = _market.name;
+            _marketName.SetText(_market.name);
             _marketColor.color = _market.color;
             
             foreach (var resourceValue in _market._resourceValues)
