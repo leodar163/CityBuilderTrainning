@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 namespace TerrainSystem
 {
     [Serializable]
-    public abstract class TerrainType : MonoBehaviour, ICellModifier, IToolTipSpeaker, IResourceModifier
+    public abstract class TerrainType : MonoBehaviour, IToolTipSpeaker
     {
         [SerializeField] private LocalizedString _terrainName;
         public Tile tile;
@@ -29,27 +29,27 @@ namespace TerrainSystem
         public string terrainName => _terrainName.GetLocalizedString();
         public string modifierName => terrainName;
 
-        public virtual void OnAddedToCell(CellData cell)
+        public virtual void OnAddedToCell(CellData cellData)
         {
-            this.cell = cell;
-            GridManager.PaintTilemap(tile,GridManager.TileMapType.Terrain, cell.cellCoordinates);
-            cell.AttachTerrain(this);
-            transform.position = cell.position;
+            cell = cellData;
+            GridManager.PaintTilemap(tile,GridManager.TileMapType.Terrain, cellData.cellCoordinates);
+            cellData.AttachTerrain(this);
+            transform.position = cellData.position;
             foreach (var facility in _facilities)
             {
-                facility.OnAddedToCell(cell);
+                facility.OnAddedToCell(cellData);
             }
         }
 
-        public virtual void OnRemovedFromCell(CellData cell)
+        public virtual void OnRemovedFromCell(CellData cellData)
         {
-            if (this.cell != cell) return;
-            GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cell.cellCoordinates);
-            cell.DetachTerrain();
-            this.cell = null;
+            if (cell != cellData) return;
+            GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cellData.cellCoordinates);
+            cellData.DetachTerrain();
+            cell = null;
             foreach (var facility in _facilities)
             {
-                facility.OnRemovedFromCell(cell);
+                facility.OnRemovedFromCell(cellData);
             }
         }
 
@@ -109,11 +109,6 @@ namespace TerrainSystem
                 title = terrainName,
                 message = $"{_typeDescription}\n\n{_effectDescription}"
             };
-        }
-        
-        public virtual ResourceDelta[] GetResourceDelta()
-        {
-            return null;
         }
     }
 }

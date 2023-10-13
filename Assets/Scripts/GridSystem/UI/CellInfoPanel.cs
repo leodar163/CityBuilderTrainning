@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using BuildingSystem.Facilities.UI;
-using ResourceSystem;
-using ResourceSystem.Markets;
-using ResourceSystem.UI;
 using TMPro;
 using UnityEngine;
 using Utils.UI;
@@ -24,16 +21,7 @@ namespace GridSystem.UI
         [SerializeField] private FacilityInfoUI _facilityInfoUITemplate;
         private readonly List<FacilityInfoUI> _facilityInfoUIs = new ();
 
-        [Header("Resources")] 
-        [SerializeField] private ResourceSliderUI _populationSlider;
-        [SerializeField] private ResourceSliderUI _habitationSlider;
-        [SerializeField] private ResourceSliderUI _workforceSlider;
-        [SerializeField] private ResourceSliderUI _environmentSlider;
-        [SerializeField] private ResourceSliderUI _foodSlider;
-        [SerializeField] private ResourceSliderUI _woodSlider; 
-        [SerializeField] private ResourceSliderUI _mineralsSlider;
-
-        private Camera _mainCamera;
+       private Camera _mainCamera;
         public CellData currentCell { get; private set; }
         
 
@@ -41,8 +29,6 @@ namespace GridSystem.UI
         {
             base.Awake();
 
-            _populationSlider.resourceSlider = new ResourceSlider("resource_population",Mathf.Infinity);
-            
             _mainCamera = Camera.main;
         }
 
@@ -72,8 +58,6 @@ namespace GridSystem.UI
             if (currentCell != null)
             {
                 CheckForFacilities();
-                _populationSlider.resourceSlider.nativeQuantity = 
-                    currentCell.market.GetResourceValueAmount(_populationSlider.resource, OrderType.Offer);
             }
         }
 
