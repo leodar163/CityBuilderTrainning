@@ -21,6 +21,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
             {
                 Parallel.ForEach(s_deposits, deposit =>
                 {
+                    if(deposit == this) return;
                     if (!Array.Exists(deposit._influencedArea, _cellData => _cellData == cellData)) return;
                     if (exclusiveCells.Contains(cellData))
                         exclusiveCells.Remove(cellData);
@@ -57,10 +58,9 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         public override void OnRemovedFromCell(CellData cellRemovedFrom)
         {
+            MarketManager.AmputateMarket(cell.market, GetExclusiveMarketCells());
             base.OnRemovedFromCell(cellRemovedFrom);
             s_deposits.Remove(this);
-            
-            MarketManager.AmputateMarket(cell.market, GetExclusiveMarketCells());
         }
     }
 }

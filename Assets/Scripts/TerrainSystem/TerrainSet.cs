@@ -16,7 +16,7 @@ namespace TerrainSystem
         {
             get
             {
-                if (_terrains.Length != _terrainScripts.Length)
+                if (_terrains == null || _terrains.Length != _terrainScripts.Length)
                 {
                     _terrains = new TerrainType[_terrainScripts.Length];
 
