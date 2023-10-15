@@ -36,7 +36,7 @@ namespace ToolTipSystem
             return new ToolTipMessage
             {
                 title = title.GetLocalizedString(),
-                message = message.GetLocalizedString()
+                message = !message.IsEmpty ? message.GetLocalizedString() : ""
             };
         }
     }

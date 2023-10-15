@@ -23,14 +23,17 @@ namespace TimeSystem
 
         public static event Action onMonthEnds;
         public static event Action onNewMonth;
+        public static event Action onMonthBegins;
         public static event Action onYearEnds;
         public static event Action onNewYear;
+        public static event Action onYearBegins;
         public static InGameDate date { get; private set; }
 
         public static float monthTimer { get; private set; }
 
         private TimeControles _controls;
 
+        private bool newMonth;
 
         private void Awake()
         {
@@ -64,6 +67,12 @@ namespace TimeSystem
             
             monthTimer += Time.deltaTime * timeSpeed;
             
+            if (newMonth)
+            {
+                OnMonthBegins();
+                newMonth = false;
+            }
+            
             if (monthTimer >= secondPerMonth)
             {
                 monthTimer = 0;
@@ -73,7 +82,6 @@ namespace TimeSystem
                 OnNewMonth();
             }
 
-            
             if (_controls.Timer.IncreaseTime.WasPressedThisFrame())
             {
                 //print(_controls.Timer.IncreaseTime.ReadValue<float>());
@@ -107,6 +115,13 @@ namespace TimeSystem
             date++;
             onNewMonth?.Invoke();
             if(date.totalMonths % 12 == 0) onNewYear?.Invoke();
+            Instance.newMonth = true;
+        }
+
+        private static void OnMonthBegins()
+        {
+            onMonthBegins?.Invoke();
+            if((date.totalMonths) % 12 == 0) onYearBegins?.Invoke();   
         }
 
         public void SetTimeSpeed(int speed)

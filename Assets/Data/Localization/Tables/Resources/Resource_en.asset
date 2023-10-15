@@ -58,6 +58,10 @@ MonoBehaviour:
     m_Localized: ratio
     m_Metadata:
       m_Items: []
+  - m_Id: 24329236193628160
+    m_Localized: shortage
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ResourceSystem.Markets.Interactions;
+using TimeSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,11 +19,19 @@ namespace ResourceSystem.Markets.UI
         [Header("Values")]
         [SerializeField] private ResourceValueUI _resourceValueUITemplate;
         [SerializeField] private RectTransform _resourceValueContainer;
-        private List<ResourceValueUI> _resourceValuesUI = new();
+        private readonly List<ResourceValueUI> _resourceValuesUI = new();
 
         private Market _market;
 
-        public Market market => _market;
+        private void OnEnable()
+        {
+            TimeManager.onMonthBegins += UpdateDisplay;
+        }
+
+        private void OnDisable()
+        {
+            TimeManager.onMonthBegins -= UpdateDisplay;
+        }
 
         private void AddResourceValueUI(ResourceValue resourceValue)
         {
@@ -39,36 +48,38 @@ namespace ResourceSystem.Markets.UI
             if (!_resourceValuesUI.Contains(resourceValueUI)) return;
 
             _resourceValuesUI.Remove(resourceValueUI);
-            Destroy(resourceValueUI);
+            Destroy(resourceValueUI.gameObject);
         }
 
         public void UpdateDisplay()
         {
+            if (!isOpen) return;
+            
             _marketName.SetText(_market.name);
             _marketColor.color = _market.color;
             
+            //Remove extra resource value ui that doesn't have valid resource value.
+            foreach (var value in _resourceValuesUI.ToArray())
+            {
+                if (value.ResourceValue == null
+                    || !_market._resourceValues.Contains(value.ResourceValue))
+                {
+                    RemoveResourceValueUI(value);
+                }
+            }
+            
             foreach (var resourceValue in _market._resourceValues)
             {
-                //Remove extra resource value ui that doesn't have valid resource value.
-                Parallel.ForEach(_resourceValuesUI, value =>
-                {
-                    if (value.ResourceValue == null
-                        || !_market._resourceValues.Contains(value.ResourceValue))
-                    {
-                        RemoveResourceValueUI(value);
-                    }
-                });
-
                 if (!TryGetResourceValue(resourceValue, out ResourceValueUI resourceValueUI))
                 {
                     AddResourceValueUI(resourceValue);
                 }
             }
-            
-            Parallel.ForEach(_resourceValuesUI, value =>
+
+            foreach (var value in _resourceValuesUI)
             {
                 value.UpdateDisplay();
-            });
+            }
         }
 
         private bool TryGetResourceValue(ResourceValue resourceValue, out ResourceValueUI resourceValueUI)

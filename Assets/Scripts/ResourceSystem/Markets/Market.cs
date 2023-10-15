@@ -96,6 +96,18 @@ namespace ResourceSystem.Markets
 
         private void CalculateResourceValueAmount(ResourceValue resourceValue, OrderType orderType)
         {
+            switch (orderType)
+            {
+                case OrderType.Demand:
+                    resourceValue.demand = 0;
+                    break;
+                case OrderType.Offer:
+                    resourceValue.offer = 0;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(orderType), orderType, null);
+            }
+            
             Parallel.ForEach(_orders, order =>
             {
                 if (order.resource != resourceValue.resource || order.type != orderType) return;

@@ -15,44 +15,48 @@ MonoBehaviour:
   m_TableCollectionName: Resource
   m_TableCollectionNameGuidString: f92ec35604d640847a5b36659e10b276
   m_Entries:
-  - m_Id: 14233772032
-    m_Key: Res_Wood
-    m_Metadata:
-      m_Items: []
-  - m_Id: 55975485440
-    m_Key: Res_Minerals
-    m_Metadata:
-      m_Items: []
-  - m_Id: 136325767168
-    m_Key: Res_Food
-    m_Metadata:
-      m_Items: []
-  - m_Id: 153379807232
-    m_Key: Res_Environment
-    m_Metadata:
-      m_Items: []
-  - m_Id: 184455405568
-    m_Key: Res_Population
-    m_Metadata:
-      m_Items: []
-  - m_Id: 205900881920
-    m_Key: Res_WorkForce
-    m_Metadata:
-      m_Items: []
-  - m_Id: 253816610816
-    m_Key: Res_Habitation
+  - m_Id: 24329236193628160
+    m_Key: Res_Shortage
     m_Metadata:
       m_Items: []
   - m_Id: 22888606745645056
     m_Key: Res_Demand
     m_Metadata:
       m_Items: []
+  - m_Id: 153379807232
+    m_Key: Res_Environment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 136325767168
+    m_Key: Res_Food
+    m_Metadata:
+      m_Items: []
+  - m_Id: 253816610816
+    m_Key: Res_Habitation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55975485440
+    m_Key: Res_Minerals
+    m_Metadata:
+      m_Items: []
   - m_Id: 22888652190928896
     m_Key: Res_Offer
     m_Metadata:
       m_Items: []
+  - m_Id: 184455405568
+    m_Key: Res_Population
+    m_Metadata:
+      m_Items: []
   - m_Id: 22888675628699648
     m_Key: Res_Ratio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14233772032
+    m_Key: Res_Wood
+    m_Metadata:
+      m_Items: []
+  - m_Id: 205900881920
+    m_Key: Res_WorkForce
     m_Metadata:
       m_Items: []
   m_Metadata:

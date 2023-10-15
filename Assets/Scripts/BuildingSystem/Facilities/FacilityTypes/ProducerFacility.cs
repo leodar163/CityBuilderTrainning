@@ -22,6 +22,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             base.OnAddedToCell(cellAddedTo);
             producerSelf.FetchResources();
+            producerSelf.Produce();
         }
 
         protected virtual void OnEnable()
@@ -34,6 +35,8 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             TimeManager.onNewMonth -= producerSelf.FetchResources;
             TimeManager.onMonthEnds -= producerSelf.Produce;
+            
+            economicActorSelf.RemoveAllOrders();
         }
     }
 }
