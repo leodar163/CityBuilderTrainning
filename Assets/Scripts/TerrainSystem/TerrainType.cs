@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GridSystem;
 using ToolTipSystem;
 using UnityEngine;
@@ -14,8 +15,8 @@ namespace TerrainSystem
         [SerializeField] private string _id;
         public Tile tile;
         public string id => _id;
-        
-        public CellData cell { get; private set; }
+
+        public readonly List<CellData> cells = new();
 
         [Header("Description")] 
         [SerializeField] private string _typeDescription = "This is a terrain";
@@ -26,23 +27,16 @@ namespace TerrainSystem
 
         public virtual void OnAddedToCell(CellData cellData)
         {
-            cell = cellData;
+            if (cells.Contains(cellData)) return;
+            cells.Add(cellData);
             GridManager.PaintTilemap(tile,GridManager.TileMapType.Terrain, cellData.cellCoordinates);
         }
 
         public virtual void OnRemovedFromCell(CellData cellData)
         {
-            if (cell != cellData) return;
+            if (!cells.Contains(cellData)) return;
+            cells.Remove(cellData);
             GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cellData.cellCoordinates);
-            cell = null;
-        }
-
-        public void OnRemovedFromCell()
-        {
-            if (cell != null)
-            {
-                OnRemovedFromCell(cell);
-            }
         }
 
         public ToolTipMessage ToToolTipMessage()

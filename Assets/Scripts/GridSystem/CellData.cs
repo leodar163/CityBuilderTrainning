@@ -74,7 +74,7 @@ namespace GridSystem
         {
             if (terrainToSet != null && terrainToSet == terrain) return;
             
-            terrain?.OnRemovedFromCell();
+            terrain?.OnRemovedFromCell(this);
             terrain = terrainToSet;
             terrain?.OnAddedToCell(this);
         }
