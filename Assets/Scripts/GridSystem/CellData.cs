@@ -84,9 +84,7 @@ namespace GridSystem
         public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
             if (_facilities.Contains(facilityTypeToAdd)) return false;
-            
-            facilityTypeToAdd.OnAddedToCell(this);
-            
+
             _facilities.Add(facilityTypeToAdd);
             PlaceFacility(facilityTypeToAdd);
             

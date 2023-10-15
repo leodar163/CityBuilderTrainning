@@ -160,7 +160,7 @@ namespace ResourceSystem.Markets
             
             List<CellData[]> marketAreas = GetMarketsIsolatedAreas(marketToAmputate);
 
-            while (marketAreas.Count > 1)
+            while (marketAreas is { Count: > 1 })
             {
                 CellData[] area = marketAreas[0];
                 marketAreas.Remove(area);
@@ -182,6 +182,8 @@ namespace ResourceSystem.Markets
 
         public static List<CellData[]> GetMarketsIsolatedAreas(Market market)
         {
+            if (market.cells.Count == 0) return null;
+            
             List<CellData[]> areas = new();
             List<CellData> totalArea = new List<CellData>(market.cells);
             List<CellData> currentArea = new();

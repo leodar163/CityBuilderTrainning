@@ -11,7 +11,6 @@ namespace BuildingSystem.Facilities.FacilityTypes
         public int marketMergeRange = 1;
         private static List<DepositFacility> s_deposits = new();
         private CellData[] _influencedArea;
-        
 
         private List<CellData> GetExclusiveMarketCells()
         {
