@@ -20,9 +20,11 @@ namespace TimeSystem
         public static string monthName => Instance._localizedMonth.GetLocalizedString();
         public static string yearName => Instance._localizedYear.GetLocalizedString();
         public static string previsionName => Instance._localizedPrevision.GetLocalizedString();
-        
-        public static event Action<InGameDate> onNewMonth;
-        public static event Action<InGameDate> onNewYear;
+
+        public static event Action onMonthEnds;
+        public static event Action onNewMonth;
+        public static event Action onYearEnds;
+        public static event Action onNewYear;
         public static InGameDate date { get; private set; }
 
         public static float monthTimer { get; private set; }
@@ -66,7 +68,7 @@ namespace TimeSystem
             {
                 monthTimer = 0;
 
-                date++;
+                OnMonthEnds();
                 
                 OnNewMonth();
             }
@@ -94,10 +96,17 @@ namespace TimeSystem
             }
         }
 
+        private static void OnMonthEnds()
+        {
+            onMonthEnds?.Invoke();
+            if((date.totalMonths + 1) % 12 == 0) onYearEnds?.Invoke();
+        }
+        
         private static void OnNewMonth()
         {
-            onNewMonth?.Invoke(date);
-            if(date.totalMonths % 12 == 0) onNewYear?.Invoke(date);
+            date++;
+            onNewMonth?.Invoke();
+            if(date.totalMonths % 12 == 0) onNewYear?.Invoke();
         }
 
         public void SetTimeSpeed(int speed)

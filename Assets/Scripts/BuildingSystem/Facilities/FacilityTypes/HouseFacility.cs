@@ -5,15 +5,8 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class HouseFacility : FacilityType, IProducer
+    public class HouseFacility : ProducerFacility
     {
-        List<ResourceOrder> IEconomicActor.orders { get; } = new();
-
-        public IEconomicActor economicActorSelf => this;
-        public IProducer producerSelf => this;
-
-        [Header("Production")] 
-        [SerializeField] private List<ProductionLine> _productionLines;
-        public List<ProductionLine> productionLines => _productionLines;
+        
     }
 }

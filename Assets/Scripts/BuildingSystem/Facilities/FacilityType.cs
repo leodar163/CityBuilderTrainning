@@ -22,8 +22,6 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected LocalizedString _facilityDescription;
         [SerializeField] protected LocalizedString _placementConditions;
 
-        private Action<InGameDate> monthlyProduction;
-
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
 
@@ -38,19 +36,7 @@ namespace BuildingSystem.Facilities
         {
             if (!_collider) TryGetComponent(out _collider);
         }
-
-       
-
-        protected virtual void OnEnable()
-        {
-            TimeManager.onNewMonth += monthlyProduction;
-        }
-
-        protected virtual void OnDisable()
-        {
-            TimeManager.onNewMonth -= monthlyProduction;
-            
-        }
+        
 
         public virtual void OnAddedToCell(CellData cellAddedTo)
         {

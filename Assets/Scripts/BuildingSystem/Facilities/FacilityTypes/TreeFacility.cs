@@ -8,16 +8,8 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class TreeFacility : FacilityType, IProducer
+    public class TreeFacility : ProducerFacility
     {
-        List<ResourceOrder> IEconomicActor.orders { get; } = new();
-
-        public IEconomicActor economicActorSelf => this;
-        public IProducer producerSelf => this;
-
-        [Header("Production")] 
-        [SerializeField] private List<ProductionLine> _productionLines;
-        public List<ProductionLine> productionLines => _productionLines;
 
         public override bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
         {

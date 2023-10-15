@@ -51,7 +51,7 @@ namespace GridSystem
 
         private void Awake()
         {
-            TimeManager.onNewMonth += _ => MonthUpdateCells();
+            TimeManager.onNewMonth += MonthUpdateCells;
             
             if (_cursor.TryGetComponent(out MeshRenderer meshRend))
             {
