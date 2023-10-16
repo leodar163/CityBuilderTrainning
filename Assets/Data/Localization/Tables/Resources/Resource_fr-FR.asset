@@ -62,6 +62,10 @@ MonoBehaviour:
     m_Localized: "p\xE9nurie"
     m_Metadata:
       m_Items: []
+  - m_Id: 24708577301778432
+    m_Localized: force de construction
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -14,6 +14,11 @@ namespace BuildingSystem.Facilities
         public static FacilityType selectedFacility { get; private set; }
         public bool isActive { get; private set; }
 
+        [Header("Properties")] 
+        [SerializeField] private float _maxConstructionForceInvestment = 10;
+
+        public static float maxConstructionForceInvestment => Instance._maxConstructionForceInvestment;
+         
         [Header("Messages")] 
         [SerializeField] private LocalizedString _notEnoughPlaceException;
 

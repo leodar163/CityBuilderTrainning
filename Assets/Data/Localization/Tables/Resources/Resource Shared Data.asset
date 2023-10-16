@@ -59,6 +59,10 @@ MonoBehaviour:
     m_Key: Res_WorkForce
     m_Metadata:
       m_Items: []
+  - m_Id: 24708577301778432
+    m_Key: Res_ConstructionForce
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
