@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridSystem;
+using ResourceSystem.Markets.PeopleManagement;
 using UnityEngine;
 
 namespace ResourceSystem.Markets
@@ -22,6 +23,25 @@ namespace ResourceSystem.Markets
         private readonly List<ResourceOrder> _orders = new();
         public readonly List<ResourceValue> _resourceValues = new();
 
+        public PeopleNeedManager _peopleNeedManager;
+
+        #region CONSTRUCTORS
+
+        public Market(bool isEcosystem)
+        {
+            this.isEcosystem = isEcosystem;
+
+            if (!isEcosystem)
+                _peopleNeedManager = new PeopleNeedManager(this);
+        }
+        
+        public Market(Color color, bool isEcosystem) : this(isEcosystem)
+        {
+            this.color = color;
+        }
+
+        #endregion
+        
         public void AddCell(CellData cell)
         {
             if (cells.Contains(cell)) return;
@@ -78,7 +98,7 @@ namespace ResourceSystem.Markets
             }
             else
             {
-                CalculateResourceValueRatio(resourceValue);
+                CalculateResourceValueAvailability(resourceValue);
             }
         }
 
@@ -114,9 +134,12 @@ namespace ResourceSystem.Markets
             });
         }
 
-        private static void CalculateResourceValueRatio(ResourceValue resourceValue)
+        private static void CalculateResourceValueAvailability(ResourceValue resourceValue)
         {
-            resourceValue.availability = resourceValue.offer == 0 ? -1 : resourceValue.demand / resourceValue.offer;
+            resourceValue.availability =
+                resourceValue.offer == 0 ? 0 :
+                resourceValue.demand == 0 ? 1 :
+                    Mathf.Clamp01(resourceValue.offer / resourceValue.demand);
         }
 
         public float GetResourceValueAmount(ResourceType resource, OrderType orderType)
@@ -157,6 +180,16 @@ namespace ResourceSystem.Markets
 
             resourceValue = null;
             return false;
+        }
+
+        public void OnRemoved()
+        {
+            if (_peopleNeedManager == null) return;
+            
+            _peopleNeedManager.economicActorSelf.RemoveAllOrders();
+            _peopleNeedManager.market = null;
+            _peopleNeedManager.OnRemoved();
+            _peopleNeedManager = null;
         }
     }
 }

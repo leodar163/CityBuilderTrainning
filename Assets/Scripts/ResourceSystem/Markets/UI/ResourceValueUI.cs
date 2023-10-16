@@ -31,11 +31,12 @@ namespace ResourceSystem.Markets.UI
         
         public void UpdateDisplay()
         {
-            _demand.text = _resourceValue.demand.ToString(CultureInfo.InvariantCulture);
-            _offer.text = _resourceValue.offer.ToString(CultureInfo.InvariantCulture);
-            _ratio.text = _resourceValue.availability < 0
+            _demand.text = (Mathf.RoundToInt(_resourceValue.demand * 100) / 100f).ToString(CultureInfo.CurrentCulture);
+            _offer.text = (Mathf.RoundToInt(_resourceValue.offer * 100) / 100f).ToString(CultureInfo.CurrentCulture);
+            _ratio.text = _resourceValue.availability <= 0
                 ? $"<color=#{FormatManager.negativeColor}>{_localizedShortage.GetLocalizedString()}</color>"
-                : _resourceValue.availability.ToString(CultureInfo.InvariantCulture);
+                //: ((int)(_resourceValue.availability * 100) / 100).ToString(CultureInfo.InvariantCulture);
+                : Mathf.RoundToInt(_resourceValue.availability * 100) + "%";
             _resourceIcon.sprite = _resourceValue.resource.icon;
         }
     }

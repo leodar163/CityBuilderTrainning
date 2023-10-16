@@ -32,6 +32,7 @@ namespace ResourceSystem.Markets
 
         public void NotifyMarketChange()
         {
+            if (market == null) return;
             foreach (var order in orders)
             {
                 market.NotifyOrderChange(order);

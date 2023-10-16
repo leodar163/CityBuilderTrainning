@@ -36,11 +36,7 @@ namespace ResourceSystem.Markets
 
         public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
         {
-            Market market = new()
-            {
-                color = Random.ColorHSV(),
-                isEcosystem = isEcosystem
-            };
+            Market market = new(Random.ColorHSV(), isEcosystem);
 
             foreach (var cell in area)
             {
@@ -141,6 +137,8 @@ namespace ResourceSystem.Markets
             }
 
             markets.Remove(marketToRemove);
+            
+            marketToRemove.OnRemoved();
         }
 
         public static void AmputateMarket(Market marketToAmputate, List<CellData> cellsToRemove)
