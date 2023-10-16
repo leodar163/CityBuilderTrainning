@@ -38,7 +38,7 @@ namespace ResourceSystem.Markets
 
             if (cell.market == this) cell.market = MarketManager.AddMarket(cell, 0);
 
-            Parallel.ForEach(GetActorsByCell(cell), actor =>
+            Parallel.ForEach(cell.economicActors, actor =>
             {
                 actor.NotifyMarketChange();
             });
@@ -48,18 +48,6 @@ namespace ResourceSystem.Markets
         {
             _innerBorder = GridManager.GetInnerBorderOfArea(cells);
             _outerBorder = GridManager.GetOuterBorderOfArea(cells);
-        }
-
-        private List<IEconomicActor> GetActorsByCell(CellData cell)
-        {
-            List<IEconomicActor> filteredActors = new();
-
-            Parallel.ForEach(_orders, order =>
-            {
-                if (order.sender.cell == cell) filteredActors.Add(order.sender);
-            });
-
-            return filteredActors;
         }
 
         public void NotifyOrderChange(ResourceOrder order)

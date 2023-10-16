@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BuildingSystem.Facilities;
 using OptiCollections;
 using PathFinding;
@@ -23,6 +24,7 @@ namespace GridSystem
         public int maxFacilityCount = 9;
         
         private readonly List<FacilityType> _facilities = new();
+        public readonly List<IEconomicActor> economicActors = new();
         public int facilityCount => _facilities.Count;
         public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
 
@@ -101,6 +103,9 @@ namespace GridSystem
 
             facilityTypeToPlace.transform.position = position + positionOffset;
             facilityTypeToPlace.OnAddedToCell(this);
+
+            if (facilityTypeToPlace is IEconomicActor actor)
+                OnAddEconomicActor(actor);
         }
 
         public void RemoveFacility(FacilityType facilityTypeToRemove)
@@ -109,6 +114,9 @@ namespace GridSystem
             {
                 _facilities.Remove(facilityTypeToRemove);
                 facilityTypeToRemove.OnRemovedFromCell(this);
+                
+                if (facilityTypeToRemove is IEconomicActor actor)
+                    OnRemoveEconomicActor(actor);
             }
         }
 
@@ -117,6 +125,18 @@ namespace GridSystem
             return index > _facilities.Count ? null : _facilities[index];
         }
 
+        private void OnAddEconomicActor(IEconomicActor actor)
+        {
+            if (!economicActors.Contains(actor))
+                economicActors.Add(actor);
+        }
+
+        private void OnRemoveEconomicActor(IEconomicActor actor)
+        {
+            if (economicActors.Contains(actor))
+                economicActors.Remove(actor);
+        }
+        
         #endregion
 
         public void OnMonthUpdate()

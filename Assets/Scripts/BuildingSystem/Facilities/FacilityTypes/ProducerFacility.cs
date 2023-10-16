@@ -11,6 +11,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
     public abstract class ProducerFacility : FacilityType, IProducer
     {
         public IEconomicActor economicActorSelf => this;
+        public Market market => cell.market;
         List<ResourceOrder> IEconomicActor.orders { get; } = new();
 
         public IProducer producerSelf => this;

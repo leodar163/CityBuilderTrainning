@@ -6,9 +6,7 @@ namespace ResourceSystem.Markets
 {
     public interface IEconomicActor
     {
-        public Market market => cell.market;
-        
-        public CellData cell { get; }
+        public Market market { get; }
         
         protected List<ResourceOrder> orders { get; }
 
