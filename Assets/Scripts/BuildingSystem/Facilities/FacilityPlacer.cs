@@ -1,21 +1,21 @@
-﻿using System;
-using GridSystem;
+﻿using GridSystem;
 using Interactions;
 using TerrainSystem;
 using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
-using Utils;
 
 namespace BuildingSystem.Facilities
 {
-    public class FacilityPlacer : Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractor
+    public class FacilityPlacer : Utils.Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractor
     {
         public static FacilityType selectedFacility { get; private set; }
         public bool isActive { get; private set; }
 
-        [Header("Properties")] 
+        [Header("Construction")] 
         [SerializeField] private float _maxConstructionForceInvestment = 10;
+
+        [SerializeField] private ConstructionSite _constructionSiteTemplate;
 
         public static float maxConstructionForceInvestment => Instance._maxConstructionForceInvestment;
          
@@ -87,16 +87,29 @@ namespace BuildingSystem.Facilities
         
         private static bool TryPlaceNewFacility(FacilityType facilityTypeToPlace, CellData cell)
         {
-            if (Instantiate(facilityTypeToPlace.gameObject).TryGetComponent(out FacilityType newFacility) 
-                && cell.TryAddFacility(newFacility))
+
+            FacilityType facilityTemplate = facilityTypeToPlace.constructionCost <= 0
+                ? facilityTypeToPlace
+                : Instance._constructionSiteTemplate;
+
+            if (!Instantiate(facilityTemplate.gameObject).TryGetComponent(out FacilityType facility))
+                return false;
+
+            if (!cell.TryAddFacility(facility))
             {
-                Instance._oneFacilityAsBeenPlaced = true;
-                return true;
+                Destroy(facility);
+                return false;
             }
 
-            Destroy(newFacility.gameObject);
+            Instance._oneFacilityAsBeenPlaced = true;            
             
-            return false;
+            if (facility is ConstructionSite site)
+            {
+                site.SetFacilityToBuild(facilityTypeToPlace);
+            }
+
+            return true;
+
         }
 
         private static void EndPlacement()

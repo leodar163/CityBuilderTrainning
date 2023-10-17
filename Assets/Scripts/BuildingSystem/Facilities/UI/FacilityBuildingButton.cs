@@ -31,13 +31,13 @@ namespace BuildingSystem.Facilities.UI
             facility = facilityTypeToAssign;
             _constructionSite = facility as ConstructionSite;
 
-            _iconImage.sprite = _constructionSite ? _constructionSite._facilityToBuild.icon : facility.icon;
+            _iconImage.sprite = _constructionSite ? _constructionSite.facilityToBuild.icon : facility.icon;
         }
 
         public ToolTipMessage ToToolTipMessage()
         {
             return _constructionSite
-                ? _constructionSite._facilityToBuild.ToToolTipMessage()
+                ? _constructionSite.facilityToBuild.ToToolTipMessage()
                 : facility.ToToolTipMessage();
         }
     }

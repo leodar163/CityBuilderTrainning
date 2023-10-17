@@ -70,6 +70,7 @@ namespace ResourceSystem.Markets.Interactions
             UnHighlightMarket(s_selectedMarket);
             
             s_selectedMarket = null;
+            MarketInfoPanel.Instance.ClosePanel();
         }
         
         public static void HighlightMarket(Market market)

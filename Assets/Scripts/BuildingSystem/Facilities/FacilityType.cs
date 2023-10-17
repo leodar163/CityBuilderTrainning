@@ -30,6 +30,8 @@ namespace BuildingSystem.Facilities
 
         public string facilityName => _facilityName.GetLocalizedString();
         public string modifierName => facilityName;
+
+        public float constructionCost;
         
 
         private void OnValidate()

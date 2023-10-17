@@ -63,7 +63,7 @@ namespace BuildingSystem.Facilities.UI
 
             _constructionSite = _facility as ConstructionSite;
 
-            DisplayFacility(_constructionSite == null ? _facility : _constructionSite._facilityToBuild);
+            DisplayFacility(_constructionSite == null ? _facility : _constructionSite.facilityToBuild);
         }
 
         private void DisplayFacility(FacilityType facilityType)

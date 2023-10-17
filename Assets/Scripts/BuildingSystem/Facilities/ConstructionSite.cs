@@ -4,6 +4,7 @@ using ResourceSystem;
 using ResourceSystem.Markets;
 using TimeSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BuildingSystem.Facilities
 {
@@ -17,12 +18,11 @@ namespace BuildingSystem.Facilities
 
         private static ResourceType s_constructionForceResource;
 
-        public FacilityType _facilityToBuild;
-        [SerializeField] private float _constructionCost;
+        private FacilityType _facilityToBuild;
+        public FacilityType facilityToBuild => _facilityToBuild;
+        
         private float _constructionInvestment;
         private float _constructionProgression;
-
-        public float constructionCost => _constructionCost;
         public float constructionInvestment => _constructionInvestment;
         public float constructionProgression => _constructionProgression;
 
@@ -35,7 +35,7 @@ namespace BuildingSystem.Facilities
         {
             base.OnAddedToCell(cellAddedTo);
             TimeManager.onMonthBegins += AddBuildProgression;
-            float monthlyInvestment = Mathf.Clamp(_constructionCost - _constructionInvestment, 0,
+            float monthlyInvestment = Mathf.Clamp(constructionCost - _constructionInvestment, 0,
                 FacilityPlacer.maxConstructionForceInvestment);
 
             economicActorSelf.SetOrder(s_constructionForceResource, monthlyInvestment, OrderType.Demand);
@@ -56,13 +56,13 @@ namespace BuildingSystem.Facilities
                 return;
             }
             
-            float monthlyInvestment = Mathf.Clamp(_constructionCost - _constructionInvestment, 0,
+            float monthlyInvestment = Mathf.Clamp(constructionCost - _constructionInvestment, 0,
                 FacilityPlacer.maxConstructionForceInvestment);
 
             economicActorSelf.SetOrder(s_constructionForceResource, monthlyInvestment, OrderType.Demand);
 
             _constructionInvestment += monthlyInvestment * cell.market.GetResourceAvailability(s_constructionForceResource);
-            _constructionProgression = _constructionInvestment / _constructionCost;
+            _constructionProgression = _constructionInvestment / constructionCost;
             
             if (_constructionProgression >= 1)
                 BuildFacility();
@@ -70,15 +70,23 @@ namespace BuildingSystem.Facilities
 
         private void BuildFacility()
         {
-            if (Instantiate(_facilityToBuild).TryGetComponent(out _facilityToBuild))
+            if (Instantiate(facilityToBuild).TryGetComponent(out _facilityToBuild))
             {
                 cell.maxFacilityCount++;
-                cell.TryAddFacility(_facilityToBuild);
+                cell.TryAddFacility(facilityToBuild);
                 _facilityToBuild.transform.position = transform.position;
                 _facilityToBuild.transform.rotation = transform.rotation;
                 cell.maxFacilityCount--;
                 cell.RemoveFacility(this);
             }
+        }
+
+        public void SetFacilityToBuild(FacilityType facility)
+        {
+            if (facility == null || facility == facilityToBuild) return;
+
+            _facilityToBuild = facility;
+            constructionCost = facilityToBuild.constructionCost;
         }
     }
 }

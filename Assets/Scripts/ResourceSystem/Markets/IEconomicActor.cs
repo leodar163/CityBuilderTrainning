@@ -35,6 +35,7 @@ namespace ResourceSystem.Markets
             if (market == null) return;
             foreach (var order in orders)
             {
+                order.market = market;
                 market.NotifyOrderChange(order);
             }
         }

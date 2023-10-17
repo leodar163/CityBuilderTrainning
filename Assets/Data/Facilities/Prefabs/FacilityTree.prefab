@@ -88,6 +88,7 @@ MonoBehaviour:
     - name: terrainCondition
       variable:
         rid: 5251183267977363477
+  constructionCost: 5
   _productionLines:
   - name: symbiose
     demands: []

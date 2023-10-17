@@ -1202,6 +1202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxConstructionForceInvestment: 10
+  _constructionSiteTemplate: {fileID: 739937954161130659, guid: b53423e077cd3d2429ce89bef5e24496,
+    type: 3}
   _notEnoughPlaceException:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0

@@ -300,7 +300,7 @@ GameObject:
   - component: {fileID: 4047299362448508146}
   - component: {fileID: 739937954161130659}
   m_Layer: 0
-  m_Name: HouseConstructionSite
+  m_Name: ConstructionSIteTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,7 +341,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.3, y: 0.3, z: 0.3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &739937954161130659
 MonoBehaviour:
@@ -384,9 +384,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _facilityToBuild: {fileID: 2756733645121397640, guid: c487eb8ec31081b46b15919e759c358e,
-    type: 3}
-  _constructionCost: 20
+  constructionCost: 0
+  _facilityToBuild: {fileID: 0}
   references:
     version: 2
     RefIds: []

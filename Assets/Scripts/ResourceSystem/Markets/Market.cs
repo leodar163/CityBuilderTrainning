@@ -190,6 +190,8 @@ namespace ResourceSystem.Markets
             _peopleNeedManager.market = null;
             _peopleNeedManager.OnRemoved();
             _peopleNeedManager = null;
+            
+            Debug.Log("market destroyed");
         }
     }
 }

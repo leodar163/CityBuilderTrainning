@@ -45,13 +45,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
                 break;
             }
 
-            if (marketToMergeInto == null) MarketManager.AddMarket(cellAddedTo, marketMergeRange, false);
-            else
+            if (marketToMergeInto == null) marketToMergeInto = MarketManager.AddMarket(false,  cellAddedTo);
+            
+            foreach (var cellData in _influencedArea)
             {
-                foreach (var cellData in _influencedArea)
-                {
-                    MarketManager.MergeMarkets(marketToMergeInto, cellData.market, out _);
-                }
+                if (cellAddedTo == cellData) continue; 
+                MarketManager.MergeMarkets(marketToMergeInto, cellData.market, out _);
             }
         }
 

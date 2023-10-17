@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GridSystem;
+using ResourceSystem.Markets.Interactions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
@@ -63,7 +64,7 @@ namespace ResourceSystem.Markets
             return GridManager.GetMinDistanceBetweenAreas(a.innerBorder, b.innerBorder);
         }
 
-        public static bool AreMarketOverlapping(Markets.Market a, Markets.Market b)
+        public static bool AreMarketOverlapping(Market a, Market b)
         {
             foreach (var cell in a.cells)
             {
@@ -73,7 +74,7 @@ namespace ResourceSystem.Markets
             return false;
         }
 
-        public static bool AreMarketAdjacent(Markets.Market a, Markets.Market b)
+        public static bool AreMarketAdjacent(Market a, Market b)
         {
             foreach (var border in a.outerBorder)
             {
@@ -83,7 +84,7 @@ namespace ResourceSystem.Markets
             return false;
         }
         
-        public static bool CanMergeMarkets(Markets.Market origin, Markets.Market target, out MergeCase mergeCase)
+        public static bool CanMergeMarkets(Market origin, Market target, out MergeCase mergeCase)
         {
             if (AreMarketOverlapping(origin, target))
             {
@@ -137,6 +138,11 @@ namespace ResourceSystem.Markets
             }
 
             markets.Remove(marketToRemove);
+
+            if (marketToRemove == MarketInteractor.SelectedMarket)
+            {
+                MarketInteractor.UnSelectMarket();
+            }
             
             marketToRemove.OnRemoved();
         }
