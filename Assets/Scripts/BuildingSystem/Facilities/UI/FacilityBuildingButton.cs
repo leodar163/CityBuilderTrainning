@@ -1,5 +1,4 @@
-﻿using System;
-using ToolTipSystem;
+﻿using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +11,8 @@ namespace BuildingSystem.Facilities.UI
         [SerializeField] private Animator _animator;
         
         private static readonly int animSelectionProperty = Animator.StringToHash("IsSelected");
+
+        private ConstructionSite _constructionSite;
 
         public FacilityType facility { get; private set; }
 
@@ -28,12 +29,16 @@ namespace BuildingSystem.Facilities.UI
         public void AssignFacility(FacilityType facilityTypeToAssign)
         {
             facility = facilityTypeToAssign;
-            _iconImage.sprite = facility.icon;
+            _constructionSite = facility as ConstructionSite;
+
+            _iconImage.sprite = _constructionSite ? _constructionSite._facilityToBuild.icon : facility.icon;
         }
 
         public ToolTipMessage ToToolTipMessage()
         {
-            return facility.ToToolTipMessage();
+            return _constructionSite
+                ? _constructionSite._facilityToBuild.ToToolTipMessage()
+                : facility.ToToolTipMessage();
         }
     }
 }

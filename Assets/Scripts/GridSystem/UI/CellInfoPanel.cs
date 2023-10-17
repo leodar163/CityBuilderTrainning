@@ -70,64 +70,66 @@ namespace GridSystem.UI
 
             if (currentCell != null)
             {
-                CheckForFacilities();
+                DisplayFacilityLayout();
             }
         }
-
-        private void ClearFacilityLayout()
-        {
-            foreach (var facilityInfoUI in _facilityInfoUIs)
-            {
-                Destroy(facilityInfoUI.gameObject);
-            }
-            
-            _facilityInfoUIs.Clear();
-        }
-
 
         private void DisplayCellInfos()
         {
-            ClearFacilityLayout();
+           DisplayFacilityLayout();
             
             _marketName.SetText(currentCell.market.name);
             
             _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
             _terrainType.SetText(currentCell.terrain.terrainName);
             _facilityCapacity.SetText($"{currentCell.facilityCount}/{currentCell.maxFacilityCount}");
-
-            for (int i = 0; i < currentCell.facilityCount; i++)
-            {
-                FacilityType facilityTypeToDisplay = currentCell.GetFacility(i);
-
-                TryAddFacilityInfo(facilityTypeToDisplay);
-            }
         }
 
-        private bool TryAddFacilityInfo(FacilityType facilityType)
+        private void AddFacilityInfoUI(FacilityType facilityType)
         {
-            if (Instantiate(_facilityInfoUITemplate, _facilitiesLayout)
-                .TryGetComponent(out FacilityInfoUI facilityInfo))
-            {
-                facilityInfo.Facility = facilityType;
-                _facilityInfoUIs.Add(facilityInfo);
-                return true;
-            }
-
-            return false;
+            if (!Instantiate(_facilityInfoUITemplate, _facilitiesLayout)
+                    .TryGetComponent(out FacilityInfoUI facilityInfo)) return;
+            
+            facilityInfo.Facility = facilityType;
+            _facilityInfoUIs.Add(facilityInfo);
         }
 
-        private void CheckForFacilities()
+        //Too much heavy to be called every frames... Need to find another way to update
+        private void DisplayFacilityLayout()
         {
-            if (_facilityInfoUIs.Count != currentCell.facilityCount)
+            List<FacilityInfoUI> facilityUIsToRemove = new();
+            List<FacilityType> facilityToDisplay = new(currentCell.facilities);
+
+            foreach (var facilityInfoUI in _facilityInfoUIs)
             {
-                ClearFacilityLayout();
-                
-                for (int i = 0; i < currentCell.facilityCount; i++)
+                if (facilityInfoUI.Facility == null || !currentCell.facilities.Contains(facilityInfoUI.Facility))
                 {
-                    TryAddFacilityInfo(currentCell.GetFacility(i));
+                    facilityUIsToRemove.Add(facilityInfoUI);
+                }
+                else
+                {
+                    facilityToDisplay.Remove(facilityInfoUI.Facility);
                 }
             }
-            
+
+            foreach (var facility in facilityToDisplay)
+            {
+                if (facilityUIsToRemove.Count > 0)
+                {
+                    facilityUIsToRemove[0].Facility = facility;
+                    facilityUIsToRemove.RemoveAt(0);
+                    continue;
+                }
+                
+                AddFacilityInfoUI(facility);
+            }
+
+            foreach (var facilityUI in facilityUIsToRemove)
+            {
+                _facilityInfoUIs.Remove(facilityUI);
+                Destroy(facilityUI.gameObject);
+            }
+
             _facilityCapacity.SetText($"{currentCell.facilityCount}/{currentCell.maxFacilityCount}");
         }
     }

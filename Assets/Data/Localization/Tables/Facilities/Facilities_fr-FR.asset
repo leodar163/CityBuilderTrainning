@@ -70,6 +70,22 @@ MonoBehaviour:
     m_Localized: "Cr\xE9er une zone de march\xE9"
     m_Metadata:
       m_Items: []
+  - m_Id: 22082407641010176
+    m_Localized: "Un b\xE2timent"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22082494349856768
+    m_Localized: chantier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22101958227283968
+    m_Localized: guilde des constructeurs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22102223965802496
+    m_Localized: "Peut \xEAtre plac\xE9 partout"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

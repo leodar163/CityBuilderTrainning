@@ -70,6 +70,22 @@ MonoBehaviour:
     m_Localized: Add a market zone
     m_Metadata:
       m_Items: []
+  - m_Id: 22082407641010176
+    m_Localized: a building
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22082494349856768
+    m_Localized: construction site
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22101958227283968
+    m_Localized: builder house
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22102223965802496
+    m_Localized: Can be placed everywhere
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

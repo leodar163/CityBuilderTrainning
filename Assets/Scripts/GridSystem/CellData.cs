@@ -23,10 +23,10 @@ namespace GridSystem
 
         public int maxFacilityCount = 9;
         
-        private readonly List<FacilityType> _facilities = new();
+        public readonly List<FacilityType> facilities = new();
         public readonly List<IEconomicActor> economicActors = new();
-        public int facilityCount => _facilities.Count;
-        public int freeFacilityPlacements => maxFacilityCount - _facilities.Count; 
+        public int facilityCount => facilities.Count;
+        public int freeFacilityPlacements => maxFacilityCount - facilities.Count; 
 
         #endregion
         
@@ -85,9 +85,9 @@ namespace GridSystem
 
         public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
-            if (_facilities.Contains(facilityTypeToAdd)) return false;
+            if (facilities.Contains(facilityTypeToAdd)) return false;
 
-            _facilities.Add(facilityTypeToAdd);
+            facilities.Add(facilityTypeToAdd);
             PlaceFacility(facilityTypeToAdd);
             
             return true;
@@ -110,9 +110,9 @@ namespace GridSystem
 
         public void RemoveFacility(FacilityType facilityTypeToRemove)
         {
-            if (_facilities.Contains(facilityTypeToRemove))
+            if (facilities.Contains(facilityTypeToRemove))
             {
-                _facilities.Remove(facilityTypeToRemove);
+                facilities.Remove(facilityTypeToRemove);
                 facilityTypeToRemove.OnRemovedFromCell(this);
                 
                 if (facilityTypeToRemove is IEconomicActor actor)
@@ -122,7 +122,7 @@ namespace GridSystem
 
         public FacilityType GetFacility(int index)
         {
-            return index > _facilities.Count ? null : _facilities[index];
+            return index > facilities.Count ? null : facilities[index];
         }
 
         private void OnAddEconomicActor(IEconomicActor actor)

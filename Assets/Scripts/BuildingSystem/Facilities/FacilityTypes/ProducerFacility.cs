@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public abstract class ProducerFacility : FacilityType, IProducer
+    public class ProducerFacility : FacilityType, IProducer
     {
         public IEconomicActor economicActorSelf => this;
         public Market market => cell.market;
