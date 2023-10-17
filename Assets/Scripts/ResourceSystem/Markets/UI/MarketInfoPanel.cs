@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using ResourceSystem.Markets.Interactions;
 using TimeSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils.UI;
 
@@ -15,6 +16,8 @@ namespace ResourceSystem.Markets.UI
         [SerializeField] private TextMeshProUGUI _marketName;
         [SerializeField] private Image _marketColor;
         [SerializeField] private RectTransform _panel;
+        [SerializeField] private Slider _unrestSlider;
+        [SerializeField] private TextMeshProUGUI _unrestText;
         
         [Header("Values")]
         [SerializeField] private ResourceValueUI _resourceValueUITemplate;
@@ -31,6 +34,12 @@ namespace ResourceSystem.Markets.UI
         private void OnDisable()
         {
             TimeManager.onMonthBegins -= UpdateDisplay;
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _unrestSlider.maxValue = 100;
         }
 
         private void AddResourceValueUI(ResourceValue resourceValue)
@@ -51,7 +60,7 @@ namespace ResourceSystem.Markets.UI
             Destroy(resourceValueUI.gameObject);
         }
 
-        public void UpdateDisplay()
+        private void UpdateDisplay()
         {
             if (!isOpen) return;
             
@@ -79,6 +88,21 @@ namespace ResourceSystem.Markets.UI
             foreach (var value in _resourceValuesUI)
             {
                 value.UpdateDisplay();
+            }
+
+            if (!_market.isEcosystem)
+            {
+                float unrest = Mathf.RoundToInt(_market._peopleNeedManager.unrest * 10000) / 100f;
+                _unrestSlider.value = unrest;
+                _unrestText.SetText($"{unrest}/100");
+                
+                _unrestSlider.gameObject.SetActive(true);
+                _unrestText.gameObject.SetActive(true);
+            }
+            else
+            {
+                _unrestSlider.gameObject.SetActive(false);
+                _unrestText.gameObject.SetActive(false);
             }
         }
 

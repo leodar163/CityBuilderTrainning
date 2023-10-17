@@ -13,6 +13,9 @@ namespace ResourceSystem.Markets.PeopleManagement
         private static ResourceType s_popResource;
         private static ResourceType s_foodResource;
         private static ResourceType s_habitationResource;
+
+        private float _unrest;
+        public float unrest => _unrest;
         
         public PeopleNeedManager(Market market)
         {
@@ -37,12 +40,22 @@ namespace ResourceSystem.Markets.PeopleManagement
             
             economicActorSelf.SetOrder(s_foodResource, peopleAmount, OrderType.Demand);
             economicActorSelf.SetOrder(s_habitationResource, peopleAmount, OrderType.Demand);
+            
+            AdjustUnrest();
         }
 
         public void OnRemoved()
         {
             TimeManager.onMonthEnds -= AdjustNeeds;
             economicActorSelf.SetOrder(s_popResource, 0, OrderType.Offer);
+        }
+
+        private void AdjustUnrest()
+        {
+            float habitationAvailability = market.GetResourceAvailability(s_habitationResource);
+            float foodAvailability = market.GetResourceAvailability(s_foodResource);
+
+            _unrest = (1 - habitationAvailability + (1 - foodAvailability)) / 2;
         }
     }
 }

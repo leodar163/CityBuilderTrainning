@@ -466,11 +466,13 @@ MonoBehaviour:
   constructionCost: 20
   _productionLines:
   - name: Logement
+    unrestSensitive: 0
     demands: []
     offers:
     - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
       quantity: 6
   - name: Travail
+    unrestSensitive: 1
     demands:
     - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
       quantity: 6
