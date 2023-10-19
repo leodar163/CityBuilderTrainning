@@ -26,7 +26,7 @@ namespace ToolTipSystem
         {
             if (toolTipSpeaker != null && _mouseIsIn)
             {
-                ToolTip.Sub(toolTipSpeaker);
+                //Tooltip.Sub(toolTipSpeaker);
             }
         }
 

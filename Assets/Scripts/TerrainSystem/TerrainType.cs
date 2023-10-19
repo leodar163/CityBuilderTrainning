@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GridSystem;
-using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Tilemaps;
@@ -9,7 +8,7 @@ using UnityEngine.Tilemaps;
 namespace TerrainSystem
 {
     [Serializable]
-    public class TerrainType : IToolTipSpeaker
+    public class TerrainType
     {
         [SerializeField] private LocalizedString _terrainName;
         [SerializeField] private string _id;
@@ -38,7 +37,8 @@ namespace TerrainSystem
             cells.Remove(cellData);
             GridManager.PaintTilemap(null,GridManager.TileMapType.Terrain,cellData.cellCoordinates);
         }
-
+        
+        /*
         public ToolTipMessage ToToolTipMessage()
         {
             return new ToolTipMessage
@@ -47,5 +47,6 @@ namespace TerrainSystem
                 message = $"{_typeDescription}\n\n{_effectDescription}"
             };
         }
+        */
     }
 }

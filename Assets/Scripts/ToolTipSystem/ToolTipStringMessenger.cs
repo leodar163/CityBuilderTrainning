@@ -17,7 +17,7 @@ namespace ToolTipSystem
         {
             if (isHovered)
             {
-                ToolTip.Sub(this);
+                //Tooltip.Sub(this);
             }
         }
 

@@ -1,17 +1,26 @@
 ﻿using Format;
 using GridSystem;
 using Interactions;
-using TerrainSystem;
 using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
 
 namespace BuildingSystem.Facilities
 {
-    public class FacilityPlacer : Utils.Singleton<FacilityPlacer>, IToolTipSpeaker, IInteractor
+    public class FacilityPlacer : Utils.Singleton<FacilityPlacer>, IInteractor, ITooltipMessenger
     {
+        public ITooltipMessenger tooltipMessengerSelf => this;
+        
         public static FacilityType selectedFacility { get; private set; }
         public bool isActive { get; private set; }
+
+        [SerializeField] private TooltipMessageUI _tooltipMessage;
+
+        public TooltipMessageUI message => _tooltipMessage;
+        void ITooltipMessenger.UpdateTooltipMessage()
+        {
+            
+        }
 
         [Header("Construction")] 
         [SerializeField] private float _maxConstructionForceInvestment = 10;
@@ -44,11 +53,17 @@ namespace BuildingSystem.Facilities
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
+                Tooltip.Unsub(this);
+                return;
+            }
+
+            if (GridManager.HoveredCell == null)
+            {
+                Tooltip.Unsub(this);
                 return;
             }
             
-            if (GridManager.HoveredCell != null
-                && CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
+            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
                 && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
@@ -93,9 +108,10 @@ namespace BuildingSystem.Facilities
                 title = canBePlaced ? Instance._CanBePlace.GetLocalizedString() : Instance._CantBePlace.GetLocalizedString(),
                 message = conditionsFormat
             };
-            ToolTip.Sub(Instance);
-            
+
             GridManager.PaintCursor(canBePlaced ? Color.green : Color.red);
+            
+            Tooltip.Sub(Instance);
             
             return canBePlaced;
         }

@@ -7,8 +7,13 @@ using Utils;
 
 namespace GridSystem
 {
-    public class GridInteractor : Singleton<GridInteractor>, IInteractor
+    public class GridInteractor : Singleton<GridInteractor>, ITooltipMessenger
     {
+        [SerializeField] private TooltipMessageUI _terrainTooltipMessage;
+        public TooltipMessageUI message => _terrainTooltipMessage;
+        
+        public ITooltipMessenger tooltipMessengerSelf => this;
+
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.GridInteraction;
 
@@ -18,13 +23,23 @@ namespace GridSystem
 
             if (GridManager.HoveredCell != null)
             {
-                ToolTip.Sub(GridManager.HoveredCell.terrain);
-                
+                Tooltip.Sub(this);
+
+
                 if (Input.GetMouseButtonUp(0))
                 {
                     CellInfoPanel.Instance.OpenPanel();    
                 }
             }
+            else
+            {
+                Tooltip.Unsub(this);
+            }
+        }
+        
+        public void UpdateTooltipMessage()
+        {
+           
         }
 
         public void ActivateMode()

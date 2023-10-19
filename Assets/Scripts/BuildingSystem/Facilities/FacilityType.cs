@@ -9,7 +9,6 @@ using TimeSystem;
 using ToolTipSystem;
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 namespace BuildingSystem.Facilities
 {
@@ -80,8 +79,6 @@ namespace BuildingSystem.Facilities
         private string FormatProductionLinesDelta()
         {
             string format = $"<b><uppercase>{VariableNameManager.ProductionName}</uppercase></b>";
-            
-
             return format;
         }
 
