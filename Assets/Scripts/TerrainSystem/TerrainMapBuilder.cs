@@ -24,7 +24,7 @@ namespace TerrainSystem
             {
                 for (int x = 0; x < mapSize.x; x++)
                 {
-                    terrainMap[x, y] = Random.Range(0, _terrainSet.terrains.Length);
+                    terrainMap[x, y] = Random.Range(0, _terrainSet.nbrOfTerrain);
                 }
             }
 
@@ -44,7 +44,7 @@ namespace TerrainSystem
                         continue;
 
                     int terrainIndex = terrainMap[x, y];
-                    if(terrainIndex < 0 || terrainIndex > _terrainSet.terrains.Length)
+                    if(terrainIndex < 0 || terrainIndex > _terrainSet.nbrOfTerrain)
                         continue;
                         
                     _terrainMap[x, y] = terrainIndex;
@@ -58,7 +58,7 @@ namespace TerrainSystem
             {
                 for (int x = 0; x < _terrainMap.GetLength(0); x++)
                 {
-                    GridManager.GetCellDataFromIndex(x, y).SetTerrain(_terrainSet.terrains[_terrainMap[x,y]]);
+                    GridManager.GetCellDataFromIndex(x, y).SetTerrain(_terrainSet.GetTerrain(_terrainMap[x,y]));
                 }
             }
            

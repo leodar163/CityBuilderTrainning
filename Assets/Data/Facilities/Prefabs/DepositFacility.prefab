@@ -538,25 +538,17 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _resourceModifications:
-    m_TableReference:
-      m_TableCollectionName: 
-    m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  _placementConditions:
+  placementCondition: {fileID: 0}
+  _localizeNoPlacementCondition:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
     m_TableEntryReference:
-      m_KeyId: 17135530823680
+      m_KeyId: 22102223965802496
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _productionLines: []
+  constructionCost: 0
   marketMergeRange: 1
   references:
     version: 2

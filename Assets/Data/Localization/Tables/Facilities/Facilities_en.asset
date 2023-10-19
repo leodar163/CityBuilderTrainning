@@ -35,7 +35,7 @@ MonoBehaviour:
       m_Items:
       - rid: 5251183267977363468
   - m_Id: 17135530823680
-    m_Localized: no free facility slot remaining
+    m_Localized: no remaining free facility slot
     m_Metadata:
       m_Items: []
   - m_Id: 17752789766144

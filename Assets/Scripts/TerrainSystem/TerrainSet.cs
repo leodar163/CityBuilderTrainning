@@ -10,24 +10,24 @@ namespace TerrainSystem
     public class TerrainSet : DefaultableScriptableObject<TerrainSet>
     {
         [SerializeField] private ScriptableTerrain[] _terrainScripts;
-        private TerrainType[] _terrains;
 
-        public TerrainType[] terrains
+        public int nbrOfTerrain => _terrainScripts.Length;
+        
+        public TerrainType GetTerrain(int index)
         {
-            get
+            if (index < 0 || index > _terrainScripts.Length) return null;
+
+            return _terrainScripts[index].terrain;
+        }
+
+        public TerrainType GetTerrain(string id)
+        {
+            foreach (var scTerrain in _terrainScripts)
             {
-                if (_terrains == null || _terrains.Length != _terrainScripts.Length)
-                {
-                    _terrains = new TerrainType[_terrainScripts.Length];
-
-                    for (int i = 0; i < _terrainScripts.Length; i++)
-                    {
-                        _terrains[i] = _terrainScripts[i].terrain;
-                    }
-                }
-
-                return _terrains;
+                if (scTerrain.terrain.id == id) return scTerrain.terrain;
             }
+
+            return null;
         }
     }
 }

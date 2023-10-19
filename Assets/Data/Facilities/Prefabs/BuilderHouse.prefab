@@ -87,7 +87,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _placementConditions:
+  placementCondition: {fileID: 0}
+  _localizeNoPlacementCondition:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
     m_TableEntryReference:
@@ -99,6 +100,7 @@ MonoBehaviour:
   constructionCost: 0
   _productionLines:
   - name: 
+    unrestSensitive: 1
     demands: []
     offers:
     - resource: {fileID: 11400000, guid: 53974829d244ff140a428c0dc71a45c1, type: 2}

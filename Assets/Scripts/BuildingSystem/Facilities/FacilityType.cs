@@ -1,6 +1,8 @@
 ﻿using System;
+using Conditions.Placement;
 using Format;
 using GridSystem;
+using JetBrains.Annotations;
 using Localization;
 using TerrainSystem;
 using TimeSystem;
@@ -20,8 +22,10 @@ namespace BuildingSystem.Facilities
         [Header("Description")]
         [SerializeField] protected LocalizedString _facilityName;
         [SerializeField] protected LocalizedString _facilityDescription;
-        [SerializeField] protected LocalizedString _placementConditions;
-
+        [Header("Placement Description")] 
+        public PlacementCondition placementCondition;
+        [SerializeField] private LocalizedString _localizeNoPlacementCondition;
+        
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
 
@@ -54,18 +58,13 @@ namespace BuildingSystem.Facilities
             Destroy(gameObject);
         }
 
-        public virtual bool CanBePlaced(TerrainType terrain, out string conditionsFormat)
+        public bool CanBePlaced(CellData cellData, out string conditionsFormat)
         {
-            conditionsFormat = _placementConditions.GetLocalizedString();
+            if (placementCondition)
+                return placementCondition.CanPlace(cellData,out conditionsFormat);
+            
+            conditionsFormat = _localizeNoPlacementCondition.GetLocalizedString();
             return true;
-        }
-
-        protected void FormatCondition(string conditionVariableName, bool condition)
-        {
-            ((StringVariable)_placementConditions[conditionVariableName]).Value = $" : " +
-                $"<color=#{ ColorUtility.ToHtmlStringRGBA(condition ? Color.green : Color.red)}>" + 
-                (condition ? "O" : "X") +
-                "</color>";
         }
 
         #region TOOLTIP
@@ -92,8 +91,9 @@ namespace BuildingSystem.Facilities
             {
                 title = _facilityName.GetLocalizedString(),
                 message = _facilityDescription.GetLocalizedString() +
-                          $"\n{FormatManager.separator}\n{(cell == null ? FormatProductionLines() : FormatProductionLinesDelta())}" + 
-                          $"\n{FormatManager.separator}\n{_placementConditions.GetLocalizedString()}"
+                          $"\n{FormatManager.separator}\n{(cell == null ? FormatProductionLines() : FormatProductionLinesDelta())}"
+                          + $"\n{FormatManager.separator}\n" +
+                          $"{(placementCondition ? placementCondition.GetNeutralPlacementFormat() : _localizeNoPlacementCondition.GetLocalizedString())}"
             };
         }
         #endregion

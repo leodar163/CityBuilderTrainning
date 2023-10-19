@@ -73,24 +73,20 @@ MonoBehaviour:
     - name: resourceEnviro
       variable:
         rid: 5251183267977363467
-  _placementConditions:
+  placementCondition: {fileID: 11400000, guid: 0deb49f8f7ec8124faf4620143b01e7e, type: 2}
+  _localizeNoPlacementCondition:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
     m_TableEntryReference:
-      m_KeyId: 1393238364160
+      m_KeyId: 22102223965802496
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
-    m_LocalVariables:
-    - name: terrainForest
-      variable:
-        rid: 5251183267977363470
-    - name: terrainCondition
-      variable:
-        rid: 5251183267977363477
+    m_LocalVariables: []
   constructionCost: 5
   _productionLines:
   - name: symbiose
+    unrestSensitive: 1
     demands: []
     offers:
     - resource: {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
@@ -120,22 +116,6 @@ MonoBehaviour:
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
-    - rid: 5251183267977363470
-      type: {class: LocalizedString, ns: UnityEngine.Localization, asm: Unity.Localization}
-      data:
-        m_TableReference:
-          m_TableCollectionName: GUID:a8a8ef66ac4ac5b49b7951a4a5466f10
-        m_TableEntryReference:
-          m_KeyId: 14008602624
-          m_Key: 
-        m_FallbackState: 0
-        m_WaitForCompletion: 0
-        m_LocalVariables: []
-    - rid: 5251183267977363477
-      type: {class: StringVariable, ns: UnityEngine.Localization.SmartFormat.PersistentVariables,
-        asm: Unity.Localization}
-      data:
-        m_Value: 
 --- !u!65 &6363388185365044418
 BoxCollider:
   m_ObjectHideFlags: 0

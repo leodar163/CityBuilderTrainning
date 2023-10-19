@@ -1,4 +1,5 @@
-﻿using GridSystem;
+﻿using Format;
+using GridSystem;
 using Interactions;
 using TerrainSystem;
 using ToolTipSystem;
@@ -46,7 +47,8 @@ namespace BuildingSystem.Facilities
                 return;
             }
             
-            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
+            if (GridManager.HoveredCell != null
+                && CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
                 && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
@@ -64,15 +66,28 @@ namespace BuildingSystem.Facilities
         private static bool CanPlaceFacility(FacilityType facilityType, CellData cell)
         {
             if (cell == null) return false;
-            
-            TerrainType terrain = cell.terrain;
-            
-            bool notEnoughPlace = cell.freeFacilityPlacements > 0;
-            
-            string conditionsFormat = notEnoughPlace ? Instance._notEnoughPlaceException.GetLocalizedString() : "";
-            
-            bool canBePlaced = notEnoughPlace && facilityType.CanBePlaced(terrain, out conditionsFormat);
 
+            FacilityType facilityToTest;
+
+            if (facilityType is ConstructionSite constructionSite)
+            {
+                facilityToTest = constructionSite.facilityToBuild;
+            }
+            else
+            {
+                facilityToTest = facilityType;
+            }
+            
+            bool EnoughPlace = cell.freeFacilityPlacements > 0;
+
+            string enoughPlaceFormat = !EnoughPlace
+                ? $"<color=#{FormatManager.negativeColor}>{Instance._notEnoughPlaceException.GetLocalizedString()}</color>"
+                : "";
+            
+            bool canBePlaced = facilityToTest.CanBePlaced(cell, out string conditionsFormat) && EnoughPlace ;
+
+            conditionsFormat = enoughPlaceFormat + '\n' + conditionsFormat;
+            
             _toolTipMessage = new ToolTipMessage
             {
                 title = canBePlaced ? Instance._CanBePlace.GetLocalizedString() : Instance._CantBePlace.GetLocalizedString(),

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Conditions_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 29bc5af807c7d3d44bd60df47b28b7c3, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 7244187775386779672
+  m_TableData:
+  - m_Id: 7075418112
+    m_Localized: terrain {0} {1}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 357450797056
+    m_Localized: is
+    m_Metadata:
+      m_Items: []
+  - m_Id: 436425347072
+    m_Localized: isn't
+    m_Metadata:
+      m_Items: []
+  - m_Id: 558555090944
+    m_Localized: are
+    m_Metadata:
+      m_Items: []
+  - m_Id: 639253499904
+    m_Localized: C
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1433415602176
+    m_Localized: '{0} of the conditoins {1} true'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13910614364160
+    m_Localized: market {0} {1}
+    m_Metadata:
+      m_Items:
+      - rid: 7244187775386779672
+  references:
+    version: 2
+    RefIds:
+    - rid: 7244187775386779672
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00503ad1a60c0000

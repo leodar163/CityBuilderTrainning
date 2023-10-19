@@ -3673,7 +3673,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 260, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &820148284
 MonoBehaviour:
@@ -3687,7 +3687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
+  m_HorizontalFit: 2
   m_VerticalFit: 2
 --- !u!114 &820148285
 MonoBehaviour:
@@ -8758,10 +8758,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f161627143047458030b30888885708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _localizedIs:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 357450797056
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedIsPlural:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 558555090944
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedIsNot:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 436425347072
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedIsNotPlural:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 639253499904
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _separatorFormat: <align="center">==========</align>
   _negativeColor: {r: 1, g: 0, b: 0, a: 1}
   _positiveColor: {r: 0, g: 1, b: 0, a: 1}
   _separatorColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.8}
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2068015024
 GameObject:
   m_ObjectHideFlags: 0

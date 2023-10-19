@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f01413c001749d1a1e512eeaccf7640, type: 3}
+  m_Name: IsMountain
+  m_EditorClassIdentifier: 
+  _localizedCondition:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 7075418112
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  inverseCondition: 0
+  terrainFilter: {fileID: 11400000, guid: a8d6d6195c294bb4f87147284fa7ab31, type: 2}
+  references:
+    version: 2
+    RefIds: []
