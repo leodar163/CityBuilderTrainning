@@ -36,7 +36,7 @@ namespace ToolTipSystem
         private void LateUpdate()
         {
             if (_currentMessenger != null)
-                _currentMessenger.UpdateTooltipMessage();
+                _currentMessenger.UpdateTooltipMessage(s_currentMessageUI);
             
             if (isOpen)
             {
@@ -116,8 +116,8 @@ namespace ToolTipSystem
             
             CloseToolTip();
             _currentMessenger = messenger;
+            s_currentMessageUI = GetMessageUI(messenger.message);
             OpenToolTip();
-            ActivateAndGetMessageUI(messenger.message);
         }
 
         public static void Unsub(ITooltipMessenger messenger)
@@ -128,45 +128,23 @@ namespace ToolTipSystem
             CloseToolTip();
         }
 
-        private static T ActivateAndGetMessageUI<T>( T messageIUTemplate) where T : TooltipMessageUI
+        private static TooltipMessageUI GetMessageUI( TooltipMessageUI messageIUTemplate)
         {
             if (messageIUTemplate == null) return messageIUTemplate;
-            
-            if (Instance._toolTipMessageUIs.Contains(messageIUTemplate))
-            {
-                if (s_currentMessageUI != null && messageIUTemplate != s_currentMessageUI)
-                {
-                    s_currentMessageUI.gameObject.SetActive(false);
-                    messageIUTemplate.gameObject.SetActive(true);
-                    s_currentMessageUI = messageIUTemplate;
-                }
-            }
-            
+
             foreach (var messageUI in Instance._toolTipMessageUIs)
             {
-                if (messageUI is T castedMessage)
+                if (messageUI.template == messageIUTemplate)
                 {
-                    if (s_currentMessageUI != null && castedMessage != s_currentMessageUI)
-                    {
-                        s_currentMessageUI.gameObject.SetActive(false);
-                        castedMessage.gameObject.SetActive(true);
-                        s_currentMessageUI = castedMessage;
-                    }
-                    
-                    return castedMessage;
+                    return messageUI;
                 }
             }
 
             if (!Instantiate(messageIUTemplate.gameObject, Instance._messageLayout)
-                    .TryGetComponent(out T message)) return null;
-            
+                    .TryGetComponent(out TooltipMessageUI message)) return null;
+
             Instance._toolTipMessageUIs.Add(message);
-            
-            if(s_currentMessageUI != null)
-                s_currentMessageUI.gameObject.SetActive(false);
-            s_currentMessageUI = message;
-            s_currentMessageUI.gameObject.SetActive(true);
-            
+
             return message;
         }
     }

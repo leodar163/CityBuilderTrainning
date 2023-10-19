@@ -7,6 +7,6 @@ namespace ToolTipSystem
         
         public TooltipMessageUI message { get; }
 
-        public void UpdateTooltipMessage();
+        public void UpdateTooltipMessage(TooltipMessageUI messageUI);
     }
 }

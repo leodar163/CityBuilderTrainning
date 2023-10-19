@@ -37,7 +37,7 @@ namespace GridSystem
             }
         }
         
-        public void UpdateTooltipMessage()
+        public void UpdateTooltipMessage(TooltipMessageUI messageUI)
         {
            
         }

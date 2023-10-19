@@ -17,10 +17,6 @@ namespace BuildingSystem.Facilities
         [SerializeField] private TooltipMessageUI _tooltipMessage;
 
         public TooltipMessageUI message => _tooltipMessage;
-        void ITooltipMessenger.UpdateTooltipMessage()
-        {
-            
-        }
 
         [Header("Construction")] 
         [SerializeField] private float _maxConstructionForceInvestment = 10;
@@ -156,7 +152,10 @@ namespace BuildingSystem.Facilities
             return _toolTipMessage;
         }
 
-        
+        void ITooltipMessenger.UpdateTooltipMessage(TooltipMessageUI messageUI)
+        {
+            
+        }
         
         public void ActivateMode()
         {
