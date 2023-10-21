@@ -9,7 +9,7 @@ namespace ResourceSystem.Productions
     public class ProductionLine
     {
         public string name;
-        private float _efficiency;
+        private float _efficiency = 1;
         public bool unrestSensitive = true;
 
         public float efficiency => _efficiency;

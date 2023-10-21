@@ -5107,7 +5107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 619c063e3ca245089823d9dc13ceb4d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _terrainTooltipMessage: {fileID: 0}
+  _terrainTooltipMessage: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+    type: 3}
 --- !u!1 &1164524351
 GameObject:
   m_ObjectHideFlags: 0

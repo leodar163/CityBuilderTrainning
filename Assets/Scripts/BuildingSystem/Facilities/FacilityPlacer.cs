@@ -92,7 +92,7 @@ namespace BuildingSystem.Facilities
             bool EnoughPlace = cell.freeFacilityPlacements > 0;
 
             string enoughPlaceFormat = !EnoughPlace
-                ? $"<color=#{FormatManager.negativeColor}>{Instance._notEnoughPlaceException.GetLocalizedString()}</color>"
+                ? $"<color=#{FormatManager.negativeColorHTML}>{Instance._notEnoughPlaceException.GetLocalizedString()}</color>"
                 : "";
             
             bool canBePlaced = facilityToTest.CanBePlaced(cell, out string conditionsFormat) && EnoughPlace ;

@@ -34,7 +34,7 @@ namespace ResourceSystem.Markets.UI
             _demand.text = (Mathf.RoundToInt(_resourceValue.demand * 100) / 100f).ToString(CultureInfo.CurrentCulture);
             _offer.text = (Mathf.RoundToInt(_resourceValue.offer * 100) / 100f).ToString(CultureInfo.CurrentCulture);
             _ratio.text = _resourceValue.availability <= 0
-                ? $"<color=#{FormatManager.negativeColor}>{_localizedShortage.GetLocalizedString()}</color>"
+                ? $"<color=#{FormatManager.negativeColorHTML}>{_localizedShortage.GetLocalizedString()}</color>"
                 //: ((int)(_resourceValue.availability * 100) / 100).ToString(CultureInfo.InvariantCulture);
                 : Mathf.RoundToInt(_resourceValue.availability * 100) + "%";
             _resourceIcon.sprite = _resourceValue.resource.icon;

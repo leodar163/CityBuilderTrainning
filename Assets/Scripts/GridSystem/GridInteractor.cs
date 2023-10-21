@@ -2,6 +2,7 @@
 using GridSystem.UI;
 using Interactions;
 using ToolTipSystem;
+using ToolTipSystem.Messages;
 using UnityEngine;
 using Utils;
 
@@ -9,13 +10,14 @@ namespace GridSystem
 {
     public class GridInteractor : Singleton<GridInteractor>, ITooltipMessenger, IInteractor
     {
-        [SerializeField] private TooltipMessageUI _terrainTooltipMessage;
+        [SerializeField] private TextTooltipMessageUI _terrainTooltipMessage;
         public TooltipMessageUI tooltipMessage => _terrainTooltipMessage;
         
         public ITooltipMessenger tooltipMessengerSelf => this;
 
         public bool isActive { get; private set; }
         public InteractionMode interactionMode => InteractionMode.GridInteraction;
+        private static CellData s_hoveredCell;
 
         private void Update()
         {
@@ -23,7 +25,8 @@ namespace GridSystem
 
             if (GridManager.HoveredCell != null)
             {
-                Tooltip.Sub(this);
+                if (s_hoveredCell == null)
+                    Tooltip.Sub(this);
 
 
                 if (Input.GetMouseButtonUp(0))
@@ -33,13 +36,19 @@ namespace GridSystem
             }
             else
             {
-                Tooltip.Unsub(this);
+                if (s_hoveredCell != null)
+                    Tooltip.Unsub(this);
             }
+
+            s_hoveredCell = GridManager.HoveredCell;
         }
-        
+
         public void UpdateTooltipMessage(TooltipMessageUI messageUI)
         {
-           
+            if (messageUI is TextTooltipMessageUI textMessageUI)
+            {
+                textMessageUI.SetTexts(s_hoveredCell.terrain.terrainName, "");
+            }
         }
 
         public void ActivateMode()

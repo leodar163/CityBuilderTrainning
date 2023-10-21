@@ -17,10 +17,6 @@ namespace TerrainSystem
 
         public readonly List<CellData> cells = new();
 
-        [Header("Description")] 
-        [SerializeField] private string _typeDescription = "This is a terrain";
-        [SerializeField] private string _effectDescription = "No effect";
-        
         public string terrainName => _terrainName.GetLocalizedString();
         public string modifierName => terrainName;
 
