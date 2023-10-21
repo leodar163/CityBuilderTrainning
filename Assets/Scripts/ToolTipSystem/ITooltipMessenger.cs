@@ -5,7 +5,7 @@ namespace ToolTipSystem
     {
         public ITooltipMessenger tooltipMessengerSelf { get; }
         
-        public TooltipMessageUI message { get; }
+        public TooltipMessageUI tooltipMessage { get; }
 
         public void UpdateTooltipMessage(TooltipMessageUI messageUI);
     }

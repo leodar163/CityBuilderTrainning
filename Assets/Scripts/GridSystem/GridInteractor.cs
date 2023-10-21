@@ -7,10 +7,10 @@ using Utils;
 
 namespace GridSystem
 {
-    public class GridInteractor : Singleton<GridInteractor>, ITooltipMessenger
+    public class GridInteractor : Singleton<GridInteractor>, ITooltipMessenger, IInteractor
     {
         [SerializeField] private TooltipMessageUI _terrainTooltipMessage;
-        public TooltipMessageUI message => _terrainTooltipMessage;
+        public TooltipMessageUI tooltipMessage => _terrainTooltipMessage;
         
         public ITooltipMessenger tooltipMessengerSelf => this;
 

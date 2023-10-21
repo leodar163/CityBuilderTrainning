@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 814459148106543719}
   - component: {fileID: 2071937385482214873}
   m_Layer: 0
-  m_Name: Ratio
+  m_Name: Availability
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4172d42de48919c28865ad5d27382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title:
+  LocalizedTitle:
     m_TableReference:
       m_TableCollectionName: GUID:f92ec35604d640847a5b36659e10b276
     m_TableEntryReference:
@@ -344,7 +344,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  message:
+  localizedMessage:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -353,6 +353,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  textTooltipMessageTemplate: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+    type: 3}
   references:
     version: 2
     RefIds: []
@@ -504,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4172d42de48919c28865ad5d27382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title:
+  LocalizedTitle:
     m_TableReference:
       m_TableCollectionName: GUID:f92ec35604d640847a5b36659e10b276
     m_TableEntryReference:
@@ -513,7 +515,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  message:
+  localizedMessage:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -522,6 +524,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  textTooltipMessageTemplate: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+    type: 3}
   references:
     version: 2
     RefIds: []
@@ -673,7 +677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4172d42de48919c28865ad5d27382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title:
+  LocalizedTitle:
     m_TableReference:
       m_TableCollectionName: GUID:f92ec35604d640847a5b36659e10b276
     m_TableEntryReference:
@@ -682,7 +686,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  message:
+  localizedMessage:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -691,6 +695,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  textTooltipMessageTemplate: {fileID: 0}
   references:
     version: 2
     RefIds: []

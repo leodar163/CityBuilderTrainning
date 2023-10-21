@@ -34,6 +34,18 @@ MonoBehaviour:
     m_Localized: pause
     m_Metadata:
       m_Items: []
+  - m_Id: 18113709880266752
+    m_Localized: time speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18113852247527424
+    m_Localized: speed up time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18113973207060480
+    m_Localized: slow down time
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

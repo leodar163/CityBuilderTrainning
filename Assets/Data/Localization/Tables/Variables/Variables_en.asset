@@ -54,6 +54,10 @@ MonoBehaviour:
     m_Localized: unrest
     m_Metadata:
       m_Items: []
+  - m_Id: 18106499485814784
+    m_Localized: The more the unrest value is high, the less facilities will produce.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

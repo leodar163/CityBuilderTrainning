@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace ToolTipSystem
+namespace ToolTipSystem.Messengers
 {
     public class ToolTipMessengerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

@@ -31,6 +31,18 @@ MonoBehaviour:
     m_Key: Time_Pause
     m_Metadata:
       m_Items: []
+  - m_Id: 18113709880266752
+    m_Key: Time_Speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18113852247527424
+    m_Key: Time_SpeedUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18113973207060480
+    m_Key: Time_SlowDown
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

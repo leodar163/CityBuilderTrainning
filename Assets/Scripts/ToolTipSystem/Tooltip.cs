@@ -11,16 +11,12 @@ namespace ToolTipSystem
         [SerializeField] private Vector2 _offset = new (10,0);
         [SerializeField] private CanvasGroup _canvasGroup;
 
-        [Header("Texts")] 
-        [SerializeField] private TextMeshProUGUI _title;
-        [SerializeField] private TextMeshProUGUI _message;
-
         [Header("Messages")] 
         [SerializeField] private RectTransform _messageLayout;
         [SerializeField] private List<TooltipMessageUI> _toolTipMessageUIs;
         private static TooltipMessageUI s_currentMessageUI;
 
-        private static ITooltipMessenger _currentMessenger;
+        private static ITooltipMessenger s_currentMessenger;
 
         [Header("Timers")]
         public float timeToShowToolTip = 0.1f;
@@ -35,13 +31,13 @@ namespace ToolTipSystem
 
         private void LateUpdate()
         {
-            if (_currentMessenger != null)
-                _currentMessenger.UpdateTooltipMessage(s_currentMessageUI);
+            if (s_currentMessenger != null)
+                s_currentMessenger.UpdateTooltipMessage(s_currentMessageUI);
             
             if (isOpen)
             {
                 _timeBeingOpened += Time.deltaTime;
-
+                
                 if (!_tooltipIsShown && Instance._timeBeingOpened >= Instance.timeToShowToolTip)
                     Instance.ShowToolTip();
                 if (!_messageIsShown && Instance._timeBeingOpened >= 
@@ -61,7 +57,7 @@ namespace ToolTipSystem
             Instance._timeBeingOpened = 0;
             
             Instance._canvasGroup.alpha = 0;
-            Instance._message.gameObject.SetActive(false);
+            s_currentMessageUI?.Hide();
         }
 
         private static void OpenToolTip()
@@ -98,33 +94,35 @@ namespace ToolTipSystem
         private void ShowToolTip()
         {
             _tooltipIsShown = true;
+            s_currentMessageUI.ShowTitle();
             _canvasGroup.alpha = 1;
         }
 
         private void ShowMessage()
         {
             _messageIsShown = true;
-            _message.gameObject.SetActive(true);
+            s_currentMessageUI.ShowMessage();
         }
         
         /// <summary>
         /// Sub a ToolTip Messenger to the ToolTip.
         /// </summary>
-        public static void Sub(ITooltipMessenger messenger)
+        public static void Sub(ITooltipMessenger messenger) 
         {
-            if (messenger == null || (_currentMessenger != null && messenger == _currentMessenger)) return;
-            
+            if (messenger == null || s_currentMessenger != null && messenger == s_currentMessenger)
+                return;
+
             CloseToolTip();
-            _currentMessenger = messenger;
-            s_currentMessageUI = GetMessageUI(messenger.message);
+            s_currentMessenger = messenger;
+            s_currentMessageUI = GetMessageUI(messenger.tooltipMessage);
             OpenToolTip();
         }
 
         public static void Unsub(ITooltipMessenger messenger)
         {
-            if (messenger == null || _currentMessenger != messenger) return;
+            if (messenger == null || s_currentMessenger != messenger) return;
             
-            _currentMessenger = null;
+            s_currentMessenger = null;
             CloseToolTip();
         }
 
@@ -143,6 +141,7 @@ namespace ToolTipSystem
             if (!Instantiate(messageIUTemplate.gameObject, Instance._messageLayout)
                     .TryGetComponent(out TooltipMessageUI message)) return null;
 
+            message.template = messageIUTemplate;
             Instance._toolTipMessageUIs.Add(message);
 
             return message;

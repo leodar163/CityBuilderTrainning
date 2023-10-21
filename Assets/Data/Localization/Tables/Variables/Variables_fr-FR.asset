@@ -54,6 +54,11 @@ MonoBehaviour:
     m_Localized: troubles
     m_Metadata:
       m_Items: []
+  - m_Id: 18106499485814784
+    m_Localized: 'Plus la valeur de trouble est grande, moins les batiments seront
+      efficaces. '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

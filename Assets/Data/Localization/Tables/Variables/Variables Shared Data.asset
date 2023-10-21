@@ -51,6 +51,10 @@ MonoBehaviour:
     m_Key: Var_Unrest
     m_Metadata:
       m_Items: []
+  - m_Id: 18106499485814784
+    m_Key: Var_UnrestDesc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
