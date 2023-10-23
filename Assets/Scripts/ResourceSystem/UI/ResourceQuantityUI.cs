@@ -17,7 +17,7 @@ namespace ResourceSystem.UI
         public void DisplayResourceQuantity(ResourceType resourceType, float quantity, Color color)
         {
             _resource = resourceType;
-            _resourceIcon.sprite = resourceType == null ? resourceType.icon : null;
+            _resourceIcon.sprite = resourceType != null ? resourceType.icon : null;
             _quantity.color = color;
             _quantity.SetText(quantity.ToString(CultureInfo.CurrentCulture));
         }

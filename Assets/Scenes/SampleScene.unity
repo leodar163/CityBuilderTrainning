@@ -1115,7 +1115,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 680}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &358940105
@@ -8537,6 +8537,7 @@ MonoBehaviour:
   _separatorFormat: <align="center">==========</align>
   _negativeColor: {r: 1, g: 0, b: 0, a: 1}
   _positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  _defaultTextColor: {r: 1, g: 1, b: 1, a: 1}
   _separatorColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.8}
   references:
     version: 2

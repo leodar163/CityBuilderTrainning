@@ -73,7 +73,8 @@ MonoBehaviour:
     - name: resourceEnviro
       variable:
         rid: 5251183267977363467
-  placementCondition: {fileID: 11400000, guid: 0deb49f8f7ec8124faf4620143b01e7e, type: 2}
+  _placementCondition: {fileID: 11400000, guid: 0deb49f8f7ec8124faf4620143b01e7e,
+    type: 2}
   _localizeNoPlacementCondition:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0

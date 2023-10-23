@@ -1,10 +1,12 @@
 ﻿using ToolTipSystem;
+using ToolTipSystem.Messages;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace BuildingSystem.Facilities.UI
 {
-    public class FacilityBuildingButton : MonoBehaviour, IToolTipSpeaker
+    public class FacilityBuildingButton : MonoBehaviour, ITooltipMessenger, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image _iconImage;
         [SerializeField] private Button _button;
@@ -15,6 +17,30 @@ namespace BuildingSystem.Facilities.UI
         private ConstructionSite _constructionSite;
 
         public FacilityType facility { get; private set; }
+        
+        [Header("Tooltip")]
+        [SerializeField] private FacilityTooltipMessageUI _facilityTooltipMessageTemplate;
+        public TooltipMessageUI tooltipMessage => _facilityTooltipMessageTemplate;
+        public ITooltipMessenger tooltipMessengerSelf => this;
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            tooltipMessengerSelf.SubToTooltip();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            tooltipMessengerSelf.UnsubFromTooltip();
+        }
+
+        
+        public void UpdateTooltipMessage(TooltipMessageUI messageUI)
+        {
+            if (messageUI is FacilityTooltipMessageUI facilityUI)
+            {
+                facilityUI.SetFacility(_constructionSite == null ? facility : _constructionSite.facilityToBuild);
+            }
+        }
 
         private void Start()
         {
@@ -32,13 +58,6 @@ namespace BuildingSystem.Facilities.UI
             _constructionSite = facility as ConstructionSite;
 
             _iconImage.sprite = _constructionSite ? _constructionSite.facilityToBuild.icon : facility.icon;
-        }
-
-        public ToolTipMessage ToToolTipMessage()
-        {
-            return _constructionSite
-                ? _constructionSite.facilityToBuild.ToToolTipMessage()
-                : facility.ToToolTipMessage();
         }
     }
 }

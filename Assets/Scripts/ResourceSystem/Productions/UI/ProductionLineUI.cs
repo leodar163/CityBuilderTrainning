@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using Format;
-using ResourceSystem.Markets.UI;
+using ResourceSystem.Markets;
 using ResourceSystem.UI;
 using TMPro;
 using UnityEngine;
@@ -17,15 +17,17 @@ namespace ResourceSystem.Productions.UI
         [Space]
         [SerializeField] private ResourceQuantityUI resourceQuantityUITemplate;
 
-        private List<ResourceQuantityUI> _demands;
-        private List<ResourceQuantityUI> _offers;
+        private readonly List<ResourceQuantityUI> _demands = new();
+        private readonly List<ResourceQuantityUI> _offers = new();
 
         private ProductionLine _productionLine;
+        private Market _market;
 
-        public void SetProductionLine(ProductionLine productionLine)
+        public void SetProductionLine(ProductionLine productionLine, Market market = null)
         {
             if (_productionLine != null && productionLine == _productionLine) return;
 
+            _market = market;
             _productionLine = productionLine;
             DisplayProductionLine();
         }
@@ -39,7 +41,7 @@ namespace ResourceSystem.Productions.UI
                 : FormatManager.DefaultTextColor;
 
             _efficiency.color = efficiencyColor;
-            _efficiency.SetText(
+            _efficiency.SetText(_market == null ? "" :
                 (Mathf.RoundToInt(_productionLine.efficiency * 10000) / 100).ToString(CultureInfo.CurrentCulture) +
                 "%");
             
@@ -76,10 +78,11 @@ namespace ResourceSystem.Productions.UI
                     resourceQuantityUI = _demands[i];
                 }
 
-                Color quantityColor = _productionLine.efficiency < 1
-                    ? FormatManager.negativeColor
-                    : FormatManager.DefaultTextColor;
-         
+                Color quantityColor = _market == null ||
+                                      _market.GetResourceAvailability(_demands[i].resource) > 1
+                    ? FormatManager.DefaultTextColor
+                    : FormatManager.negativeColor;
+
                 resourceQuantityUI.DisplayResourceQuantity(_productionLine.demands[i].resource,
                         _productionLine.demands[i].quantity, quantityColor);
             }
@@ -110,12 +113,12 @@ namespace ResourceSystem.Productions.UI
                 {
                     resourceQuantityUI = _offers[i];
                 }
-                
-                Color quantityColor = _productionLine.efficiency < 1
-                    ? FormatManager.negativeColor
-                    : FormatManager.DefaultTextColor;
-         
-                resourceQuantityUI.DisplayResourceQuantity(_productionLine.demands[i].resource,
+
+                Color quantityColor = _market == null || _productionLine.efficiency >= 1
+                    ? FormatManager.DefaultTextColor
+                    : FormatManager.negativeColor;
+
+                resourceQuantityUI.DisplayResourceQuantity(_productionLine.offers[i].resource,
                     _productionLine.offers[i].quantity * _productionLine.efficiency, quantityColor);
             }
 

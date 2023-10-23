@@ -4,7 +4,7 @@ namespace ToolTipSystem
 {
     public abstract class TooltipMessageUI : MonoBehaviour
     {
-        public TooltipMessageUI template;
+        [HideInInspector] public TooltipMessageUI template;
         [Space] 
         [SerializeField] protected RectTransform _title;
         [SerializeField] protected RectTransform _message;

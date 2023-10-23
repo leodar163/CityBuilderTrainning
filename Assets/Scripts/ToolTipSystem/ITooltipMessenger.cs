@@ -8,5 +8,15 @@ namespace ToolTipSystem
         public TooltipMessageUI tooltipMessage { get; }
 
         public void UpdateTooltipMessage(TooltipMessageUI messageUI);
+
+        public void SubToTooltip()
+        {
+            Tooltip.Sub(this);
+        }
+
+        public void UnsubFromTooltip()
+        {
+            Tooltip.Unsub(this);
+        }
     }
 }

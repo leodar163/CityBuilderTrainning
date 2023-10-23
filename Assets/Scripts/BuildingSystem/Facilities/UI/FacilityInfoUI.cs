@@ -1,12 +1,13 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using ToolTipSystem;
+using ToolTipSystem.Messages;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace BuildingSystem.Facilities.UI
 {
-    public class FacilityInfoUI : MonoBehaviour, IToolTipSpeaker
+    public class FacilityInfoUI : MonoBehaviour, ITooltipMessenger, IPointerEnterHandler, IPointerExitHandler
     {
         private FacilityType _facility;
         
@@ -30,6 +31,11 @@ namespace BuildingSystem.Facilities.UI
         [SerializeField] private Button _deleteButton;
         [SerializeField] private Slider _constructionSlider;
         [SerializeField] private TextMeshProUGUI _progressionText;
+        
+        [Header("Tooltip")]
+        [SerializeField] private FacilityTooltipMessageUI _facilityTooltipMessageTemplate;
+        public TooltipMessageUI tooltipMessage => _facilityTooltipMessageTemplate;
+        public ITooltipMessenger tooltipMessengerSelf => this;
 
         private void Awake()
         {
@@ -77,9 +83,23 @@ namespace BuildingSystem.Facilities.UI
             Destroy(_facility.gameObject);
         }
         
-        public ToolTipMessage ToToolTipMessage()
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            return _facility.ToToolTipMessage();
+            tooltipMessengerSelf.SubToTooltip();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            tooltipMessengerSelf.UnsubFromTooltip();
+        }
+
+        
+        public void UpdateTooltipMessage(TooltipMessageUI messageUI)
+        {
+            if (messageUI is FacilityTooltipMessageUI facilityUI)
+            {
+                facilityUI.SetFacility(_constructionSite == null ? _facility : _constructionSite.facilityToBuild);
+            }
         }
     }
 }

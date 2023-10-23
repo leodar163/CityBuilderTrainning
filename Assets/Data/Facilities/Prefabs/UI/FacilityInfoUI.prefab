@@ -223,7 +223,6 @@ GameObject:
   - component: {fileID: 3227083326600405704}
   - component: {fileID: 5483563059025235587}
   - component: {fileID: 2198910465571425177}
-  - component: {fileID: 3934753054897387985}
   m_Layer: 0
   m_Name: FacilityInfoUI
   m_TagString: Untagged
@@ -278,6 +277,8 @@ MonoBehaviour:
   _deleteButton: {fileID: 6323430688040817905}
   _constructionSlider: {fileID: 6316734008042855727}
   _progressionText: {fileID: 6797625600302243467}
+  _facilityTooltipMessageTemplate: {fileID: 4225905071957915832, guid: 660f55cc3348dee4380b35833a3874c6,
+    type: 3}
 --- !u!114 &2198910465571425177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,19 +309,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3934753054897387985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2822407826769742467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa34d666e1004c0cb9eee43003633980, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _message: {fileID: 5483563059025235587}
 --- !u!1 &2928249671427290841
 GameObject:
   m_ObjectHideFlags: 0
