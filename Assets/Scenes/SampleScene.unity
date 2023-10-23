@@ -1197,7 +1197,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ec874c9a0774d7a8f38215a700c8f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tooltipMessage: {fileID: 0}
+  _textTooltipMessage: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+    type: 3}
   _maxConstructionForceInvestment: 10
   _constructionSiteTemplate: {fileID: 739937954161130659, guid: b53423e077cd3d2429ce89bef5e24496,
     type: 3}

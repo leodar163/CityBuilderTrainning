@@ -2,6 +2,7 @@
 using GridSystem;
 using Interactions;
 using ToolTipSystem;
+using ToolTipSystem.Messages;
 using UnityEngine;
 using UnityEngine.Localization;
 
@@ -14,9 +15,11 @@ namespace BuildingSystem.Facilities
         public static FacilityType selectedFacility { get; private set; }
         public bool isActive { get; private set; }
 
-        [SerializeField] private TooltipMessageUI _tooltipMessage;
+        [SerializeField] private TextTooltipMessageUI _textTooltipMessage;
+        private string _placementFeedbackFormat;
+        private string _placementConditionFormat;
 
-        public TooltipMessageUI tooltipMessage => _tooltipMessage;
+        public TooltipMessageUI tooltipMessage => _textTooltipMessage;
 
         [Header("Construction")] 
         [SerializeField] private float _maxConstructionForceInvestment = 10;
@@ -32,8 +35,6 @@ namespace BuildingSystem.Facilities
         [SerializeField] private LocalizedString _CantBePlace;
 
         public InteractionMode interactionMode => InteractionMode.FacilityPlacing;
-        
-        private static ToolTipMessage _toolTipMessage;
 
         private bool _oneFacilityAsBeenPlaced;
 
@@ -95,16 +96,13 @@ namespace BuildingSystem.Facilities
                 ? $"<color=#{FormatManager.negativeColorHTML}>{Instance._notEnoughPlaceException.GetLocalizedString()}</color>"
                 : "";
             
-            bool canBePlaced = facilityToTest.CanBePlaced(cell, out string conditionsFormat) && EnoughPlace ;
+            bool canBePlaced = facilityToTest.CanBePlaced(cell, out Instance._placementConditionFormat) && EnoughPlace ;
 
-            conditionsFormat = enoughPlaceFormat + '\n' + conditionsFormat;
+            Instance._placementConditionFormat = enoughPlaceFormat + '\n' + Instance._placementConditionFormat;
+            Instance._placementFeedbackFormat = canBePlaced
+                ? $"<color=#{FormatManager.positiveColorHTML}>{Instance._CanBePlace.GetLocalizedString()}"
+                : $"<color=#{FormatManager.negativeColorHTML}>{Instance._CantBePlace.GetLocalizedString()}";
             
-            _toolTipMessage = new ToolTipMessage
-            {
-                title = canBePlaced ? Instance._CanBePlace.GetLocalizedString() : Instance._CantBePlace.GetLocalizedString(),
-                message = conditionsFormat
-            };
-
             GridManager.PaintCursor(canBePlaced ? Color.green : Color.red);
             
             Tooltip.Sub(Instance);
@@ -147,14 +145,12 @@ namespace BuildingSystem.Facilities
             GridManager.PaintCursor(Color.white);
         }
 
-        public ToolTipMessage ToToolTipMessage()
-        {
-            return _toolTipMessage;
-        }
-
         void ITooltipMessenger.UpdateTooltipMessage(TooltipMessageUI messageUI)
         {
-            
+            if (messageUI is TextTooltipMessageUI textTooltipMessageUI)
+            {
+                textTooltipMessageUI.SetTexts(_placementFeedbackFormat, _placementConditionFormat);
+            }
         }
         
         public void ActivateMode()
