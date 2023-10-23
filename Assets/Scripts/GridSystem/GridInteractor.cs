@@ -26,7 +26,7 @@ namespace GridSystem
             if (GridManager.HoveredCell != null)
             {
                 if (s_hoveredCell == null)
-                    Tooltip.Sub(this);
+                    tooltipMessengerSelf.SubToTooltip();
 
 
                 if (Input.GetMouseButtonUp(0))
@@ -37,7 +37,7 @@ namespace GridSystem
             else
             {
                 if (s_hoveredCell != null)
-                    Tooltip.Unsub(this);
+                    tooltipMessengerSelf.UnsubFromTooltip();
             }
 
             s_hoveredCell = GridManager.HoveredCell;

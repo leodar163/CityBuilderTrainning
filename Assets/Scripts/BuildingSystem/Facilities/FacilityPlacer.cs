@@ -50,13 +50,13 @@ namespace BuildingSystem.Facilities
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
-                Tooltip.Unsub(this);
+                tooltipMessengerSelf.UnsubFromTooltip();
                 return;
             }
 
             if (GridManager.HoveredCell == null)
             {
-                Tooltip.Unsub(this);
+                tooltipMessengerSelf.UnsubFromTooltip();
                 return;
             }
             
@@ -105,8 +105,8 @@ namespace BuildingSystem.Facilities
             
             GridManager.PaintCursor(canBePlaced ? Color.green : Color.red);
             
-            Tooltip.Sub(Instance);
-            
+            Instance.tooltipMessengerSelf.SubToTooltip();
+
             return canBePlaced;
         }
         

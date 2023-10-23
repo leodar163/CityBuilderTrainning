@@ -30,12 +30,12 @@ namespace ToolTipSystem.Messengers
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Tooltip.Sub(this);
+            tooltipMessengerSelf.SubToTooltip();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Tooltip.Unsub(this);
+            tooltipMessengerSelf.UnsubFromTooltip();
             _currentTextMessage = null;
         }
 
