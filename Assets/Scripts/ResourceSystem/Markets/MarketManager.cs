@@ -50,7 +50,7 @@ namespace ResourceSystem.Markets
                 if (oldMarket != null && oldMarket.cells.Count == 0) RemoveMarket(oldMarket); 
             }
             
-            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, market.color, area);
+            GridManager.PaintTilemap(Instance.marketTile, TileMapType.Market, market.color, area);
 
             markets.Add(market);
             
@@ -116,7 +116,7 @@ namespace ResourceSystem.Markets
 
             CellData[] targetArea = target.cells.ToArray();
             
-            GridManager.PaintTilemap(Instance.marketTile, GridManager.TileMapType.Market, origin.color, targetArea);
+            GridManager.PaintTilemap(Instance.marketTile, TileMapType.Market, origin.color, targetArea);
             
             foreach (var cell in targetArea)
             {

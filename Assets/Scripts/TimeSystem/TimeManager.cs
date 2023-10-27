@@ -31,38 +31,19 @@ namespace TimeSystem
 
         public static float monthTimer { get; private set; }
 
-        private TimeControles _controls;
-
         private bool newMonth;
 
         private void Awake()
         {
-            _controls = new TimeControles();
             date = new InGameDate();
             timeSpeed = 1;
             isPaused = false;
             monthTimer = 0;
         }
-
-        private void OnEnable()
-        {
-            _controls.Enable();
-        }
-
-        private void OnDisable()
-        {
-            _controls.Disable();
-        }
-
+        
         private void Update()
         {
 
-            if (_controls.Timer.Pause.WasPressedThisFrame())
-            {
-                
-                Pause();
-            }
-            
             if (isPaused) return;
             
             monthTimer += Time.deltaTime * timeSpeed;
@@ -80,27 +61,6 @@ namespace TimeSystem
                 OnMonthEnds();
                 
                 OnNewMonth();
-            }
-
-            if (_controls.Timer.IncreaseTime.WasPressedThisFrame())
-            {
-                //print(_controls.Timer.IncreaseTime.ReadValue<float>());
-                IncreaseTimeSpeed((int)_controls.Timer.IncreaseTime.ReadValue<float>());
-            }
-
-            if (_controls.Timer.Time1.WasReleasedThisFrame())
-            {
-                SetTimeSpeed(1);
-            }
-
-            if (_controls.Timer.Time2.WasReleasedThisFrame())
-            {
-                SetTimeSpeed(2);
-            }
-            
-            if (_controls.Timer.Time3.WasReleasedThisFrame())
-            {
-                SetTimeSpeed(3);
             }
         }
 

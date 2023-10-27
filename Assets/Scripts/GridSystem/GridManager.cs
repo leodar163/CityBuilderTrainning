@@ -18,7 +18,10 @@ namespace GridSystem
         [SerializeField] private Tilemap _feedBackTileMap;
         [SerializeField] private Tilemap _terrainTileMap;
         [SerializeField] private Tilemap _marketVueTileMap;
-        
+        public Tilemap FeedBackTileMap => _feedBackTileMap;
+        public Tilemap TerrainTileMap => _terrainTileMap;
+        public Tilemap MarketVueTileMap => _marketVueTileMap;
+
         [Header("Bounds")] 
         [SerializeField] private Vector2Int _gridSize = new (62, 62); 
         [SerializeField] private Vector2Int _positionOffset;
@@ -42,13 +45,6 @@ namespace GridSystem
 
         public static bool hoveringActivated { get => Instance._hoveringActivated; set => Instance._hoveringActivated = value;}
 
-        public enum TileMapType
-        {
-            Feedback,
-            Market,
-            Terrain
-        }
-
         private void Awake()
         {
             TimeManager.onNewMonth += MonthUpdateCells;
@@ -63,13 +59,7 @@ namespace GridSystem
             InitCellDatas();
         }
 
-        /*
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(new Vector3(_positionOffset.x + 0.5f, 0, _positionOffset.y + 0.5f),new Vector3(_gridSize.x, 0.01f, _gridSize.y));
-        }
-        */
+       
         private void OnValidate()
         {
             if (!_gridCollider) TryGetComponent(out _gridCollider);

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BuildingSystem.Facilities.UI;
+using Cameras;
+using GridSystem;
+using TimeSystem;
 using UnityEngine;
 using Utils.UI;
 
@@ -10,7 +13,7 @@ namespace Interactions
 {
     public class InteractionManager : Utils.Singleton<InteractionManager>
     {
-        private InteractionModeControls _controls;
+        private GameInputs _controls;
 
         [SerializeField] private MonoBehaviour[] _interactorsBase;
         private static List<IInteractor> s_interactors = new();
@@ -45,7 +48,7 @@ namespace Interactions
 
         private void Awake()
         {
-            _controls = new InteractionModeControls();
+            _controls = new GameInputs();
 
             s_interactors.Clear();
 
@@ -85,22 +88,63 @@ namespace Interactions
                 }
             }
 
-            if (_controls.InteractionMode.OpenMarketVue.WasReleasedThisFrame())
-            {
-                if (_currentInteractor.interactionMode != InteractionMode.MarketVue)
-                {
-                    SwitchInteractionMode(InteractionMode.MarketVue);
-                }
-                else
-                {
-                    ReturnToDefaultInteractor();
-                }
-                
-            }
-
             if (_controls.InteractionMode.OpenFacilityBuildingMode.WasReleasedThisFrame())
             {
                 FacilityBuildingPanelUI.Instance.SwitchPanelOpening();
+            }
+            
+            ManageCameraInputs();
+            
+            ManageMapFilterInputs();
+            
+            ManageTimeInputs();
+        }
+
+        private void ManageCameraInputs()
+        {
+            CameraController.Instance.MoveCamera(_controls.CameraControles.Move.ReadValue<Vector2>(),
+                _controls.CameraControles.SpeepUp.IsPressed()); 
+            CameraController.Instance.Zoom(_controls.CameraControles.Zooming.ReadValue<float>());
+        }
+        
+        private void ManageMapFilterInputs()
+        {
+            if (_controls.MapFilter.TerrainVue.WasReleasedThisFrame())
+            {
+                MapFilter.ShowMapFilter(TileMapType.Terrain);
+            }
+            
+            if (_controls.MapFilter.MarketVue.WasReleasedThisFrame())
+            {
+                MapFilter.ShowMapFilter(TileMapType.Market);
+            }
+        }
+        
+        private void ManageTimeInputs()
+        {
+            if (_controls.TimeControles.Pause.WasPressedThisFrame())
+            { 
+                TimeManager.Instance.Pause();
+            }
+            
+            if (_controls.TimeControles.IncreaseTime.WasPressedThisFrame())
+            {
+                TimeManager.Instance.IncreaseTimeSpeed((int)_controls.TimeControles.IncreaseTime.ReadValue<float>());
+            }
+
+            if (_controls.TimeControles.Time1.WasReleasedThisFrame())
+            {
+                TimeManager.Instance.SetTimeSpeed(1);
+            }
+
+            if (_controls.TimeControles.Time2.WasReleasedThisFrame())
+            {
+                TimeManager.Instance.SetTimeSpeed(2);
+            }
+            
+            if (_controls.TimeControles.Time3.WasReleasedThisFrame())
+            {
+                TimeManager.Instance.SetTimeSpeed(3);
             }
         }
 

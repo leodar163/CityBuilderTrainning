@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Utils.UI
 {
-    public abstract class PanelUI<T> : Singleton<T>, IPanel, IPointerEnterHandler, IPointerExitHandler
+    public abstract class PanelUI<T> : Singleton<T>, IPanel
         where T : PanelUI<T>
     {
         public bool isOpen { get; private set; }
@@ -52,14 +52,12 @@ namespace Utils.UI
 
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
-            GridManager.hoveringActivated = false;
-            CameraController.Instance.canZoom = false;
+           
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            GridManager.hoveringActivated = true;
-            CameraController.Instance.canZoom = true;
+            
         }
     }
 }

@@ -77,7 +77,7 @@ namespace ResourceSystem.Markets.Interactions
         {
             if (market == null) return;
 
-            GridManager.PaintTilemap(MarketManager.Instance.marketTile, GridManager.TileMapType.Market,
+            GridManager.PaintTilemap(MarketManager.Instance.marketTile, TileMapType.Market,
                 market.color + Color.white * 0.2f, market.cells.ToArray());
         }
 
@@ -85,14 +85,14 @@ namespace ResourceSystem.Markets.Interactions
         {
             if (market == null) return;
             
-            GridManager.PaintTilemap(MarketManager.Instance.marketTile, GridManager.TileMapType.Market,
+            GridManager.PaintTilemap(MarketManager.Instance.marketTile, TileMapType.Market,
                 market.color, market.cells.ToArray());
         }
         
         public void ActivateMode()
         {
             isActive = true;
-            GridManager.ShowTileMap(GridManager.TileMapType.Market, isActive);
+            MapFilter.ShowMapFilter(TileMapType.Market);
         }
 
         public void DeactivateMode()
@@ -102,8 +102,6 @@ namespace ResourceSystem.Markets.Interactions
             s_hoveredMarket = null;
             
             UnSelectMarket();
-            
-            GridManager.ShowTileMap(GridManager.TileMapType.Market, isActive);
         }
     }
 }
