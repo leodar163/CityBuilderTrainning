@@ -22,6 +22,14 @@ MonoBehaviour:
     m_Localized: ecosystem
     m_Metadata:
       m_Items: []
+  - m_Id: 2948193691783168
+    m_Localized: market
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2948373476429824
+    m_Localized: none in market
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
