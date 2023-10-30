@@ -16,6 +16,16 @@ namespace ResourceSystem.Markets.PeopleManagement
 
         private float _unrest;
         public float unrest => _unrest;
+
+        private float _unrestDelta;
+        public float unrestDelta => _unrestDelta;
+        
+        private float _unrestDeltaFromFood;
+        public float unrestDeltaFromFood => _unrestDeltaFromFood;
+        
+        
+        private float _unrestDeltaFromHabitation;
+        public float unrestDeltaFromHabitation => _unrestDeltaFromHabitation;
         
         public PeopleNeedManager(Market market)
         {
@@ -48,14 +58,18 @@ namespace ResourceSystem.Markets.PeopleManagement
         {
             TimeManager.onMonthEnds -= AdjustNeeds;
             economicActorSelf.SetOrder(s_popResource, 0, OrderType.Offer);
+            economicActorSelf.SetOrder(s_foodResource, 0, OrderType.Demand);
+            economicActorSelf.SetOrder(s_habitationResource, 0, OrderType.Demand);
         }
 
         private void AdjustUnrest()
         {
-            float habitationAvailability = market.GetResourceAvailability(s_habitationResource);
-            float foodAvailability = market.GetResourceAvailability(s_foodResource);
+            _unrestDeltaFromHabitation = (1 -  market.GetResourceAvailability(s_habitationResource)) / 2;
+            _unrestDeltaFromFood = (1 - market.GetResourceAvailability(s_foodResource)) / 2 ;
 
-            _unrest = (1 - habitationAvailability + (1 - foodAvailability)) / 2;
+            _unrestDelta = _unrestDeltaFromHabitation + unrestDeltaFromFood;
+
+            _unrest += _unrestDelta / 100;
         }
     }
 }

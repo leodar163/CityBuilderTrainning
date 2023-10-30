@@ -40,5 +40,10 @@ namespace Format
         public static string isNotFormatPlural => Instance._localizedIsNotPlural.GetLocalizedString();
         public static string conditionFalseFormat => $"<color=#{negativeColorHTML}>X</color>";
         public static string conditionTrueFormat => $"<color=#{positiveColorHTML}>O</color>";
+
+        public static string Plus(float value, float threshold = 0)
+        {
+            return value >= 0 ? "+" : "";
+        }
     }
 }

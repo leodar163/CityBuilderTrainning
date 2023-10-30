@@ -27,6 +27,14 @@ MonoBehaviour:
     m_Key: Mar_NoResourceValue
     m_Metadata:
       m_Items: []
+  - m_Id: 4073035090513920
+    m_Key: Mark_Happiness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4073218293518336
+    m_Key: Mark_NeedIn
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

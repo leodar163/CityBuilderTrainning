@@ -10,7 +10,7 @@ namespace ResourceSystem.Productions
     {
         public string name;
         private float _efficiency = 1;
-        public bool unrestSensitive = true;
+        public bool happinessSensitive = true;
 
         public float efficiency => _efficiency;
         
@@ -32,9 +32,9 @@ namespace ResourceSystem.Productions
                 if (availability < _efficiency) _efficiency = availability;
             }
 
-            if (market._peopleNeedManager != null && unrestSensitive)
+            if (market.needsSet != null && happinessSensitive)
             {
-                _efficiency -= market._peopleNeedManager.unrest / 2;
+                _efficiency += market.needsSet.prodBonus;
             }
             
         }

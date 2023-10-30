@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GridSystem;
 using ResourceSystem.Markets.Interactions;
+using ResourceSystem.Markets.Needs;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
@@ -15,6 +16,7 @@ namespace ResourceSystem.Markets
         public static readonly List<Market> markets = new();
 
         [SerializeField] private int _maxDistanceToMerge = 1;
+        [SerializeField] private ScriptableNeedsSet _needsSetTemplate;
 
         public static int MaxDistanceToMerge
         {
@@ -37,7 +39,7 @@ namespace ResourceSystem.Markets
 
         public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
         {
-            Market market = new(Random.ColorHSV(), isEcosystem);
+            Market market = new(Random.ColorHSV(),isEcosystem, Instance._needsSetTemplate.needsSet);
 
             foreach (var cell in area)
             {

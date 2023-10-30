@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using ResourceSystem.Markets.Interactions;
+﻿using ResourceSystem.Markets.Interactions;
 using TimeSystem;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils.UI;
 
@@ -16,9 +13,8 @@ namespace ResourceSystem.Markets.UI
         [SerializeField] private TextMeshProUGUI _marketName;
         [SerializeField] private Image _marketColor;
         [SerializeField] private RectTransform _panel;
-        [SerializeField] private Slider _unrestSlider;
-        [SerializeField] private TextMeshProUGUI _unrestText;
-        
+        [SerializeField] private HappinessSlider _happinessSlider;
+
         [Header("Values")]
         [SerializeField] private ResourceValueUI[] _resourceValuesUI;
 
@@ -32,12 +28,6 @@ namespace ResourceSystem.Markets.UI
         private void OnDisable()
         {
             TimeManager.onMonthBegins -= UpdateDisplay;
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _unrestSlider.maxValue = 100;
         }
 
         private void UpdateDisplay()
@@ -54,17 +44,13 @@ namespace ResourceSystem.Markets.UI
 
             if (!_market.isEcosystem)
             {
-                float unrest = Mathf.RoundToInt(_market._peopleNeedManager.unrest * 10000) / 100f;
-                _unrestSlider.value = unrest;
-                _unrestText.SetText($"{unrest}/\n100");
-                
-                _unrestSlider.gameObject.SetActive(true);
-                _unrestText.gameObject.SetActive(true);
+                _happinessSlider.UpdateSlider();
+
+                _happinessSlider.gameObject.SetActive(true);
             }
             else
             {
-                _unrestSlider.gameObject.SetActive(false);
-                _unrestText.gameObject.SetActive(false);
+                _happinessSlider.gameObject.SetActive(false);
             }
         }
 
@@ -72,6 +58,7 @@ namespace ResourceSystem.Markets.UI
         {
             base.OpenPanel();
             _market = MarketInteractor.SelectedMarket;
+            _happinessSlider.market = _market;
        
             foreach (var value in _resourceValuesUI)
             {
@@ -86,6 +73,7 @@ namespace ResourceSystem.Markets.UI
         {
             base.ClosePanel();
             _market = null;
+            _happinessSlider.market = null;
             
             foreach (var value in _resourceValuesUI)
             {

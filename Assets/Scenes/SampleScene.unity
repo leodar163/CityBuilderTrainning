@@ -725,9 +725,10 @@ GameObject:
   m_Component:
   - component: {fileID: 172000289}
   - component: {fileID: 172000290}
+  - component: {fileID: 172000292}
   - component: {fileID: 172000291}
   m_Layer: 0
-  m_Name: UnrestSlider
+  m_Name: HappinessSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -817,32 +818,65 @@ MonoBehaviour:
   m_GameObject: {fileID: 172000288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4172d42de48919c28865ad5d27382, type: 3}
+  m_Script: {fileID: 11500000, guid: 88f8aa0bb05d4e69b6854ffa722bb90d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocalizedTitle:
+  _happinessSlider: {fileID: 172000292}
+  _localisedHappiness:
     m_TableReference:
-      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+      m_TableCollectionName: GUID:1a29945124e28254290b3819b22da65f
     m_TableEntryReference:
-      m_KeyId: 16735537733455872
+      m_KeyId: 4073035090513920
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  localizedMessage:
+  _localizedNeedIn:
     m_TableReference:
-      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+      m_TableCollectionName: GUID:1a29945124e28254290b3819b22da65f
     m_TableEntryReference:
-      m_KeyId: 18106499485814784
+      m_KeyId: 4073218293518336
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  textTooltipMessageTemplate: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+  _localizedEffect:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 21462136332636160
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _localizedEfficiency:
+    m_TableReference:
+      m_TableCollectionName: GUID:35407f8a590917b48a663fa09ecf6087
+    m_TableEntryReference:
+      m_KeyId: 1508139274489856
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  _TextTooltip: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
     type: 3}
   references:
     version: 2
     RefIds: []
+--- !u!114 &172000292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172000288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdec88331aa0494980d46d9c9a1bd6ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slider: {fileID: 172000290}
+  _text: {fileID: 1164524353}
 --- !u!1001 &187890528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2201,8 +2235,7 @@ MonoBehaviour:
   _marketName: {fileID: 1262401642}
   _marketColor: {fileID: 287453776}
   _panel: {fileID: 649976669}
-  _unrestSlider: {fileID: 172000290}
-  _unrestText: {fileID: 1164524353}
+  _happinessSlider: {fileID: 172000292}
   _resourceValuesUI:
   - {fileID: 3278495834269676038}
   - {fileID: 370672302}
@@ -2396,7 +2429,7 @@ GameObject:
   - component: {fileID: 368439370}
   - component: {fileID: 368439369}
   m_Layer: 0
-  m_Name: UnrestIcon
+  m_Name: happinessIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6749,6 +6782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   marketTile: {fileID: 11400000, guid: a6c0b5c1b76d33443a98d4d5a96fcced, type: 2}
   _maxDistanceToMerge: 0
+  _needsSetTemplate: {fileID: 11400000, guid: 69e596b0e6ea2574885dcc3437ed85d9, type: 2}
 --- !u!1001 &884007242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9083,7 +9117,7 @@ GameObject:
   - component: {fileID: 1164524354}
   - component: {fileID: 1164524353}
   m_Layer: 0
-  m_Name: UnrestText
+  m_Name: happinessText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridSystem;
+using ResourceSystem.Markets.Needs;
 using ResourceSystem.Markets.PeopleManagement;
 using UnityEngine;
 
@@ -23,19 +24,17 @@ namespace ResourceSystem.Markets
         private readonly List<ResourceOrder> _orders = new();
         public readonly List<ResourceValue> _resourceValues = new();
 
-        public PeopleNeedManager _peopleNeedManager;
+        public NeedsSet needsSet;
 
         #region CONSTRUCTORS
 
-        public Market(bool isEcosystem)
+        public Market(bool isEcosystem, NeedsSet needsTemplate = null)
         {
             this.isEcosystem = isEcosystem;
-
-            if (!isEcosystem)
-                _peopleNeedManager = new PeopleNeedManager(this);
+            if(!isEcosystem) needsSet = new NeedsSet(needsTemplate, this);
         }
         
-        public Market(Color color, bool isEcosystem) : this(isEcosystem)
+        public Market(Color color, bool isEcosystem, NeedsSet needsTemplate = null) : this(isEcosystem, needsTemplate)
         {
             this.color = color;
         }
@@ -184,12 +183,9 @@ namespace ResourceSystem.Markets
 
         public void OnRemoved()
         {
-            if (_peopleNeedManager == null) return;
-            
-            _peopleNeedManager.economicActorSelf.RemoveAllOrders();
-            _peopleNeedManager.market = null;
-            _peopleNeedManager.OnRemoved();
-            _peopleNeedManager = null;
+            if (isEcosystem) return;
+            needsSet.OnRemovedFromMarket();
+            needsSet = null;
         }
     }
 }
