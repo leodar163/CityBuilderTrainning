@@ -1,6 +1,6 @@
 ﻿using Format;
 using GridSystem;
-using Interactions;
+using GridSystem.Interaction;
 using ToolTipSystem;
 using ToolTipSystem.Messages;
 using UnityEngine;
@@ -8,12 +8,36 @@ using UnityEngine.Localization;
 
 namespace BuildingSystem.Facilities
 {
-    public class FacilityPlacer : Utils.Singleton<FacilityPlacer>, IInteractor, ITooltipMessenger
+    public class FacilityPlacer : Utils.Singleton<FacilityPlacer>, IGridInteractor, ITooltipMessenger
     {
         public ITooltipMessenger tooltipMessengerSelf => this;
         
         public static FacilityType selectedFacility { get; private set; }
-        public bool isActive { get; private set; }
+        public GridInteractorType type => GridInteractorType.FacilityPlacer;
+        public bool isActive { get; set; }
+        public bool cancelable => true;
+
+        public void OnHoveredCellChanged(CellData cellData)
+        {
+            if (cellData == null)
+            {
+                tooltipMessengerSelf.UnsubFromTooltip();
+            }
+            else
+            {
+                tooltipMessengerSelf.SubToTooltip();
+            }
+        }
+
+        void IGridInteractor.OnActivated()
+        {
+            
+        }
+
+        void IGridInteractor.OnDeactivated()
+        {
+           EndPlacement();
+        }
 
         [SerializeField] private TextTooltipMessageUI _textTooltipMessage;
         private string _placementFeedbackFormat;
@@ -34,8 +58,6 @@ namespace BuildingSystem.Facilities
         [SerializeField] private LocalizedString _CanBePlace;
         [SerializeField] private LocalizedString _CantBePlace;
 
-        public InteractionMode interactionMode => InteractionMode.FacilityPlacing;
-
         private bool _oneFacilityAsBeenPlaced;
 
         private void Awake()
@@ -50,19 +72,12 @@ namespace BuildingSystem.Facilities
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
-                tooltipMessengerSelf.UnsubFromTooltip();
                 return;
             }
 
-            if (GridManager.HoveredCell == null)
-            {
-                tooltipMessengerSelf.UnsubFromTooltip();
-                return;
-            }
-            
-            if (CanPlaceFacility(selectedFacility, GridManager.HoveredCell) 
+            if (CanPlaceFacility(selectedFacility, GridEventSystem.HoveredCell) 
                 && Input.GetMouseButtonUp(0) 
-                && TryPlaceNewFacility(selectedFacility, GridManager.HoveredCell)
+                && TryPlaceNewFacility(selectedFacility, GridEventSystem.HoveredCell)
                 && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
                 EndPlacement();
@@ -72,7 +87,7 @@ namespace BuildingSystem.Facilities
         public static void SelectFacilityToPlace(FacilityType facilityTypeToSelect)
         {
             selectedFacility = facilityTypeToSelect;
-            InteractionManager.SwitchInteractionMode(InteractionMode.FacilityPlacing);
+            GridEventSystem.SwitchInteractor(GridInteractorType.FacilityPlacer);
         }
 
         private static bool CanPlaceFacility(FacilityType facilityType, CellData cell)
@@ -103,7 +118,7 @@ namespace BuildingSystem.Facilities
                 ? $"<color=#{FormatManager.positiveColorHTML}>{Instance._CanBePlace.GetLocalizedString()}"
                 : $"<color=#{FormatManager.negativeColorHTML}>{Instance._CantBePlace.GetLocalizedString()}";
             
-            GridManager.PaintCursor(canBePlaced ? Color.green : Color.red);
+            GridEventSystem.PaintCursor(canBePlaced ? Color.green : Color.red);
             
             Instance.tooltipMessengerSelf.SubToTooltip();
 
@@ -139,10 +154,11 @@ namespace BuildingSystem.Facilities
 
         private static void EndPlacement()
         {
+            Instance.tooltipMessengerSelf.UnsubFromTooltip();
             Instance.isActive = false;
             selectedFacility = null;
             Instance._oneFacilityAsBeenPlaced = false;
-            GridManager.PaintCursor(Color.white);
+            GridEventSystem.PaintCursor(Color.white);
         }
 
         void ITooltipMessenger.UpdateTooltipMessage(TooltipMessageUI messageUI)

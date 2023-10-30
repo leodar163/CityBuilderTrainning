@@ -18,42 +18,23 @@ namespace GridSystem
         [SerializeField] private Tilemap _feedBackTileMap;
         [SerializeField] private Tilemap _terrainTileMap;
         [SerializeField] private Tilemap _marketVueTileMap;
-        public Tilemap FeedBackTileMap => _feedBackTileMap;
-        public Tilemap TerrainTileMap => _terrainTileMap;
-        public Tilemap MarketVueTileMap => _marketVueTileMap;
-
+       
         [Header("Bounds")] 
         [SerializeField] private Vector2Int _gridSize = new (62, 62); 
         [SerializeField] private Vector2Int _positionOffset;
-        
-        [Space]
-        [SerializeField] private Transform _cursor;
-        private Material _cursorMat;
-
-        private Camera _mainCamera;
 
         private CellData[,] _cellDatas; 
-        private CellData _hoveredCell;
+      
+        private Camera _mainCamera;
 
         private RectInt _gridRect;
 
-        public static Vector2Int GridSize => Instance._gridSize; 
-        public Vector3 cursorPosition => _cursor.position;
-        public static CellData HoveredCell => Instance._hoveredCell;
-
-        private bool _hoveringActivated = true;
-
-        public static bool hoveringActivated { get => Instance._hoveringActivated; set => Instance._hoveringActivated = value;}
+        public static Vector2Int GridSize => Instance._gridSize;
 
         private void Awake()
         {
             TimeManager.onNewMonth += MonthUpdateCells;
-            
-            if (_cursor.TryGetComponent(out MeshRenderer meshRend))
-            {
-                _cursorMat = meshRend.material;
-            }
-            
+
             _gridRect = new RectInt(-_gridSize/2 +_positionOffset, _gridSize);
             _mainCamera = Camera.main;
             InitCellDatas();
@@ -70,21 +51,7 @@ namespace GridSystem
             }
         }
 
-        private void Update()
-        {
-            if (_hoveringActivated && TryGetHoveredTile(out _hoveredCell))
-            {
-                _cursor.gameObject.SetActive(true);
-                 Vector3 newCursorPosition = _hoveredCell.position;
-                 newCursorPosition.y = 0.0001f;
-                 _cursor.position = newCursorPosition;
-            }
-            else
-            {
-                _hoveredCell = null;
-                _cursor.gameObject.SetActive(false);
-            }
-        }
+        
 
         public static Vector3 GetCellCenter(Vector3Int cell)
         {
@@ -259,26 +226,7 @@ namespace GridSystem
             return neighbours.ToArray();
         }
         
-        private bool TryGetHoveredTile(out CellData hoveredCell)
-        {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.x = Mathf.Clamp(mousePos.x, 0, Screen.width);
-            mousePos.y = Mathf.Clamp(mousePos.y, 0, Screen.height);
-            
-            Ray mouseRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
-            {
-                Vector3Int hoveredCellIndex = _grid.WorldToCell(hit.point);
-                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax - 1);
-                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax - 1);
-
-                if (TryGetCellDataFromCellId(hoveredCellIndex, out hoveredCell))
-                    return true; 
-            }
-
-            hoveredCell = null;
-            return false;
-        }
+        
 
         public static void ResetTileMap(TileMapType tileMapType)
         {
@@ -346,11 +294,6 @@ namespace GridSystem
             tilemap.SetTileFlags(cellIndex, TileFlags.None);
             tilemap.SetColor(cellIndex, tint);
         }
-        
-        public static void PaintCursor(Color color)
-        {
-            Instance._cursorMat.color = color;
-        }
 
         public static bool CellIsOutOfGrid(Vector3Int cell)
         {
@@ -369,6 +312,23 @@ namespace GridSystem
             
             cellData = GetCellDataFromIndex(cell.x - Instance._gridRect.xMin, cell.y - Instance._gridRect.yMin);
             return true;
+        }
+
+        public static bool TryGetCellDataFromMousePosition(out CellData hoveredCell)
+        {
+            Ray mouseRay = Instance._mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(mouseRay, out RaycastHit hit, 100, LayerMask.GetMask("Terrain")))
+            {
+                Vector3Int hoveredCellIndex = Instance._grid.WorldToCell(hit.point);
+                hoveredCellIndex.x = Mathf.Clamp(hoveredCellIndex.x, Instance._gridRect.xMin, Instance._gridRect.xMax - 1);
+                hoveredCellIndex.y = Mathf.Clamp(hoveredCellIndex.y, Instance._gridRect.yMin, Instance._gridRect.yMax - 1);
+
+                if (TryGetCellDataFromCellId(hoveredCellIndex, out hoveredCell))
+                    return true; 
+            }
+
+            hoveredCell = null;
+            return false;
         }
 
         public static CellData GetCellDataFromIndex(Vector2Int index)

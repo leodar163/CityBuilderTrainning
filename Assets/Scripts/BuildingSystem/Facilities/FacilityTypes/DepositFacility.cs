@@ -49,7 +49,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
             
             foreach (var cellData in _influencedArea)
             {
-                if (cellAddedTo == cellData) continue; 
+                if (marketToMergeInto == cellData.market) continue; 
                 MarketManager.MergeMarkets(marketToMergeInto, cellData.market, out _);
             }
         }

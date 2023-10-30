@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BuildingSystem.Facilities;
 using BuildingSystem.Facilities.UI;
-using Interactions;
+using GridSystem.Interaction;
 using ResourceSystem.Markets.Interactions;
 using TMPro;
 using UnityEngine;
@@ -40,17 +40,18 @@ namespace GridSystem.UI
         {
             if (currentCell != null)
             {
-                InteractionManager.SwitchInteractionMode(InteractionMode.MarketVue);
+                MapFilter.ShowMapFilter(TileMapType.Market);
+                GridEventSystem.SwitchInteractor(GridInteractorType.Market);
                 MarketInteractor.SelectMarket(currentCell.market);
             }
         }
         
         public override void OpenPanel()
         {
-            if (GridManager.HoveredCell == null)
+            if (GridEventSystem.HoveredCell == null)
                 return;
 
-            currentCell = GridManager.HoveredCell;
+            currentCell = GridEventSystem.HoveredCell;
             
             base.OpenPanel();
             

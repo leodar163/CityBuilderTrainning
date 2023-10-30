@@ -1,4 +1,5 @@
 ﻿using System;
+using GridSystem.Interaction;
 using Utils;
 
 namespace GridSystem
@@ -19,6 +20,20 @@ namespace GridSystem
             Instance._currentFilter = tileMapType;
             if (Instance._currentFilter != TileMapType.Terrain)
                 GridManager.ShowTileMap(Instance._currentFilter, true);
+
+            switch (tileMapType)
+            {
+                case TileMapType.Feedback:
+                    break;
+                case TileMapType.Market:
+                    GridEventSystem.SwitchDefaultInteractor(GridInteractorType.Market);
+                    break;
+                case TileMapType.Terrain:
+                    GridEventSystem.SwitchDefaultInteractor(GridInteractorType.Terrain);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tileMapType), tileMapType, null);
+            }
         }
     }
 }

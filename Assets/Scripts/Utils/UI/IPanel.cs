@@ -5,7 +5,7 @@ namespace Utils.UI
 {
     public interface IPanel : IPointerEnterHandler, IPointerExitHandler
     {
-        public static List<IPanel> openPanels = new ();
+        public static readonly List<IPanel> openPanels = new ();
 
         public static IPanel focusedPanel => openPanels.Count > 0 ? openPanels[^1] : null;
         

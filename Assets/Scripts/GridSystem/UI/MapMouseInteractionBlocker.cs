@@ -1,4 +1,5 @@
 ﻿using Cameras;
+using GridSystem.Interaction;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,13 +9,13 @@ namespace GridSystem.UI
     {
         public void OnPointerEnter(PointerEventData eventData)
         {
-            GridManager.hoveringActivated = false;
+            GridEventSystem.hoveringActivated = false;
             CameraController.Instance.canZoom = false;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            GridManager.hoveringActivated = true;
+            GridEventSystem.hoveringActivated = true;
             CameraController.Instance.canZoom = true;
         }
     }

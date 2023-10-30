@@ -1,5 +1,6 @@
-﻿using GridSystem;
-using Interactions;
+﻿using System;
+using GridSystem;
+using GridSystem.Interaction;
 using ResourceSystem.Markets.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -7,28 +8,18 @@ using Utils;
 
 namespace ResourceSystem.Markets.Interactions
 {
-    public class MarketInteractor : Singleton<MarketInteractor>, IInteractor
+    
+    public class MarketInteractor : Singleton<MarketInteractor>, IGridInteractor
     {
-        public bool isActive { get; private set; }
-        public InteractionMode interactionMode => InteractionMode.MarketVue;
-        
-        private static Market s_selectedMarket;
-        private static Market s_hoveredMarket;
-        public static Market SelectedMarket => s_selectedMarket;
-        
-        public TileBase highlightMarketTile;
+        public GridInteractorType type => GridInteractorType.Market;
+        public bool isActive { get; set; }
+        public bool cancelable => false;
 
-        private void Awake()
-        {
-            DeactivateMode();
-            MarketInfoPanel.Instance.onClose.AddListener(UnSelectMarket);
-        }
-
-        private void Update()
+        public void OnHoveredCellChanged(CellData cellData)
         {
             if (!isActive) return;
-
-            Market hoveredMarket = GridManager.HoveredCell?.market;
+            
+            Market hoveredMarket = cellData?.market;
 
             if (s_hoveredMarket != null && s_hoveredMarket != s_selectedMarket)
             {
@@ -39,7 +30,32 @@ namespace ResourceSystem.Markets.Interactions
             s_hoveredMarket = hoveredMarket;
 
             HighlightMarket(s_hoveredMarket);
+        }
 
+        void IGridInteractor.OnActivated()
+        {
+            
+        }
+
+        void IGridInteractor.OnDeactivated()
+        {
+            UnSelectMarket();
+            s_hoveredMarket = null;
+        }
+
+        private static Market s_selectedMarket;
+        private static Market s_hoveredMarket;
+        public static Market SelectedMarket => s_selectedMarket;
+        
+        public TileBase highlightMarketTile;
+
+        private void Awake()
+        {
+            MarketInfoPanel.Instance.onClose.AddListener(UnSelectMarket);
+        }
+
+        private void Update()
+        {
             if (s_hoveredMarket != null && Input.GetMouseButtonUp(0))
             {
                 SelectMarket(s_hoveredMarket);
@@ -72,8 +88,8 @@ namespace ResourceSystem.Markets.Interactions
             s_selectedMarket = null;
             MarketInfoPanel.Instance.ClosePanel();
         }
-        
-        public static void HighlightMarket(Market market)
+
+        private static void HighlightMarket(Market market)
         {
             if (market == null) return;
 
@@ -81,27 +97,12 @@ namespace ResourceSystem.Markets.Interactions
                 market.color + Color.white * 0.2f, market.cells.ToArray());
         }
 
-        public static void UnHighlightMarket(Market market)
+        private static void UnHighlightMarket(Market market)
         {
             if (market == null) return;
             
             GridManager.PaintTilemap(MarketManager.Instance.marketTile, TileMapType.Market,
                 market.color, market.cells.ToArray());
-        }
-        
-        public void ActivateMode()
-        {
-            isActive = true;
-            MapFilter.ShowMapFilter(TileMapType.Market);
-        }
-
-        public void DeactivateMode()
-        {
-            isActive = false;
-
-            s_hoveredMarket = null;
-            
-            UnSelectMarket();
         }
     }
 }
