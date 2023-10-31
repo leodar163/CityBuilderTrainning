@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Utils.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -8,7 +7,7 @@ namespace BuildingSystem.Facilities.UI
 {
     public class FacilityBuildingPanelUI : PanelUI<FacilityBuildingPanelUI>
     {
-        [FormerlySerializedAs("set")] [Tooltip("If null, will be equal to 'FacilitySet.Default'")]
+        [Tooltip("If none, will be equal to 'FacilitySet.Default'")]
         public FacilitySet facilitySet;
         [SerializeField] private RectTransform _child;
         [FormerlySerializedAs("_facilityButtonTemplate")] [SerializeField] private FacilityBuildingButton facilityBuildingButtonTemplate;
@@ -16,18 +15,11 @@ namespace BuildingSystem.Facilities.UI
         private List<FacilityBuildingButton> _buttons = new ();
         
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-            
             if (!facilitySet) facilitySet = FacilitySet.Default;
             
             InitUI();
-        }
-
-        private void Update()
-        {
-            if(!isOpen) return;
         }
 
         private void InitUI()
@@ -42,20 +34,6 @@ namespace BuildingSystem.Facilities.UI
                     _buttons.Add(newButton);
                 }
             }
-        }
-        
-        public override void OpenPanel()
-        {
-            base.OpenPanel();
-            
-            _child.gameObject.SetActive(true);
-        }
-
-        public override void ClosePanel()
-        {
-            base.ClosePanel();
-            
-            _child.gameObject.SetActive(false);
         }
     }
 }

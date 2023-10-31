@@ -66,7 +66,6 @@ namespace ResourceSystem.Markets.UI
             }
             
             UpdateDisplay();
-            _panel.gameObject.SetActive(true);
         }
 
         public override void ClosePanel()
@@ -79,8 +78,6 @@ namespace ResourceSystem.Markets.UI
             {
                 value.Market = null;
             }
-            
-            _panel.gameObject.SetActive(false);
         }
     }
 }

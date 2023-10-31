@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using UnityEngine.EventSystems;
 
 namespace Utils.UI
 {
-    public interface IPanel : IPointerEnterHandler, IPointerExitHandler
+    public interface IPanel
     {
         public static readonly List<IPanel> openPanels = new ();
 

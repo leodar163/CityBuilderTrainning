@@ -18,9 +18,8 @@ namespace TimeSystem.UI
         [SerializeField] private TextMeshProUGUI _timeSpeedMonitor;
         [SerializeField] private TextMeshProUGUI _dateMonitor;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             _decreaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(-1));
             _increaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(1));
             _pauseButton.onClick.AddListener(TimeManager.Instance.Pause);

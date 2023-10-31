@@ -1,27 +1,24 @@
-﻿using System.Collections.Generic;
-using Cameras;
-using GridSystem;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 namespace Utils.UI
 {
     public abstract class PanelUI<T> : Singleton<T>, IPanel
         where T : PanelUI<T>
     {
-        public bool isOpen { get; private set; }
-        [SerializeField] private bool _closeOnAwake;
+        public bool isOpen { get; private set; } = true;
+        [SerializeField] private bool _closeOnStart = true;
 
         public UnityEvent onOpen;
         public UnityEvent onClose;
-
-        protected virtual void Awake()
-        {
-            if (_closeOnAwake)
-                ClosePanel();   
-        }
         
+        protected virtual void Start()
+        {
+            if (_closeOnStart)
+                ClosePanel(); 
+        }
+
         public void SwitchPanelOpening()
         {
             if (isOpen)
@@ -48,16 +45,6 @@ namespace Utils.UI
             isOpen = false;
             IPanel.NotifyClosingPanel(this);
             onClose.Invoke();
-        }
-
-        public virtual void OnPointerEnter(PointerEventData eventData)
-        {
-           
-        }
-
-        public virtual void OnPointerExit(PointerEventData eventData)
-        {
-            
         }
     }
 }

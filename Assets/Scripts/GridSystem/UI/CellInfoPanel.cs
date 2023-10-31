@@ -12,8 +12,6 @@ namespace GridSystem.UI
 {
     public class CellInfoPanel : PanelUI<CellInfoPanel>
     {
-        [SerializeField] private RectTransform _child;
-
         [Header("Market")] 
         [SerializeField] private TextMeshProUGUI _marketName;
         [SerializeField] private Button _marketLink;
@@ -30,9 +28,8 @@ namespace GridSystem.UI
         
         public CellData currentCell { get; private set; }
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             _marketLink.onClick.AddListener(OpenCellMarket);
         }
 
@@ -56,15 +53,8 @@ namespace GridSystem.UI
             base.OpenPanel();
             
             DisplayCellInfos();
-            _child.gameObject.SetActive(true);
         }
-
-        public override void ClosePanel()
-        {
-            base.ClosePanel();
-            _child.gameObject.SetActive(false);
-        }
-
+        
         private void Update()
         {
             if(!isOpen) return;
