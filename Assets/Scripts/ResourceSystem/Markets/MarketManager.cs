@@ -15,6 +15,8 @@ namespace ResourceSystem.Markets
 
         public static readonly List<Market> markets = new();
 
+        [SerializeField] private Gradient _ecosystemColors;
+        [SerializeField] private Gradient _humanMarketColors;
         [SerializeField] private int _maxDistanceToMerge = 1;
         [SerializeField] private ScriptableNeedsSet _needsSetTemplate;
 
@@ -39,7 +41,7 @@ namespace ResourceSystem.Markets
 
         public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
         {
-            Market market = new(Random.ColorHSV(),isEcosystem, Instance._needsSetTemplate.needsSet);
+            Market market = new(GenerateMarketColor(isEcosystem),isEcosystem, Instance._needsSetTemplate.needsSet);
 
             foreach (var cell in area)
             {
@@ -61,6 +63,12 @@ namespace ResourceSystem.Markets
             return market;
         }
 
+        private static Color GenerateMarketColor(bool isEcosystem)
+        {
+            float alea = Random.Range(0, 1f);
+            return isEcosystem ? Instance._ecosystemColors.Evaluate(alea) : Instance._humanMarketColors.Evaluate(alea);
+        }
+        
         public static float GetDistanceBetweenMarkets(Market a, Market b)
         {
             return GridManager.GetMinDistanceBetweenAreas(a.innerBorder, b.innerBorder);

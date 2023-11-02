@@ -6847,6 +6847,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marketTile: {fileID: 11400000, guid: a6c0b5c1b76d33443a98d4d5a96fcced, type: 2}
+  _ecosystemColors:
+    serializedVersion: 2
+    key0: {r: 0.77160615, g: 0.9150943, b: 0.13294764, a: 1}
+    key1: {r: 0.19978638, g: 0.8679245, b: 0.2404556, a: 1}
+    key2: {r: 0.12746526, g: 0.8773585, b: 0.7942901, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 33346
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  _humanMarketColors:
+    serializedVersion: 2
+    key0: {r: 0.8679245, g: 0.766264, b: 0.22435024, a: 1}
+    key1: {r: 0.8241029, g: 0.5105986, b: 0.2092102, a: 1}
+    key2: {r: 0.7830189, g: 0.27090535, b: 0.19501601, a: 0}
+    key3: {r: 0.754717, g: 0.25204694, b: 0.69167995, a: 0}
+    key4: {r: 0.5623737, g: 0.22242787, b: 0.8301887, a: 0}
+    key5: {r: 0.18535063, g: 0.35016719, b: 0.8396226, a: 0}
+    key6: {r: 0.132823, g: 0.6707349, b: 0.8584906, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 9252
+    ctime2: 20046
+    ctime3: 32189
+    ctime4: 43754
+    ctime5: 54934
+    ctime6: 65535
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 7
+    m_NumAlphaKeys: 2
   _maxDistanceToMerge: 0
   _needsSetTemplate: {fileID: 11400000, guid: 69e596b0e6ea2574885dcc3437ed85d9, type: 2}
 --- !u!1001 &884007242
