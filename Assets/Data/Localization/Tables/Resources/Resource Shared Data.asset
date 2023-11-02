@@ -63,6 +63,22 @@ MonoBehaviour:
     m_Key: Res_ConstructionForce
     m_Metadata:
       m_Items: []
+  - m_Id: 30821112562360320
+    m_Key: Res_Cate_Food
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30821396776787968
+    m_Key: Res_Cate_Building
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30822306550685696
+    m_Key: Res_Cate_Nature
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30822720402661376
+    m_Key: Res_Cate_Society
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

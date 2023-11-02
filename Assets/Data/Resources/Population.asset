@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90386734650d4cd8b135c4d80fbc4cba, type: 3}
   m_Name: Population
   m_EditorClassIdentifier: 
+  _category: {fileID: 11400000, guid: da7da5603377cf94798a7371155b7761, type: 2}
   _id: resource_population
   _name:
     m_TableReference:
@@ -23,7 +24,6 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   icon: {fileID: 21300000, guid: a41d4396d0644fb4da94956638daef74, type: 3}
-  _borrowable: 1
   references:
     version: 2
     RefIds: []

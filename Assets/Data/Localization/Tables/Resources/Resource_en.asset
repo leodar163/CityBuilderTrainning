@@ -66,6 +66,22 @@ MonoBehaviour:
     m_Localized: construction force
     m_Metadata:
       m_Items: []
+  - m_Id: 30821112562360320
+    m_Localized: food
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30821396776787968
+    m_Localized: building
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30822306550685696
+    m_Localized: nature
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30822720402661376
+    m_Localized: society
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90386734650d4cd8b135c4d80fbc4cba, type: 3}
   m_Name: Habitation
   m_EditorClassIdentifier: 
+  _category: {fileID: 11400000, guid: da7da5603377cf94798a7371155b7761, type: 2}
   _id: resource_habitation
   _name:
     m_TableReference:
@@ -23,7 +24,6 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   icon: {fileID: 21300000, guid: 0cb52103f11aaf648a58554c68900bef, type: 3}
-  _borrowable: 1
   references:
     version: 2
     RefIds: []

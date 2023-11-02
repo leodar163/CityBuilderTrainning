@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90386734650d4cd8b135c4d80fbc4cba, type: 3}
   m_Name: Food
   m_EditorClassIdentifier: 
+  _category: {fileID: 11400000, guid: 8801f9188ae9ea944affc5abd24aea67, type: 2}
   _id: resource_food
   _name:
     m_TableReference:
@@ -23,7 +24,6 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   icon: {fileID: 21300000, guid: 1cc0f518ed6a33140bae4546aaacc877, type: 3}
-  _borrowable: 0
   references:
     version: 2
     RefIds: []

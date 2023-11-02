@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90386734650d4cd8b135c4d80fbc4cba, type: 3}
   m_Name: Environment
   m_EditorClassIdentifier: 
+  _category: {fileID: 11400000, guid: a2d76dab710043f4bb653d0456dbf8b2, type: 2}
   _id: resource_environment
   _name:
     m_TableReference:
@@ -23,7 +24,6 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   icon: {fileID: 21300000, guid: a03612d15816c3d4a83b8513628c94f2, type: 3}
-  _borrowable: 0
   references:
     version: 2
     RefIds: []
