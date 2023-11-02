@@ -38,7 +38,7 @@ namespace TerrainSystem.Interactions
 
         private void Update()
         {
-            if (Input.GetMouseButtonUp(0) && GridEventSystem.HoveredCell != null)
+            if (isActive && Input.GetMouseButtonUp(0) && GridEventSystem.HoveredCell != null)
             {
                 CellInfoPanel.Instance.OpenPanel();
             }

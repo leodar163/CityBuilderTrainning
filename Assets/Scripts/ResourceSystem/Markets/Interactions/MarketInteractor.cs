@@ -56,7 +56,7 @@ namespace ResourceSystem.Markets.Interactions
 
         private void Update()
         {
-            if (s_hoveredMarket != null && Input.GetMouseButtonUp(0))
+            if (isActive && s_hoveredMarket != null && Input.GetMouseButtonUp(0))
             {
                 SelectMarket(s_hoveredMarket);
             }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using BuildingSystem.Facilities.UI;
+﻿using BuildingSystem.Facilities.UI;
 using Cameras;
 using GridSystem;
 using GridSystem.Interaction;
 using TimeSystem;
-using UnityEditor;
 using UnityEngine;
 using Utils.UI;
 

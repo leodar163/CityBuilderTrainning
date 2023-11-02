@@ -23,8 +23,6 @@ namespace UI.Animations
             if (!debug ||!_rectTransform || Application.isPlaying || !Application.isEditor) return;
             Gizmos.DrawWireCube((Vector2)_rectTransform.position + _targetOffset, 
                 _rectTransform.rect.size);
-            
-            Gizmos.DrawSphere(_rectTransform.position + (Vector3)_targetOffset, 10f);
         }
 
         private void Awake()
