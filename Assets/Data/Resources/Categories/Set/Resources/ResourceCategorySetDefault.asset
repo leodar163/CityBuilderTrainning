@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a50cd86750342189c907bb66684c3b3, type: 3}
   m_Name: ResourceCategorySetDefault
   m_EditorClassIdentifier: 
-  _categories: []
+  _categories:
+  - {fileID: 11400000, guid: 3dc8e8f3052b45c4b85bfecd72067499, type: 2}
+  - {fileID: 11400000, guid: 8801f9188ae9ea944affc5abd24aea67, type: 2}
+  - {fileID: 11400000, guid: a2d76dab710043f4bb653d0456dbf8b2, type: 2}
+  - {fileID: 11400000, guid: da7da5603377cf94798a7371155b7761, type: 2}

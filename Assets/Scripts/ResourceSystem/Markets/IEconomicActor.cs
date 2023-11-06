@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using GridSystem;
 using UnityEngine;
 
 namespace ResourceSystem.Markets
 {
     public interface IEconomicActor
     {
+        public string EconomicActorName { get; }
         public Market market { get; }
         
         protected List<ResourceOrder> orders { get; }

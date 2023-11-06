@@ -31,7 +31,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53746134044672
-    m_Localized: "quantit\xE9 disponible"
+    m_Localized: "disponibilit\xE9"
     m_Metadata:
       m_Items: []
   - m_Id: 1483792463843328
@@ -61,6 +61,11 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 21462136332636160
     m_Localized: effets
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23925875338268672
+    m_Localized: "ratio d'offre par rapport \xE0 la demande. Une disponibilit\xE9
+      faible am\xE8nera \xE0 des soucis de ravitaillement."
     m_Metadata:
       m_Items: []
   references:

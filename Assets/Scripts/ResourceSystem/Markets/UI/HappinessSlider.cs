@@ -1,4 +1,5 @@
-﻿using Format;
+﻿using System.Globalization;
+using Format;
 using ResourceSystem.Markets.Needs;
 using TMPro;
 using ToolTipSystem;
@@ -35,11 +36,21 @@ namespace ResourceSystem.Markets.UI
                 return;
             }
             gameObject.SetActive(true);
-            _text.SetText(Mathf.RoundToInt(_market.needsSet.happiness).ToString());
+            _text.SetText(FormatHappinessText());
             NeedsSet needSet = _market.needsSet;
-            _slider.minValue = needSet.minHappiness;
-            _slider.maxValue = needSet.maxHappiness;
-            _slider.value = needSet.happiness;
+            if (_slider != null)
+            {
+                _slider.minValue = needSet.minHappiness;
+                _slider.maxValue = needSet.maxHappiness;
+                _slider.value = needSet.happiness;
+            }
+        }
+
+        private string FormatHappinessText()
+        {
+            string happiness = _market.needsSet.happiness <= 0 ? $"<color=#{FormatManager.negativeColorHTML}>" : "";
+            happiness += Mathf.RoundToInt(_market.needsSet.happiness).ToString(CultureInfo.CurrentCulture) + "%";
+            return happiness;
         }
     }
 }

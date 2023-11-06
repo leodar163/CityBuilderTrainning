@@ -11,6 +11,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
     public class ProducerFacility : FacilityType, IProducer
     {
         public IEconomicActor economicActorSelf => this;
+        public string EconomicActorName => facilityName;
         public Market market => cell.market;
         List<ResourceOrder> IEconomicActor.orders { get; } = new();
 

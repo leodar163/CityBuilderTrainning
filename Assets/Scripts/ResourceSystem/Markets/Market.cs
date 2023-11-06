@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridSystem;
 using ResourceSystem.Markets.Needs;
-using ResourceSystem.Markets.PeopleManagement;
 using UnityEngine;
 
 namespace ResourceSystem.Markets
@@ -133,6 +132,26 @@ namespace ResourceSystem.Markets
             });
         }
 
+        public bool TryToGetOrders(ResourceType resource, OrderType orderType, out List<ResourceOrder> orders)
+        {
+            List<ResourceOrder> filteredOrders = new List<ResourceOrder>();
+
+            Parallel.ForEach(_orders, order =>
+            {
+                if (order.type == orderType && order.resource == resource)
+                    filteredOrders.Add(order);
+            });
+
+            if (filteredOrders.Count == 0)
+            {
+                orders = null;
+                return false;
+            }
+
+            orders = filteredOrders;
+            return true;
+        }
+        
         private static void CalculateResourceValueAvailability(ResourceValue resourceValue)
         {
             resourceValue.availability =

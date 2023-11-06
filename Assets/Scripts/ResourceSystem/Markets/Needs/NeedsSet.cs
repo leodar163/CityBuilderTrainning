@@ -23,7 +23,9 @@ namespace ResourceSystem.Markets.Needs
         public List<Need> needs;
 
         private Market _market;
-        
+
+        public string EconomicActorName => "people_needs";
+
         public Market market
         {
             get => _market;

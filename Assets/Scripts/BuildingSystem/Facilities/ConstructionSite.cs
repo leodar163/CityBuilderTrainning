@@ -4,12 +4,14 @@ using ResourceSystem;
 using ResourceSystem.Markets;
 using TimeSystem;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Serialization;
 
 namespace BuildingSystem.Facilities
 {
     public class ConstructionSite : FacilityType, IEconomicActor
     {
+        public string EconomicActorName => $"{facilityName} ({facilityToBuild.facilityName})";
         public Market market => cell.market;
 
         List<ResourceOrder> IEconomicActor.orders { get; } = new();

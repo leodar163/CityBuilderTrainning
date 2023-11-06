@@ -28,7 +28,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53746134044672
-    m_Key: Var_AvailableQuantity
+    m_Key: Var_Availability
     m_Metadata:
       m_Items: []
   - m_Id: 1483792463843328
@@ -57,6 +57,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 21462136332636160
     m_Key: Var_Effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23925875338268672
+    m_Key: Var_Desc_Availability
     m_Metadata:
       m_Items: []
   m_Metadata:
