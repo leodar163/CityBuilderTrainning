@@ -1,5 +1,6 @@
 ﻿using Format;
 using GridSystem;
+using ResourceSystem.Markets;
 using UnityEngine;
 
 namespace Conditions.Placement
@@ -9,7 +10,7 @@ namespace Conditions.Placement
     {
         public override bool CanPlace(CellData cell, out string format, int indentLevel = 0)
         {
-            bool condition = cell.market.isEcosystem;
+            bool condition = cell.market.type == MarketType.Ecosystem;
             condition = inverseCondition ? !condition : condition;
             
             format = GetNeutralPlacementFormat(indentLevel) +

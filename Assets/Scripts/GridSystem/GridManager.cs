@@ -84,7 +84,7 @@ namespace GridSystem
 
             foreach (var cellData in _cellDatas)
             {
-                MarketManager.AddMarket(true, cellData);
+                MarketManager.AddMarket(MarketType.Ecosystem, cellData);
             }
         }
 

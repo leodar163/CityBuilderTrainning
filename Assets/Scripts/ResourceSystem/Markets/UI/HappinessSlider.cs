@@ -30,7 +30,7 @@ namespace ResourceSystem.Markets.UI
         
         public void UpdateSlider()
         {
-            if (_market == null || _market.isEcosystem)
+            if (_market == null || _market.type == MarketType.Ecosystem)
             {
                 gameObject.SetActive(false);
                 return;

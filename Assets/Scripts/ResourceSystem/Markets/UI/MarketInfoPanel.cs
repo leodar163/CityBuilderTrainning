@@ -88,7 +88,7 @@ namespace ResourceSystem.Markets.UI
             CheckForMissingValues();
             UpdateValuesDisplaying();
 
-            if (!_market.isEcosystem)
+            if (_market.type != MarketType.Ecosystem)
             {
                 _happinessSlider.UpdateSlider();
 

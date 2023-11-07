@@ -80,7 +80,7 @@ namespace ResourceSystem.Markets.Needs
 
         public void AdjustNeeds()
         {
-            if (_market is { isEcosystem: true }) return;
+            if (_market is { type: MarketType.Ecosystem }) return;
             
             float popAmount = _market.GetResourceValueAmount(_popResource, OrderType.Offer);
 

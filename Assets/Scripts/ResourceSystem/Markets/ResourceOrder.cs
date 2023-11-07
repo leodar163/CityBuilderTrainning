@@ -6,12 +6,12 @@ namespace ResourceSystem.Markets
         public ResourceType resource;
         public float quantity;
 
-        public Markets.Market market;
+        public Market market;
         public IEconomicActor sender;
 
         public OrderType type;
 
-        public ResourceOrder(ResourceType resource, float quantity, Markets.Market market, IEconomicActor sender, OrderType type)
+        public ResourceOrder(ResourceType resource, float quantity, Market market, IEconomicActor sender, OrderType type)
         {
             this.resource = resource;
             this.quantity = quantity;

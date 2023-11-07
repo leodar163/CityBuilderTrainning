@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridSystem;
+using ResourceSystem.Markets.Modifiers;
 using ResourceSystem.Markets.Needs;
 using UnityEngine;
 
 namespace ResourceSystem.Markets
 {
-    public class Market
+    public class Market : IMarketModifierContainer
     {
         public string name = "market_no_name";
-        public bool isEcosystem = true;
+        public MarketType type = MarketType.Ecosystem;
         public readonly List<CellData> cells = new();
         private CellData[] _innerBorder;
         private CellData[] _outerBorder;
@@ -24,16 +25,18 @@ namespace ResourceSystem.Markets
         public readonly List<ResourceValue> _resourceValues = new();
 
         public NeedsSet needsSet;
+        public IMarketModifierContainer modifierContainerSelf => this;
+        public List<MarketModifier> modifiers { get; set; } = new();
 
         #region CONSTRUCTORS
 
-        public Market(bool isEcosystem, NeedsSet needsTemplate = null)
+        public Market(MarketType type, NeedsSet needsTemplate = null)
         {
-            this.isEcosystem = isEcosystem;
-            if(!isEcosystem) needsSet = new NeedsSet(needsTemplate, this);
+            this.type = type;
+            if(type == MarketType.Ecosystem) needsSet = new NeedsSet(needsTemplate, this);
         }
         
-        public Market(Color color, bool isEcosystem, NeedsSet needsTemplate = null) : this(isEcosystem, needsTemplate)
+        public Market(Color color, MarketType type, NeedsSet needsTemplate = null) : this(type, needsTemplate)
         {
             this.color = color;
         }
@@ -202,7 +205,7 @@ namespace ResourceSystem.Markets
 
         public void OnRemoved()
         {
-            if (isEcosystem) return;
+            if (type == MarketType.Ecosystem) return;
             needsSet.OnRemovedFromMarket();
             needsSet = null;
         }

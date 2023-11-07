@@ -40,12 +40,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
             
             foreach (var cellData in _influencedArea)
             {
-                if (cellData.market.isEcosystem) continue;
+                if (cellData.market.type == MarketType.Ecosystem) continue;
                 marketToMergeInto = cellData.market;
                 break;
             }
 
-            if (marketToMergeInto == null) marketToMergeInto = MarketManager.AddMarket(false,  cellAddedTo);
+            if (marketToMergeInto == null) marketToMergeInto = MarketManager.AddMarket(MarketType.Artificial,  cellAddedTo);
             
             foreach (var cellData in _influencedArea)
             {

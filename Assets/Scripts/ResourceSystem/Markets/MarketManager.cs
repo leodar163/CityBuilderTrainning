@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GridSystem;
 using ResourceSystem.Markets.Interactions;
+using ResourceSystem.Markets.Modifiers;
 using ResourceSystem.Markets.Needs;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -9,16 +10,23 @@ using Random = UnityEngine.Random;
 
 namespace ResourceSystem.Markets
 {
-    public class MarketManager : Singleton<MarketManager>
+    public class MarketManager : Singleton<MarketManager>, IMarketModifierContainer
     {
         public TileBase marketTile;
 
         public static readonly List<Market> markets = new();
+        public static readonly List<Market> artificialMarkets = new();
+        public static readonly List<Market> ecosystemMarkets = new();
 
+        public static readonly Market mainMarket = artificialMarkets.Count > 0 ? artificialMarkets[0] : null;
+        
         [SerializeField] private Gradient _ecosystemColors;
         [SerializeField] private Gradient _humanMarketColors;
         [SerializeField] private int _maxDistanceToMerge = 1;
         [SerializeField] private ScriptableNeedsSet _needsSetTemplate;
+
+        public IMarketModifierContainer modifierContainerSelf => this;
+        public List<MarketModifier> modifiers { get; set; } = new();
 
         public static int MaxDistanceToMerge
         {
@@ -34,14 +42,14 @@ namespace ResourceSystem.Markets
             adjacent
         }
 
-        public static Market AddMarket(CellData originCell, int range, bool isEcosystem = true)
+        public static Market AddMarket(CellData originCell, int range, MarketType type = MarketType.Ecosystem)
         {
-            return AddMarket(isEcosystem, GridManager.GetNeighbours(originCell, range, true));
+            return AddMarket(type, GridManager.GetNeighbours(originCell, range, true));
         }
 
-        public static Market AddMarket(bool isEcosystem = true, params CellData[] area )
+        public static Market AddMarket(MarketType type = MarketType.Ecosystem, params CellData[] area )
         {
-            Market market = new(GenerateMarketColor(isEcosystem),isEcosystem, Instance._needsSetTemplate.needsSet);
+            Market market = new(GenerateMarketColor(type), type, Instance._needsSetTemplate.needsSet);
 
             foreach (var cell in area)
             {
@@ -57,16 +65,25 @@ namespace ResourceSystem.Markets
             GridManager.PaintTilemap(Instance.marketTile, TileMapType.Market, market.color, area);
 
             markets.Add(market);
-            
+            if (market.type is MarketType.Ecosystem or MarketType.Both)
+            {
+                ecosystemMarkets.Add(market);
+            }
+
+            if (market.type is MarketType.Artificial or MarketType.Both)
+            {
+                artificialMarkets.Add(market);
+            }
+                
             market.CalculateBorders();
             
             return market;
         }
 
-        private static Color GenerateMarketColor(bool isEcosystem)
+        private static Color GenerateMarketColor(MarketType marketType)
         {
             float alea = Random.Range(0, 1f);
-            return isEcosystem ? Instance._ecosystemColors.Evaluate(alea) : Instance._humanMarketColors.Evaluate(alea);
+            return marketType == MarketType.Ecosystem ? Instance._ecosystemColors.Evaluate(alea) : Instance._humanMarketColors.Evaluate(alea);
         }
         
         public static float GetDistanceBetweenMarkets(Market a, Market b)
@@ -189,7 +206,7 @@ namespace ResourceSystem.Markets
 
                 if (distance > Instance._maxDistanceToMerge)
                 {
-                    AddMarket(false, area);
+                    AddMarket(MarketType.Artificial, area);
                 }
             }
         }
@@ -241,5 +258,7 @@ namespace ResourceSystem.Markets
 
             return areas;
         }
+
+        
     }
 }
