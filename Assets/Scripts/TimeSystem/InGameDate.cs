@@ -1,7 +1,10 @@
-﻿namespace TimeSystem
+﻿using System;
+
+namespace TimeSystem
 {
+    [Serializable]
     public struct InGameDate
-    {
+    { 
         public int totalMonths;
 
         public int years => totalMonths / 12;

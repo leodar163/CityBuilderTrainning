@@ -39,7 +39,7 @@ namespace ResourceSystem.Categories.UI
             _icon.sprite = _category.icon;
         }
 
-        public void Unselect()
+        private void Unselect()
         {
             if (s_selectedButton && s_selectedButton != this) return;
             s_selectedButton = null;
