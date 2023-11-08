@@ -1,6 +1,7 @@
 ﻿using System;
 using GridSystem;
 using GridSystem.Interaction;
+using GridSystem.UI;
 using ResourceSystem.Markets.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -34,7 +35,7 @@ namespace ResourceSystem.Markets.Interactions
 
         void IGridInteractor.OnActivated()
         {
-            
+            OnHoveredCellChanged(GridEventSystem.HoveredCell);
         }
 
         void IGridInteractor.OnDeactivated()
@@ -56,9 +57,18 @@ namespace ResourceSystem.Markets.Interactions
 
         private void Update()
         {
-            if (isActive && s_hoveredMarket != null && Input.GetMouseButtonUp(0))
+            if (!isActive) return;
+
+            if (Input.GetMouseButtonUp(0) && s_hoveredMarket != null)
             {
-                SelectMarket(s_hoveredMarket);
+                if (s_hoveredMarket == s_selectedMarket)
+                {
+                    CellInfoPanel.Instance.OpenPanel();
+                }
+                else
+                {
+                    SelectMarket(s_hoveredMarket);
+                }
             }
         }
 
