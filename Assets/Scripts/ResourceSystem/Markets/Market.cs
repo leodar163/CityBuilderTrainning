@@ -28,6 +28,9 @@ namespace ResourceSystem.Markets
         public IMarketModifierContainer modifierContainerSelf => this;
         public List<MarketModifier> modifiers { get; set; } = new();
 
+        List<ResourceQuantity> IMarketModifierContainer.multipliers { get; } = new();
+
+
         #region CONSTRUCTORS
 
         public Market(MarketType type, NeedsSet needsTemplate = null)
@@ -40,6 +43,11 @@ namespace ResourceSystem.Markets
         {
             this.color = color;
         }
+
+        #endregion
+
+        #region MULTIPLICATORS
+        
 
         #endregion
         

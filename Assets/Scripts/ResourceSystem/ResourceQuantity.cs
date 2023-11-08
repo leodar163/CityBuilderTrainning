@@ -13,5 +13,15 @@ namespace ResourceSystem
             this.resource = resource;
             this.quantity = quantity;
         }
+        
+        public static ResourceQuantity operator+(ResourceQuantity a, float b)
+        {
+            return new ResourceQuantity(a.resource, a.quantity + b);
+        }
+        
+        public static ResourceQuantity operator-(ResourceQuantity a, float b)
+        {
+            return new ResourceQuantity(a.resource, a.quantity - b);
+        }
     }
 }

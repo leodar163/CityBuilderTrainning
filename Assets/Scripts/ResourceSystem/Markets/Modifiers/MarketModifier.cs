@@ -23,17 +23,24 @@ namespace ResourceSystem.Markets.Modifiers
         public List<OrderSummary> Orders => _orders;
         public List<ResourceQuantity> Multipliers => _multipliers;
 
+        public void Apply(IMarketModifierContainer container)
+        {
+            _container = container;
+            Apply();
+        }
+
         public override void Apply()
         {
-            base.Apply();
-            PickContainer();
+            if (_container == null )
+                PickContainer();
             _container?.AddModifier(this);
+            base.Apply();
         }
 
         public override void Unapply()
         {
-            base.Unapply();
             _container?.RemoveModifier(this);
+            base.Unapply();
         }
 
         private void PickContainer()

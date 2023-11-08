@@ -14,6 +14,12 @@ namespace Effects
         [Tooltip("0 means it will last forever")]
         [SerializeField] [Min(0)] private int _duration;
 
+        private bool _isApplied;
+
+        private Timer _timer;
+        
+        public bool isApplied => _isApplied;
+
         public Sprite Icon => _icon;
         public string EffectName => _name.GetLocalizedString();
         public string Format => FormatMessage();
@@ -25,12 +31,17 @@ namespace Effects
 
         public virtual void Apply()
         {
-            if (_duration > 0) new Timer(_duration, UpdateMoment.OnNewMonth).StartTimer().onTimerFinished += Unapply;
+            if (_duration > 0)
+            {
+                _timer = new Timer(_duration, UpdateMoment.OnNewMonth);
+                _timer.StartTimer().onTimerFinished += Unapply;
+            }
+            _isApplied = true;
         }
 
         public virtual void Unapply()
         {
-            
+            _isApplied = false;
         }
     }
 }

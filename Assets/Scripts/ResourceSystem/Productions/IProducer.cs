@@ -28,7 +28,10 @@ namespace ResourceSystem.Productions
 
                 foreach (var offer in line.offers)
                 {
-                    SetOrder(offer.resource, offer.quantity * line.efficiency, OrderType.Offer);
+                    float modifiersBonus = market.modifierContainerSelf.GetMultiplier(offer.resource) +
+                                           MarketManager.Instance.modifierContainerSelf.GetMultiplier(offer.resource);
+                    float flatProduction = offer.quantity * line.efficiency;
+                    SetOrder(offer.resource, flatProduction + flatProduction * modifiersBonus, OrderType.Offer);
                 }
             }
         }

@@ -28,6 +28,8 @@ namespace ResourceSystem.Markets
         public IMarketModifierContainer modifierContainerSelf => this;
         public List<MarketModifier> modifiers { get; set; } = new();
 
+        List<ResourceQuantity> IMarketModifierContainer.multipliers { get; } = new();
+
         public static int MaxDistanceToMerge
         {
             get => Instance._maxDistanceToMerge;
