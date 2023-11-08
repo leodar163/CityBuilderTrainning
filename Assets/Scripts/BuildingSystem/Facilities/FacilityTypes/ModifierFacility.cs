@@ -17,6 +17,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         public override void OnRemovedFromCell(CellData cellRemovedFrom)
         {
             base.OnRemovedFromCell(cellRemovedFrom);
+            _modifier.Unapply();
             
         }
     }

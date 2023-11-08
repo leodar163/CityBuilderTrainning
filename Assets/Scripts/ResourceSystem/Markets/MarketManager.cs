@@ -29,6 +29,7 @@ namespace ResourceSystem.Markets
         public List<MarketModifier> modifiers { get; set; } = new();
 
         List<ResourceQuantity> IMarketModifierContainer.multipliers { get; } = new();
+        public List<Market> Markets => markets;
 
         public static int MaxDistanceToMerge
         {
@@ -78,6 +79,11 @@ namespace ResourceSystem.Markets
             }
                 
             market.CalculateBorders();
+
+            foreach (var mod in Instance.modifiers)
+            {
+                mod.ResetOrderSending();
+            }
             
             return market;
         }

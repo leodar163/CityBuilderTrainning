@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceb0de1ffa0147f9bbe39b7290200bbe, type: 3}
   m_Name: TestModifier
   m_EditorClassIdentifier: 
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 1cc0f518ed6a33140bae4546aaacc877, type: 3}
   _name:
     m_TableReference:
-      m_TableCollectionName: 
+      m_TableCollectionName: GUID:91d7bbd1fc459684bac13671811af4b8
     m_TableEntryReference:
-      m_KeyId: 0
+      m_KeyId: 10686713856
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -34,7 +34,10 @@ MonoBehaviour:
   _duration: 0
   _scope: 0
   _marketTypeFilter: 0
-  _orders: []
+  _orders:
+  - resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
+    quantity: 100
+    orderType: 1
   _multipliers: []
   references:
     version: 2

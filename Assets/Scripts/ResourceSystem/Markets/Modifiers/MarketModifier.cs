@@ -11,15 +11,15 @@ namespace ResourceSystem.Markets.Modifiers
     {
         [SerializeField] private MarketModifierScope _scope;
         [SerializeField] private MarketType _marketTypeFilter;
-        
-        public MarketModifierScope Scope => _scope;
-        public MarketType MarketTypeFilter => _marketTypeFilter;
 
         private IMarketModifierContainer _container;
 
         [SerializeField] private List<OrderSummary> _orders;
         [SerializeField] private List<ResourceQuantity> _multipliers;
-
+        
+        private readonly List<OrdersSender> _modSenders = new();
+        public MarketModifierScope Scope => _scope;
+        public MarketType MarketTypeFilter => _marketTypeFilter;
         public List<OrderSummary> Orders => _orders;
         public List<ResourceQuantity> Multipliers => _multipliers;
 
@@ -34,6 +34,7 @@ namespace ResourceSystem.Markets.Modifiers
             if (_container == null )
                 PickContainer();
             _container?.AddModifier(this);
+            SendOrders();
             base.Apply();
         }
 
@@ -59,8 +60,35 @@ namespace ResourceSystem.Markets.Modifiers
             };
         }
 
+        private void SendOrders()
+        {
+            if (_container == null) return;
+
+            foreach (var market in _container.Markets)
+            {
+                if (_marketTypeFilter != MarketType.Both && market.type != _marketTypeFilter) continue;
+                
+                _modSenders.Add(new OrdersSender(_name, market).SendOrders(_orders));
+            }
+        }
+
+        private void RecallSenders()
+        {
+            foreach (var sender in _modSenders.ToArray())
+            {
+                _modSenders.Remove(sender.SendBackOrders());
+            }
+        }
+        
+        public void ResetOrderSending()
+        {
+            RecallSenders();
+            SendOrders();
+        }
+        
         public void OnRemoved()
         {
+            RecallSenders();
             _container = null;
         }
     }

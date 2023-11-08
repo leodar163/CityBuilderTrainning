@@ -40,6 +40,11 @@ namespace ResourceSystem.Markets
             }
         }
 
+        public void SetOrder(OrderSummary order)
+        {
+            SetOrder(order.resource, order.quantity, order.orderType);
+        }
+        
         public void SetOrder(ResourceType resource, float quantity, OrderType orderType)
         {
             quantity = Mathf.Clamp(quantity, 0, float.PositiveInfinity);

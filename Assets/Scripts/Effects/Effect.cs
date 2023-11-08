@@ -8,8 +8,8 @@ namespace Effects
     {
         [SerializeField] private Sprite _icon;
         [Space]
-        [SerializeField] private LocalizedString _name; 
-        [SerializeField] private LocalizedString _format;
+        [SerializeField] protected LocalizedString _name; 
+        [SerializeField] protected LocalizedString _format;
         
         [Tooltip("0 means it will last forever")]
         [SerializeField] [Min(0)] private int _duration;

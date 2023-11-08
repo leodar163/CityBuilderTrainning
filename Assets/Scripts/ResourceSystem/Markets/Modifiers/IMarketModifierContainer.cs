@@ -8,6 +8,8 @@ namespace ResourceSystem.Markets.Modifiers
         public List<MarketModifier> modifiers { get;}
 
         protected List<ResourceQuantity> multipliers { get; }
+        
+        public List<Market> Markets { get; }
 
         public float GetMultiplier(ResourceType resource)
         {

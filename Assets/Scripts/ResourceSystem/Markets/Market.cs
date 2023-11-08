@@ -27,16 +27,16 @@ namespace ResourceSystem.Markets
         public NeedsSet needsSet;
         public IMarketModifierContainer modifierContainerSelf => this;
         public List<MarketModifier> modifiers { get; set; } = new();
-
+        public List<Market> Markets { get; }
         List<ResourceQuantity> IMarketModifierContainer.multipliers { get; } = new();
-
-
+        
         #region CONSTRUCTORS
 
         public Market(MarketType type, NeedsSet needsTemplate = null)
         {
             this.type = type;
-            if(type == MarketType.Ecosystem) needsSet = new NeedsSet(needsTemplate, this);
+            if(type == MarketType.Artificial) needsSet = new NeedsSet(needsTemplate, this);
+            Markets = new List<Market> { this };
         }
         
         public Market(Color color, MarketType type, NeedsSet needsTemplate = null) : this(type, needsTemplate)
