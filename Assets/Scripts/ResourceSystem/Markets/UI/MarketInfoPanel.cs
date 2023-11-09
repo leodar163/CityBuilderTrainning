@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using ResourceSystem.Categories;
 using ResourceSystem.Categories.UI;
 using ResourceSystem.Markets.Interactions;
+using ResourceSystem.Markets.Modifiers.UI;
 using TimeSystem;
 using TMPro;
 using UnityEngine;
@@ -31,6 +31,12 @@ namespace ResourceSystem.Markets.UI
         [SerializeField] private List<ResourceCategoryButton> _categoryButtons;
         private ResourceCategory _currentCategoryFilter;
 
+        [Header("Modifiers")] 
+        [SerializeField] private MarketModifierUI _marketModifierUITemplate;
+        [SerializeField] private RectTransform _modifierContainer;
+        private readonly List<MarketModifierUI> _modifiers = new();
+
+
         private Market _market;
 
         private void Awake()
@@ -52,6 +58,8 @@ namespace ResourceSystem.Markets.UI
             ResourceCategoryButton.onSelect -= FilterByResourceCategory;
             ResourceCategoryButton.onUnselect -= FilterByResourceCategory;
         }
+
+        #region FILTERS
 
         private void InitCategoryFilterButtons()
         {
@@ -77,6 +85,57 @@ namespace ResourceSystem.Markets.UI
             button = null;
             return false;
         }
+
+        #endregion
+
+        #region MODIFIERS
+
+        private void UpdateModifiers()
+        {
+            for (int i = 0; i < _market.modifiers.Count; i++)
+            {
+                if (_modifiers.Count < i + 1 && 
+                    Instantiate(_marketModifierUITemplate, _modifierContainer)
+                        .TryGetComponent(out MarketModifierUI modifierUI))
+                {
+                    _modifiers.Add(modifierUI);
+                }
+                else
+                {
+                    modifierUI = _modifiers[i];
+                }
+
+                modifierUI.Modifier = _market.modifiers[i];
+                modifierUI.gameObject.SetActive(true);
+            }
+
+            for (int i = 0 ; i < MarketManager.Instance.modifiers.Count; i++)
+            {
+                if (_modifiers.Count < i + _market.modifiers.Count && 
+                    Instantiate(_marketModifierUITemplate, _modifierContainer)
+                        .TryGetComponent(out MarketModifierUI modifierUI))
+                {
+                    _modifiers.Add(modifierUI);
+                }
+                else
+                {
+                    modifierUI = _modifiers[_market.modifiers.Count + i];
+                }
+
+                modifierUI.Modifier = MarketManager.Instance.modifiers[i];
+                modifierUI.gameObject.SetActive(true);
+            }
+
+            if (_modifiers.Count > MarketManager.Instance.modifiers.Count + _market.modifiers.Count)
+            {
+                for (int i = MarketManager.Instance.modifiers.Count + _market.modifiers.Count -1; i < _modifiers.Count; i++)
+                {
+                    _modifiers[i].gameObject.SetActive(false);
+                }
+            }
+        }
+
+        #endregion
         
         private void UpdateDisplay()
         {
@@ -98,6 +157,8 @@ namespace ResourceSystem.Markets.UI
             {
                 _happinessSlider.gameObject.SetActive(false);
             }
+            
+            UpdateModifiers();
         }
 
         private void UpdateValuesDisplaying()

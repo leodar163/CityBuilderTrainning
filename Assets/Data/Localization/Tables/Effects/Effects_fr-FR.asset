@@ -22,6 +22,14 @@ MonoBehaviour:
     m_Localized: modificiteur test
     m_Metadata:
       m_Items: []
+  - m_Id: 294148695019520
+    m_Localized: modificateur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296993133580288
+    m_Localized: modificateurs
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
