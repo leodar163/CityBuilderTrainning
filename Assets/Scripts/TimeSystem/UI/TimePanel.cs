@@ -38,10 +38,10 @@ namespace TimeSystem.UI
         
         private void UpdateSliders()
         {
-            int months = TimeManager.date.months;
+            int months = TimeManager.date.month;
             if (months > 0)
             {
-                for (int i = 0; i < TimeManager.date.months - 1; i++)
+                for (int i = 0; i < TimeManager.date.month - 1; i++)
                 {
                     _monthSliders[i].value = 1;
                 }

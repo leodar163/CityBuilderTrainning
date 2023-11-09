@@ -38,7 +38,9 @@ MonoBehaviour:
   - resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
     quantity: 100
     orderType: 1
-  _multipliers: []
+  _multipliers:
+  - resource: {fileID: 11400000, guid: 53974829d244ff140a428c0dc71a45c1, type: 2}
+    quantity: 1
   references:
     version: 2
     RefIds: []

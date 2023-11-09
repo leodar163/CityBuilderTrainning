@@ -7,8 +7,8 @@ namespace TimeSystem
     { 
         public int totalMonths;
 
-        public int years => totalMonths / 12;
-        public int months => totalMonths % 12;
+        public int year => totalMonths / 12;
+        public int month => totalMonths % 12;
 
         public InGameDate(int months)
         {
@@ -72,7 +72,7 @@ namespace TimeSystem
 
         public override string ToString()
         {
-            return $"{TimeManager.monthName} : {months}, {TimeManager.yearName} : {years}";
+            return $"{TimeManager.monthName} : {month}, {TimeManager.yearName} : {year}";
         }
     }
 }
