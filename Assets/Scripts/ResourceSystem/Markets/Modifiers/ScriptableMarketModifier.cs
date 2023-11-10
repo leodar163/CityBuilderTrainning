@@ -4,11 +4,12 @@ using UnityEngine;
 namespace ResourceSystem.Markets.Modifiers
 {
     [CreateAssetMenu(menuName = "Effects/MarketModifier", fileName = "NewMarketModifier")]
-    public class ScriptableMarketModifier : ScriptableEffect<MarketModifier>
+    public class ScriptableMarketModifier : ScriptableEffect
     {
-        public override MarketModifier GetEffectCopy()
+        [SerializeField] private MarketModifier _marketModifier;
+        public override Effect GetEffectCopy()
         {
-            return new MarketModifier(_effect);
+            return new MarketModifier(_marketModifier);
         }
     }
 }

@@ -3,11 +3,9 @@ using UnityEngine;
 
 namespace Effects
 {
-    public abstract class ScriptableEffect<T> : ScriptableObject where T : Effect
+    public abstract class ScriptableEffect : ScriptableObject
     {
-        [SerializeField] protected T _effect;
-
-        public virtual T GetEffectCopy()
+        public virtual Effect GetEffectCopy()
         {
             throw new NotImplementedException();
         }

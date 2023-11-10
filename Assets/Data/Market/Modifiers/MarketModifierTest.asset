@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4103a815c723403ca86658a1d00a2f70, type: 3}
   m_Name: MarketModifierTest
   m_EditorClassIdentifier: 
-  _effect:
+  _marketModifier:
     _icon: {fileID: 21300000, guid: 1cc0f518ed6a33140bae4546aaacc877, type: 3}
     _name:
       m_TableReference:
@@ -37,7 +37,7 @@ MonoBehaviour:
     _marketTypeFilter: 2
     _orders:
     - resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
-      quantity: 100
+      quantity: 10
       orderType: 1
     _multipliers:
     - resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}

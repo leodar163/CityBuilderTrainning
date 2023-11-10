@@ -14,9 +14,9 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             base.OnAddedToCell(cellAddedTo);
 
-            _modifier = _modifierTemplate.GetEffectCopy();
+            _modifier = _modifierTemplate.GetEffectCopy() as MarketModifier;
             
-            _modifier.Apply(cellAddedTo.market);
+            _modifier?.Apply(cellAddedTo.market);
         }
 
         public override void OnRemovedFromCell(CellData cellRemovedFrom)
