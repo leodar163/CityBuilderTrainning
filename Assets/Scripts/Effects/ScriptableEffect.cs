@@ -9,5 +9,10 @@ namespace Effects
         {
             throw new NotImplementedException();
         }
+
+        public virtual string GetEffectFormat()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TimeSystem;
+using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -8,8 +8,8 @@ namespace Events
 {
     public class ScenarioManager : Singleton<ScenarioManager>
     {
-        [NonSerialized] private Scenario _scenario;
-        public readonly Dictionary<InGameDate, GameEvent> eventsDico = new();
+        [SerializeField] private Scenario _scenario;
+        public static readonly Dictionary<InGameDate, GameEvent> eventsDico = new();
         
         private void Awake()
         {
@@ -27,7 +27,7 @@ namespace Events
             TimeManager.onMonthBegins -= TryFireEvent;
         }
 
-        public void InitEventDate()
+        private void InitEventDate()
         {
             foreach (var evnt in _scenario.Events)
             {
@@ -48,7 +48,7 @@ namespace Events
             }
         }
         
-        public List<GameEvent> GetEventsOfYear(int year)
+        public static List<GameEvent> GetEventsOfYear(int year)
         {
             List<GameEvent> yearEvents = new();
             
@@ -59,6 +59,16 @@ namespace Events
             }
 
             return yearEvents;
+        }
+
+        public static InGameDate GetDateOfEvent(GameEvent gameEvent)
+        {
+            foreach (var evnt in eventsDico)
+            {
+                if (evnt.Value == gameEvent) return evnt.Key;
+            }
+
+            return default;
         }
     }
 }

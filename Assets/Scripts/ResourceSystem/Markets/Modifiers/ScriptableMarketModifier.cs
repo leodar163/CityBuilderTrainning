@@ -11,5 +11,10 @@ namespace ResourceSystem.Markets.Modifiers
         {
             return new MarketModifier(_marketModifier);
         }
+
+        public override string GetEffectFormat()
+        {
+            return _marketModifier.Format;
+        }
     }
 }

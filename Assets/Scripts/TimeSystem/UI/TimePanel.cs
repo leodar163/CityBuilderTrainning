@@ -1,4 +1,7 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using Events;
+using Events.UI;
+using TMPro;
 using Utils.UI;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -18,12 +21,22 @@ namespace TimeSystem.UI
         [SerializeField] private TextMeshProUGUI _timeSpeedMonitor;
         [SerializeField] private TextMeshProUGUI _dateMonitor;
 
+        [Header("Events")] 
+        [SerializeField] private GameEventPin _gameEventPinTemplate;
+        private readonly List<GameEventPin> _eventPins = new();
+
         private void Awake()
         {
             _decreaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(-1));
             _increaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(1));
             _pauseButton.onClick.AddListener(TimeManager.Instance.Pause);
             TimeManager.onNewYear += ReinitSliders;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            ReinitSliders();
         }
 
         private void Update()
@@ -52,10 +65,43 @@ namespace TimeSystem.UI
 
         private void ReinitSliders()
         {
+            UpdateEventPinDisplay();
             foreach (var slider in _monthSliders)
             {
                 slider.value = 0;
             }
         }
+
+        #region EVENTS
+
+        private void UpdateEventPinDisplay()
+        {
+            List<GameEvent> events = ScenarioManager.GetEventsOfYear(TimeManager.date.year);
+
+            foreach (var pin in _eventPins)
+            {
+                pin.gameObject.SetActive(false);
+            }
+            
+            for (int i = 0; i < events.Count; i++)
+            {
+                if (_eventPins.Count < i + 1 && Instantiate(_gameEventPinTemplate)
+                        .TryGetComponent(out GameEventPin pin))
+                {
+                    _eventPins.Add(pin);
+                }
+                else
+                {
+                    pin = _eventPins[i];
+                }
+
+                pin.GameEvent = events[i];
+                pin.transform.SetParent(_monthSliders[ScenarioManager.GetDateOfEvent(pin.GameEvent).month].transform);
+                ((RectTransform)pin.transform).anchoredPosition = Vector2.zero;
+                pin.gameObject.SetActive(true);
+            }
+        }
+
+        #endregion
     }
 }

@@ -13,15 +13,18 @@ namespace Events.UI
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _desc;
         [SerializeField] private TextMeshProUGUI _effects;
+        [SerializeField] private Button _validationButton;
 
         private void OnEnable()
         {
             GameEvent.onEventFired += OpenEvent;
+            _validationButton.onClick.AddListener(CloseCurrentEvent);
         }
 
         private void OnDisable()
         {
             GameEvent.onEventFired -= OpenEvent;
+            _validationButton.onClick.RemoveListener(CloseCurrentEvent);
         }
 
 
@@ -40,7 +43,7 @@ namespace Events.UI
 
             foreach (var effect in gameEvent.Effects)
             {
-                effectFormat += effect.Format + '\n';
+                effectFormat += effect.GetEffectFormat() + '\n';
             }
             
             Instance._effects.SetText(effectFormat);

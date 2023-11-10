@@ -24,6 +24,26 @@ namespace ResourceSystem.Markets.Modifiers
         public List<OrderSummary> Orders => _orders;
         public List<ResourceQuantity> Multipliers => _multipliers;
 
+        #region CONSTRUCTORS
+
+        public MarketModifier(Sprite icon, LocalizedString name, LocalizedString format, int duration,
+            IEnumerable<OrderSummary> orders, IEnumerable<ResourceQuantity> multipliers, MarketModifierScope scope,
+            MarketType marketType)
+            : base(icon, name, format, duration)
+        {
+            _orders = new List<OrderSummary>(orders);
+            _multipliers = new List<ResourceQuantity>(multipliers);
+            _scope = scope;
+            _marketTypeFilter = marketType;
+        }
+
+        public MarketModifier(MarketModifier template) : this(template._icon, template._name, template._format,
+            template._duration, template._orders, template._multipliers, template._scope, template._marketTypeFilter)
+        {
+        }
+
+        #endregion
+        
         public void Apply(IMarketModifierContainer container)
         {
             _container = container;
@@ -91,23 +111,6 @@ namespace ResourceSystem.Markets.Modifiers
         {
             RecallSenders();
             _container = null;
-        }
-
-        public MarketModifier(Sprite icon, LocalizedString name, LocalizedString format, int duration,
-            List<OrderSummary> orders, List<ResourceQuantity> multipliers, MarketModifierScope scope,
-            MarketType marketType)
-            : base(icon, name, format, duration)
-        {
-            _orders = new List<OrderSummary>(orders);
-            _multipliers = new List<ResourceQuantity>(multipliers);
-            _scope = scope;
-            _marketTypeFilter = marketType;
-        }
-
-        public MarketModifier(MarketModifier template) : this(template._icon, template._name, template._format,
-            template._duration, template._orders, template._multipliers, template._scope, template._marketTypeFilter)
-        {
-
         }
     }
 }
