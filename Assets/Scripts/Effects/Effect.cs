@@ -1,18 +1,20 @@
-﻿using TimeSystem;
+﻿using System;
+using TimeSystem;
 using UnityEngine;
 using UnityEngine.Localization;
 
 namespace Effects
 {
-    public abstract class Effect : ScriptableObject
+    [Serializable]
+    public abstract class Effect
     {
-        [SerializeField] private Sprite _icon;
+        [SerializeField] protected Sprite _icon;
         [Space]
         [SerializeField] protected LocalizedString _name; 
         [SerializeField] protected LocalizedString _format;
         
         [Tooltip("0 means it will last forever")]
-        [SerializeField] [Min(0)] private int _duration;
+        [SerializeField] [Min(0)] protected int _duration;
 
         private bool _isApplied;
 
@@ -29,6 +31,18 @@ namespace Effects
             return _format.GetLocalizedString();
         }
 
+        #region CONSTRUCTORS
+
+        protected Effect(Sprite icon, LocalizedString name, LocalizedString format, int duration)
+        {
+            _icon = icon;
+            _name = name;
+            _format = format;
+            _duration = duration;
+        }
+
+        #endregion
+        
         public virtual void Apply()
         {
             if (_duration > 0)

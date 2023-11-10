@@ -51,8 +51,7 @@ namespace ResourceSystem.Markets.Modifiers
         
         public void AddModifier(MarketModifier modifier)
         {
-            //for the moment, I'll allow having multiple instances of the same modifier in the same mod container
-            //if (modifiers.Contains(modifier)) return;
+            if (modifiers.Contains(modifier)) return;
             
             modifiers.Add(modifier);
 

@@ -128,7 +128,7 @@ namespace ResourceSystem.Markets.UI
 
             if (_modifiers.Count > MarketManager.Instance.modifiers.Count + _market.modifiers.Count)
             {
-                for (int i = MarketManager.Instance.modifiers.Count + _market.modifiers.Count -1; i < _modifiers.Count; i++)
+                for (int i = MarketManager.Instance.modifiers.Count + _market.modifiers.Count; i < _modifiers.Count; i++)
                 {
                     _modifiers[i].gameObject.SetActive(false);
                 }

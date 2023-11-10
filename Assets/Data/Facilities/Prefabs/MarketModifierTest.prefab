@@ -98,7 +98,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   constructionCost: 0
-  _modifier: {fileID: 11400000, guid: 3cf69371fb13f604a896269a78dfcbb8, type: 2}
+  _modifierTemplate: {fileID: 11400000, guid: 37817894078741a439a85604711d2288, type: 2}
   references:
     version: 2
     RefIds: []
