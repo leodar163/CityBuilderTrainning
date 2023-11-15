@@ -38,6 +38,18 @@ MonoBehaviour:
     m_Localized: need of
     m_Metadata:
       m_Items: []
+  - m_Id: 9811401861910528
+    m_Localized: on every {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9811610780192768
+    m_Localized: on the main {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9811828120637440
+    m_Localized: on one of the {0} randomly picked
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

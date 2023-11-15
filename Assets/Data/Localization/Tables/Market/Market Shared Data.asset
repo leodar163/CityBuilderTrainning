@@ -35,6 +35,18 @@ MonoBehaviour:
     m_Key: Mark_NeedIn
     m_Metadata:
       m_Items: []
+  - m_Id: 9811401861910528
+    m_Key: Mark_Scope_All
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9811610780192768
+    m_Key: Mark_Scope_Main
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9811828120637440
+    m_Key: Mark_Scope_Random
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

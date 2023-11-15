@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4103a815c723403ca86658a1d00a2f70, type: 3}
-  m_Name: Migration1
+  m_Name: MigrationModifier
   m_EditorClassIdentifier: 
   _marketModifier:
     _icon: {fileID: 21300000, guid: a41d4396d0644fb4da94956638daef74, type: 3}
@@ -23,18 +23,9 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    _format:
-      m_TableReference:
-        m_TableCollectionName: 
-      m_TableEntryReference:
-        m_KeyId: 0
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
     _duration: 0
-    _scope: 1
-    _marketTypeFilter: 1
+    _scope: 0
+    _marketTypeFilter: 2
     _orders:
     - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
       quantity: 100

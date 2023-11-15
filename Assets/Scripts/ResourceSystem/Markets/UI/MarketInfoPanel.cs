@@ -111,7 +111,7 @@ namespace ResourceSystem.Markets.UI
 
             for (int i = 0 ; i < MarketManager.Instance.modifiers.Count; i++)
             {
-                if (_modifiers.Count < i + _market.modifiers.Count && 
+                if (_modifiers.Count <= i + _market.modifiers.Count && 
                     Instantiate(_marketModifierUITemplate, _modifierContainer)
                         .TryGetComponent(out MarketModifierUI modifierUI))
                 {

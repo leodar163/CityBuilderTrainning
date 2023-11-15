@@ -15,9 +15,9 @@ MonoBehaviour:
   _events:
   - gameEvent: {fileID: 11400000, guid: ba1910bdf894bc14c9b90567ac9b89d5, type: 2}
     minDate:
-      totalMonths: 11
+      totalMonths: 1
     maxDate:
-      totalMonths: 11
+      totalMonths: 1
   - gameEvent: {fileID: 11400000, guid: ba1910bdf894bc14c9b90567ac9b89d5, type: 2}
     minDate:
       totalMonths: 23

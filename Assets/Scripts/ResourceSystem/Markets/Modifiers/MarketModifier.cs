@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Effects;
+using Format;
+using Localization;
 using UnityEngine;
 using UnityEngine.Localization;
 using Random = UnityEngine.Random;
@@ -10,6 +12,7 @@ namespace ResourceSystem.Markets.Modifiers
     [Serializable]
     public class MarketModifier : Effect
     {
+        [Space]
         [SerializeField] private MarketModifierScope _scope;
         [SerializeField] private MarketType _marketTypeFilter;
 
@@ -26,10 +29,10 @@ namespace ResourceSystem.Markets.Modifiers
 
         #region CONSTRUCTORS
 
-        public MarketModifier(Sprite icon, LocalizedString name, LocalizedString format, int duration,
+        public MarketModifier(Sprite icon, LocalizedString name, int duration,
             IEnumerable<OrderSummary> orders, IEnumerable<ResourceQuantity> multipliers, MarketModifierScope scope,
             MarketType marketType)
-            : base(icon, name, format, duration)
+            : base(icon, name, duration)
         {
             _orders = new List<OrderSummary>(orders);
             _multipliers = new List<ResourceQuantity>(multipliers);
@@ -37,13 +40,58 @@ namespace ResourceSystem.Markets.Modifiers
             _marketTypeFilter = marketType;
         }
 
-        public MarketModifier(MarketModifier template) : this(template._icon, template._name, template._format,
+        public MarketModifier(MarketModifier template) : this(template._icon, template._name,
             template._duration, template._orders, template._multipliers, template._scope, template._marketTypeFilter)
         {
         }
 
         #endregion
-        
+
+        public string GetFormatMessage(bool includeTarget)
+        {
+            string format = "";
+            
+            for (int i = 0; i < _orders.Count; i++)
+            {
+                OrderSummary order = _orders[i];
+                if (order.quantity <= 0) continue;
+                format += $"+{order.quantity} " +
+                          $"{(order.orderType == OrderType.Demand ? $"<color=#{FormatManager.negativeColorHTML}>{VariableNameManager.DemandName}" : $"<color=#{FormatManager.positiveColorHTML}>{VariableNameManager.OfferName}")} " +
+                          $"</color>{order.resource.resourceName}";
+                if (includeTarget)
+                    format += $" {FormatManager.FormatMarketScope(_marketTypeFilter, _scope)}";
+                if (i < _orders.Count - 1)
+                    format += '\n';
+
+            }
+
+            if (format.Length > 0 && _multipliers.Count > 0)
+                format += '\n' + FormatManager.separator + '\n';
+
+            for (int i = 0; i < _multipliers.Count; i++)
+            {
+                ResourceQuantity mult = _multipliers[i];
+                if (mult.quantity == 0) continue;
+                string posNeg = mult.quantity > 0
+                    ? $"<color=#{FormatManager.positiveColorHTML}>+"
+                    : $"<color=#{FormatManager.negativeColor}>";
+                format +=
+                    $"{posNeg}{Mathf.RoundToInt(mult.quantity * 1000) / 10f}%</color> " +
+                    $"{VariableNameManager.ProductionName} ({mult.resource.resourceName})";
+                if (includeTarget)
+                    format += $" {FormatManager.FormatMarketScope(_marketTypeFilter, _scope)}";
+                if (i < _multipliers.Count - 1)
+                    format += '\n';
+            }
+
+            return format;
+        }
+
+        public override string GetFormatMessage()
+        {
+            return GetFormatMessage(true);
+        }
+
         public void Apply(IMarketModifierContainer container)
         {
             _container = container;
@@ -83,7 +131,11 @@ namespace ResourceSystem.Markets.Modifiers
 
         private void SendOrders()
         {
-            if (_container == null) return;
+            if (_container == null)
+            {
+                Debug.LogError($"Trying to send market modifier {EffectName} without target");
+                return;
+            }
 
             foreach (var market in _container.Markets)
             {

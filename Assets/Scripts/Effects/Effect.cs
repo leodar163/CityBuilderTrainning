@@ -10,9 +10,8 @@ namespace Effects
     {
         [SerializeField] protected Sprite _icon;
         [Space]
-        [SerializeField] protected LocalizedString _name; 
-        [SerializeField] protected LocalizedString _format;
-        
+        [SerializeField] protected LocalizedString _name;
+
         [Tooltip("0 means it will last forever")]
         [SerializeField] [Min(0)] protected int _duration;
 
@@ -24,20 +23,18 @@ namespace Effects
 
         public Sprite Icon => _icon;
         public string EffectName => _name.GetLocalizedString();
-        public string Format => FormatMessage();
 
-        protected virtual string FormatMessage()
+        public virtual string GetFormatMessage()
         {
-            return _format.GetLocalizedString();
+            return "No_Format";
         }
 
         #region CONSTRUCTORS
 
-        protected Effect(Sprite icon, LocalizedString name, LocalizedString format, int duration)
+        protected Effect(Sprite icon, LocalizedString name, int duration)
         {
             _icon = icon;
             _name = name;
-            _format = format;
             _duration = duration;
         }
 

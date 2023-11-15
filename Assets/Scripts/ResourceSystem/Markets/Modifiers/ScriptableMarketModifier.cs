@@ -14,7 +14,7 @@ namespace ResourceSystem.Markets.Modifiers
 
         public override string GetEffectFormat()
         {
-            return _marketModifier.Format;
+            return _marketModifier.GetFormatMessage();
         }
     }
 }

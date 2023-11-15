@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a260d573fd2e4ff8a43e92043a0ec255, type: 3}
-  m_Name: Migration
+  m_Name: MigrationEvent
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: a41d4396d0644fb4da94956638daef74, type: 3}
-  illustration: {fileID: 0}
+  illustration: {fileID: 21300000, guid: 5cb6a30543a0ecb4888871167c0b7e28, type: 3}
   _title:
     m_TableReference:
       m_TableCollectionName: GUID:b7618d31859cc914192f9098e01988eb
@@ -41,7 +41,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _effects: []
+  _effects:
+  - {fileID: 11400000, guid: a95f2e5c47de24241ae7f29657cfb4f8, type: 2}
   references:
     version: 2
     RefIds: []
