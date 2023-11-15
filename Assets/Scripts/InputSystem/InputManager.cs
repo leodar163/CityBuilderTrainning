@@ -78,7 +78,7 @@ namespace InputSystem
         {
             if (_controls.TimeControles.Pause.WasPressedThisFrame())
             { 
-                TimeManager.Instance.Pause();
+                TimeManager.SwitchPause();
             }
             
             if (_controls.TimeControles.IncreaseTime.WasPressedThisFrame())

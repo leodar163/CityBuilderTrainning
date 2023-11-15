@@ -28,7 +28,6 @@ namespace Events.UI
         {
             _icon.sprite = _gameEvent.icon;
         }
-
         
         public void UpdateTooltipMessage(TooltipMessageUI messageUI)
         {

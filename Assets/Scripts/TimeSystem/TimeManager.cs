@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace TimeSystem
@@ -91,11 +90,11 @@ namespace TimeSystem
 
         public void IncreaseTimeSpeed(int delta)
         {
-            if(timeSpeed + delta <= 0) Pause();
+            if(timeSpeed + delta <= 0) SwitchPause();
             timeSpeed = Mathf.Clamp(timeSpeed + delta, 1, 3);
         }
 
-        public void Pause()
+        public static void SwitchPause()
         {
             isPaused = !isPaused;
         }

@@ -29,7 +29,7 @@ namespace TimeSystem.UI
         {
             _decreaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(-1));
             _increaseButton.onClick.AddListener(() => TimeManager.Instance.IncreaseTimeSpeed(1));
-            _pauseButton.onClick.AddListener(TimeManager.Instance.Pause);
+            _pauseButton.onClick.AddListener(TimeManager.SwitchPause);
             TimeManager.onNewYear += ReinitSliders;
         }
 

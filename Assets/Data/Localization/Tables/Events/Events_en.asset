@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Localized: Compatriote will join us.
     m_Metadata:
       m_Items: []
+  - m_Id: 1747978729181184
+    m_Localized: validate
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

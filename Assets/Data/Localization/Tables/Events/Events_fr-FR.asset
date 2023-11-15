@@ -31,6 +31,10 @@ MonoBehaviour:
     m_Localized: Des compatriotes nous rejoingnent.
     m_Metadata:
       m_Items: []
+  - m_Id: 1747978729181184
+    m_Localized: valider
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

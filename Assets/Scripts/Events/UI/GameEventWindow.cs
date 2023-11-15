@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using TimeSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -14,6 +16,11 @@ namespace Events.UI
         [SerializeField] private TextMeshProUGUI _desc;
         [SerializeField] private TextMeshProUGUI _effects;
         [SerializeField] private Button _validationButton;
+
+        private void Awake()
+        {
+            CloseCurrentEvent();
+        }
 
         private void OnEnable()
         {
@@ -49,14 +56,13 @@ namespace Events.UI
             Instance._effects.SetText(effectFormat);
             
             Instance._child.gameObject.SetActive(true);
+            TimeManager.isPaused = true;
         }
 
         public static void CloseCurrentEvent()
         {
-            if (_currentGameEvent == null) return;
             Instance._child.gameObject.SetActive(false);
+            TimeManager.isPaused = false;
         }
-        
-        
     }
 }
