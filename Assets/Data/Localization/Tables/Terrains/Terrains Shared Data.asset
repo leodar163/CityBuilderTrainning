@@ -27,6 +27,14 @@ MonoBehaviour:
     m_Key: Ter_Mountain
     m_Metadata:
       m_Items: []
+  - m_Id: 33670876255375360
+    m_Key: Ter_CostName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33671019222421504
+    m_Key: Ter_OceanName
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

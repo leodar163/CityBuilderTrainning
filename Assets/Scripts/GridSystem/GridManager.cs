@@ -23,19 +23,30 @@ namespace GridSystem
         [SerializeField] private Vector2Int _gridSize = new (62, 62); 
         [SerializeField] private Vector2Int _positionOffset;
 
-        private CellData[,] _cellDatas; 
+        private CellData[,] _cellsData; 
       
         private Camera _mainCamera;
 
-        private RectInt _gridRect;
+        [HideInInspector] [SerializeField] private RectInt _gridRect;
 
-        public static Vector2Int GridSize => Instance._gridSize;
+        public static Vector2Int GridSize
+        {
+            get => Instance._gridSize;
+            set
+            {
+                Instance._gridSize = value;
+                Instance._gridRect =
+                    new RectInt(-Instance._gridSize / 2 + Instance._positionOffset, Instance._gridSize);
+                Instance.InitCollider();
+            }
+        }
 
+        public static RectInt GridRect => Instance._gridRect;
+        
         private void Awake()
         {
             TimeManager.onNewMonth += MonthUpdateCells;
-
-            _gridRect = new RectInt(-_gridSize/2 +_positionOffset, _gridSize);
+            
             _mainCamera = Camera.main;
             InitCellDatas();
         }
@@ -44,14 +55,17 @@ namespace GridSystem
         private void OnValidate()
         {
             if (!_gridCollider) TryGetComponent(out _gridCollider);
+            InitCollider();
+        }
+
+        private void InitCollider()
+        {
             if (_gridCollider)
             {
                 _gridCollider.size = new Vector3(_gridSize.x, 0.01f,_gridSize.y);
-                _gridCollider.center = new Vector3(_positionOffset.x+ 0.5f, 0, _positionOffset.y+ 0.5f);
+                _gridCollider.center = new Vector3(_positionOffset.x, 0, _positionOffset.y);
             }
         }
-
-        
 
         public static Vector3 GetCellCenter(Vector3Int cell)
         {
@@ -67,27 +81,37 @@ namespace GridSystem
         
         private void InitCellDatas()
         {
-            _cellDatas = new CellData[_gridSize.x, _gridSize.y];
+            _cellsData = new CellData[_gridSize.x, _gridSize.y];
            
-            for (int i = 0; i < _cellDatas.GetLength(0); i++)
+            for (int i = 0; i < _cellsData.GetLength(0); i++)
             {
-                for (int j = 0; j < _cellDatas.GetLength(1); j++)
+                for (int j = 0; j < _cellsData.GetLength(1); j++)
                 {
-                    _cellDatas[i, j] = new CellData(new Vector3Int(i + _gridRect.xMin, j + _gridRect.yMin));
+                    _cellsData[i, j] = new CellData(GetCoordinatesByCellIndex(i,j));
                 }
             }
 
-            foreach (var cellData in _cellDatas)
+            foreach (var cellData in _cellsData)
             {
                 cellData.FindNeighbours();
             }
 
-            foreach (var cellData in _cellDatas)
+            foreach (var cellData in _cellsData)
             {
                 MarketManager.AddMarket(MarketType.Ecosystem, cellData);
             }
         }
 
+        public static Vector3Int GetCoordinatesByCellIndex(Vector2Int indices)
+        {
+            return GetCoordinatesByCellIndex(indices.x, indices.y);
+        }
+        
+        public static Vector3Int GetCoordinatesByCellIndex(int x, int y)
+        {
+            return new Vector3Int(x + Instance._gridRect.xMin, y + Instance._gridRect.yMin);
+        }
+        
         public static CellData[] GetOuterBorderOfArea(List<CellData> area)
         {
             List<CellData> border = new();
@@ -225,8 +249,6 @@ namespace GridSystem
 
             return neighbours.ToArray();
         }
-        
-        
 
         public static void ResetTileMap(TileMapType tileMapType)
         {
@@ -281,12 +303,11 @@ namespace GridSystem
             Tilemap mapToPaint = GetTilemap(tilemap);
             foreach (var cell in area)
             {
-                Vector3Int cellIndex = cell.cellCoordinates;
-                PaintTile(paintTile, mapToPaint, tint, cellIndex);
+                PaintTile(paintTile, mapToPaint, tint, cell.cellCoordinates);
             }
         }
 
-        public static void PaintTile(TileBase paintTile, Tilemap tilemap, Color tint, Vector3Int cellIndex)
+        private static void PaintTile(TileBase paintTile, Tilemap tilemap, Color tint, Vector3Int cellIndex)
         {
             if (CellIsOutOfGrid(cellIndex)) return;
             
@@ -338,12 +359,12 @@ namespace GridSystem
 
         public static CellData GetCellDataFromIndex(int indexX, int indexY)
         {
-            return Instance._cellDatas[indexX, indexY];
+            return Instance._cellsData[indexX, indexY];
         }
 
         public static void MonthUpdateCells()
         {
-            foreach (var cell in Instance._cellDatas)
+            foreach (var cell in Instance._cellsData)
             {
                 cell.OnMonthUpdate();
             }

@@ -30,6 +30,14 @@ MonoBehaviour:
     m_Localized: mountain
     m_Metadata:
       m_Items: []
+  - m_Id: 33670876255375360
+    m_Localized: cost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33671019222421504
+    m_Localized: ocean
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
