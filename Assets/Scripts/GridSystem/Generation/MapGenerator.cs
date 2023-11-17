@@ -1,16 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using TerrainSystem;
+using TerrainSystem.Scriptables;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utils;
+using Utils.Maths;
 using Random = UnityEngine.Random;
 
 namespace GridSystem.Generation
 {
     public class MapGenerator : Singleton<MapGenerator>
     {
-        [SerializeField] private TileBase _defaultTile;
-        [SerializeField] private TileBase _landTile;
+        [SerializeField] private ScriptableTerrain _defaultTerrain;
+        [SerializeField] private ScriptableTerrain _landTerrain;
         [SerializeField] private Tilemap _previewTileMap;
         [SerializeField] private Vector2Int _mapSize;
         [Header("Borders")] 
@@ -20,8 +22,18 @@ namespace GridSystem.Generation
         [SerializeField] private float _rotationOffset;
         [SerializeField] private float _outerRadius;
         [SerializeField] private float _innerRadius;
+        [Header("Terrains")] 
+        [SerializeField] private Vector2 _noiseOffset;
+        [SerializeField] private float _noiseFrequency = 1;
+        [SerializeField] private float _noiseExponent = 1;
+        [SerializeField] [Range(0,1)] private float _moistureScale = 0.5f;
+        [SerializeField] private TerrainLevel[] _levels;
 
         private Vector3[] _borderPositions;
+        private TerrainType[,] _terrainMap;
+
+        public Texture2D noiseMap;
+        [SerializeField] private int _shownLevel;
 
         private void OnDrawGizmos()
         {
@@ -52,39 +64,21 @@ namespace GridSystem.Generation
         private void OnValidate()
         {
             GridManager.GridSize = _mapSize;
-            _previewTileMap.ClearAllTiles();
-            //ClearMap(true);
             GenerateBorders();
-            GenerateTerrain();
-        }
+            //SortLevels();
+            noiseMap = new Texture2D(_mapSize.x, _mapSize.y);
 
-        private void Start()
-        {
-            return;
-            ClearMap();
-            GenerateBorders();
-            
-        }
-
-        private void ClearMap(bool asPreview = false)
-        {
-            if (_defaultTile == null) return;
-            
-            _previewTileMap.ClearAllTiles();
+            _shownLevel = Mathf.Clamp(_shownLevel, 0, _levels.Length - 1);
             
             for (int j = 0; j < _mapSize.y; j++)
             {
                 for (int i = 0; i < _mapSize.x; i++)
                 {
-                    if (asPreview)
-                    {
-                        _previewTileMap.SetTile(GridManager.GetCoordinatesByCellIndex(i,j), _defaultTile);
-                    }
-                    else
-                        GridManager.PaintTilemap(_defaultTile, TileMapType.Terrain, 
-                        Color.white, new Vector3Int(i, j, 0));
+                    noiseMap.SetPixel(i,j, Color.white * EvaluateTerrainNoise(i,j, _levels[_shownLevel].seed));
                 }
             }
+            
+            noiseMap.Apply();
         }
 
         private void GenerateBorders()
@@ -131,34 +125,74 @@ namespace GridSystem.Generation
 
         private void GenerateTerrain()
         {
+            SortLevels();
+
+            _terrainMap = new TerrainType[_mapSize.x, _mapSize.y];
+            
             for (int j = 0; j < _mapSize.y; j++)
             {
                 for (int i = 0; i < _mapSize.x; i++)
                 {
                     Vector3Int coordinates = GridManager.GetCoordinatesByCellIndex(i, j);
                     Vector3 planeCoordinates = new Vector3Int(coordinates.x, 0, coordinates.y);
-                    
-                    _previewTileMap.SetTile(coordinates, _landTile);
 
                     if (IsInBorders(planeCoordinates))
                     {
-                        _previewTileMap.SetTile(coordinates, _landTile);
+                        //print($"{i}:{j} : {EvaluateTerrainNoise(i,j)}");
+
+                        _terrainMap[i, j] = _landTerrain.terrain;
+                        
+                        foreach (var terrainLevel in _levels)
+                        {
+                            _terrainMap[i, j] = 
+                                GetTileByByHeight(EvaluateTerrainNoise(i, j, terrainLevel.seed), terrainLevel, _terrainMap[i,j]);
+                        }
                     }
                     else
                     {
-                        _previewTileMap.SetTile(coordinates, _defaultTile);
+                        _terrainMap[i, j] = _defaultTerrain.terrain;
+                        
                     }
+                    
+                    _previewTileMap.SetTile(coordinates, _terrainMap[i,j].tile);
                 }
             }
         }
 
+        private float EvaluateTerrainNoise(float x, float y, float offset)
+        {
+            float noise = Mathf.Clamp01(Mathf.PerlinNoise(
+                (x * _noiseFrequency + _noiseOffset.x + offset) / _mapSize.x ,
+                (y * _noiseFrequency + _noiseOffset.y + offset) / _mapSize.y ));
+            noise = Mathf.Pow(noise, _noiseExponent);
+
+            float moisture = Mathf.Clamp01(Mathf.PerlinNoise(
+                (x * _noiseFrequency * 10 + _noiseOffset.x + 100 + offset) / _mapSize.x ,
+                (y * _noiseFrequency * 10+ _noiseOffset.y + 100 + offset) / _mapSize.y ));
+            moisture = Mathf.Pow(moisture, _noiseExponent);
+
+            noise = Mathf.Lerp(noise, moisture, _moistureScale);
+
+            return noise;
+        }
+        
+        private TerrainType GetTileByByHeight(float height, TerrainLevel terrainLevel, TerrainType defaultTerrain)
+        {
+            //print(height);
+            height = Mathf.Clamp01(height);
+
+            if (terrainLevel.threshold <= height) return terrainLevel.terrain.terrain;
+
+            return defaultTerrain;
+        }
+        
         private bool IsInBorders(Vector3 position)
         {
             //Debug.DrawLine(position, position  + Vector3.up, Color.magenta, 10f);
             
             for (int i = 0; i < _definition; i++)
             {
-                if (PointInTriangle(_borderPositions[i * 3], _borderPositions[i * 3 + 1], 
+                if (TrigoHelper.PointInTriangle(_borderPositions[i * 3], _borderPositions[i * 3 + 1], 
                         _borderPositions[i * 3 + 2], position))
                 {
                     return true;
@@ -167,18 +201,35 @@ namespace GridSystem.Generation
 
             return false;
         }
-        
-        private bool PointInTriangle(Vector3 a, Vector3 b, Vector3 c, Vector3 p)
+
+        private void SortLevels()
         {
-            return IsSameSide(p, a, b, c) && IsSameSide(p, b, a, c) && IsSameSide(p, c, a, b);
+            List<TerrainLevel> unSortedLevels = new List<TerrainLevel>(_levels);
+            List<TerrainLevel> sortedLevels = new();
+            
+            while (sortedLevels.Count != _levels.Length)
+            {
+                TerrainLevel pickedTerrain = new TerrainLevel(null, Mathf.Infinity);
+
+                foreach (var terrainLevel in unSortedLevels)
+                {
+                    if (terrainLevel.threshold < pickedTerrain.threshold)
+                        pickedTerrain = terrainLevel;
+                }
+                sortedLevels.Add(pickedTerrain);
+                unSortedLevels.Remove(pickedTerrain);
+            }
+
+            _levels = sortedLevels.ToArray();
         }
 
-        private bool IsSameSide(Vector3 point1, Vector3 point2, Vector3 a, Vector3 b)
+        public void GenerateMap(bool resetBorder = true)
         {
-            Vector3 crossProd1 = Vector3.Cross(b - a, point1 - a);
-            Vector3 crossProd2 = Vector3.Cross(b - a, point2 - a);
-
-            return Vector3.Dot(crossProd1, crossProd2) >= 0;
+            GridManager.GridSize = _mapSize;
+            _previewTileMap.ClearAllTiles();
+            //ClearMap(true);
+            if (_borderPositions.Length == 0 || resetBorder) GenerateBorders();
+            GenerateTerrain();
         }
     }
 }
