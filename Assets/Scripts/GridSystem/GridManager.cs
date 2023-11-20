@@ -324,7 +324,6 @@ namespace GridSystem
         private static void PaintTile(TileBase paintTile, Tilemap tilemap, Color tint, Vector3Int cellIndex)
         {
             if (CellIsOutOfGrid(cellIndex)) return;
-            
             tilemap.SetTile(cellIndex, paintTile);
             tilemap.SetTileFlags(cellIndex, TileFlags.None);
             tilemap.SetColor(cellIndex, tint);

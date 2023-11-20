@@ -281,7 +281,7 @@ TextureImporter:
       name: Tuiles_8
       rect:
         serializedVersion: 2
-        x: 120
+        x: 96
         y: 56
         width: 24
         height: 24
@@ -294,6 +294,27 @@ TextureImporter:
       bones: []
       spriteID: b66ac0606ddd35447a411a434b63c509
       internalID: -913045394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tuiles_9
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 56
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e94bbdaf95970349be625c2040d866e
+      internalID: -1203368396
       vertices: []
       indices: 
       edges: []
@@ -318,6 +339,7 @@ TextureImporter:
       Tuiles_6: -1470763070
       Tuiles_7: 367043037
       Tuiles_8: -913045394
+      Tuiles_9: -1203368396
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

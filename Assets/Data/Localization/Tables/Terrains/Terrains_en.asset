@@ -38,6 +38,10 @@ MonoBehaviour:
     m_Localized: ocean
     m_Metadata:
       m_Items: []
+  - m_Id: 35172293189443584
+    m_Localized: beach
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

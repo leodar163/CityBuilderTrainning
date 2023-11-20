@@ -18,6 +18,7 @@ namespace GridSystem.Generation
         [SerializeField] private ScriptableTerrain _defaultTerrain;
         [SerializeField] private ScriptableTerrain _landTerrain;
         [SerializeField] private ScriptableTerrain _costTerrain;
+        [SerializeField] private ScriptableTerrain _beachTerrain;
         [SerializeField] private Tilemap _previewTileMap;
         [SerializeField] private Vector2Int _mapSize;
         [Header("Borders")] 
@@ -192,13 +193,20 @@ namespace GridSystem.Generation
         {
             if (_landMassArea.Count == 0) return;
 
-            CellData[] costs = GridManager.GetInnerBorderOfArea(_landMassArea);
+            CellData[] beach = GridManager.GetInnerBorderOfArea(_landMassArea);
+            CellData[] costs = GridManager.GetOuterBorderOfArea(_landMassArea);
 
             TerrainType costTerrain = _costTerrain.terrain;
+            TerrainType beachTerrain = _beachTerrain.terrain;
             
             foreach (var cell in costs)
             {
                 cell.SetTerrain(costTerrain);
+            }
+
+            foreach (var cell in beach)
+            {
+                cell.SetTerrain(beachTerrain);
             }
         }
 

@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57dcd9eed1ca4ae7a84b563416d5317f, type: 3}
-  m_Name: CostTerrain
+  m_Name: BeachTerrain
   m_EditorClassIdentifier: 
   _terrain:
     _terrainName:
       m_TableReference:
         m_TableCollectionName: GUID:a8a8ef66ac4ac5b49b7951a4a5466f10
       m_TableEntryReference:
-        m_KeyId: 33670876255375360
+        m_KeyId: 35172293189443584
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    _id: terrain_cost
+    _id: terrain_beach
     ecosystemGradient:
       serializedVersion: 2
-      key0: {r: 0.22831964, g: 0.9528302, b: 0.9317435, a: 1}
-      key1: {r: 0.123033054, g: 0.7618728, b: 0.9056604, a: 1}
+      key0: {r: 0.8836825, g: 0.9622642, b: 0.0944108, a: 1}
+      key1: {r: 0.9811321, g: 0.84257996, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
