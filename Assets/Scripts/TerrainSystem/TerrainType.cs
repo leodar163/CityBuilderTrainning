@@ -12,9 +12,9 @@ namespace TerrainSystem
     {
         [SerializeField] private LocalizedString _terrainName;
         [SerializeField] private string _id;
-        public Tile tile;
+        [SerializeField] public Gradient ecosystemGradient;
+        [SerializeField] public Tile tile;
         public string id => _id;
-
         public readonly List<CellData> cells = new();
 
         public string terrainName => _terrainName.GetLocalizedString();
