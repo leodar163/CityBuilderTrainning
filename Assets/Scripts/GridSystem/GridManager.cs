@@ -29,6 +29,10 @@ namespace GridSystem
 
         [HideInInspector] [SerializeField] private RectInt _gridRect;
 
+        private bool _gridInitializationCompleted;
+
+        public static CellData[,] CellsDataCopy => Instance._cellsData.Clone() as CellData[,];
+        
         public static Vector2Int GridSize
         {
             get => Instance._gridSize;
@@ -41,6 +45,8 @@ namespace GridSystem
             }
         }
 
+        public static bool GridInitializationCompleted => Instance._gridInitializationCompleted;
+
         public static RectInt GridRect => Instance._gridRect;
         
         private void Awake()
@@ -48,7 +54,7 @@ namespace GridSystem
             TimeManager.onNewMonth += MonthUpdateCells;
             
             _mainCamera = Camera.main;
-            InitCellDatas();
+            InitCellsData();
         }
 
        
@@ -79,7 +85,7 @@ namespace GridSystem
             return GetCellCenter(cellData.cellCoordinates);
         }
         
-        private void InitCellDatas()
+        private void InitCellsData()
         {
             _cellsData = new CellData[_gridSize.x, _gridSize.y];
            
@@ -96,10 +102,12 @@ namespace GridSystem
                 cellData.FindNeighbours();
             }
 
-            foreach (var cellData in _cellsData)
-            {
-                MarketManager.AddMarket(MarketType.Ecosystem, cellData);
-            }
+            _gridInitializationCompleted = true;
+
+            // foreach (var cellData in _cellsData)
+            // {
+            //     MarketManager.AddMarket(MarketType.Ecosystem, cellData);
+            // }
         }
 
         public static Vector3Int GetCoordinatesByCellIndex(Vector2Int indices)
@@ -182,7 +190,7 @@ namespace GridSystem
         /// If CellData are already initialized, use GetNeighbours instead.
         /// </summary>
         /// <returns></returns>
-        public static CellData[] FindNeighbours(CellData originCell, int range = 1, bool includeOrigin = false)
+        public static CellData[] FindNeighbours(CellData originCell, int range = 1, bool includeOrigin = false, bool onlyAdjacent = false)
         {
             switch (range)
             {
@@ -199,8 +207,14 @@ namespace GridSystem
                 for (int j = -range; j <= range; j++)
                 {
                     if (i == 0 && j == 0 && !includeOrigin) continue;
+                    
+                    Vector3Int neighbourId = originCell.cellCoordinates + new Vector3Int(i, j);
 
-                    if (TryGetCellDataFromCellId(originCell.cellCoordinates + new Vector3Int(i, j),
+                    if (onlyAdjacent && neighbourId.x != originCell.cellCoordinates.x &&
+                        neighbourId.y != originCell.cellCoordinates.y)
+                        continue;
+                    
+                    if (TryGetCellDataFromCellId(neighbourId,
                             out CellData neighbour))
                     {
                         neighbours.Add(neighbour);

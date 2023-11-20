@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using ResourceSystem.Markets;
 using TerrainSystem;
 using TerrainSystem.Scriptables;
 using UnityEngine;
@@ -13,10 +17,12 @@ namespace GridSystem.Generation
     {
         [SerializeField] private ScriptableTerrain _defaultTerrain;
         [SerializeField] private ScriptableTerrain _landTerrain;
+        [SerializeField] private ScriptableTerrain _costTerrain;
         [SerializeField] private Tilemap _previewTileMap;
         [SerializeField] private Vector2Int _mapSize;
         [Header("Borders")] 
         [SerializeField] private bool _showBorderDebug = true;
+        [SerializeField] private bool _RebuildBorderOnValidate = true;
         [SerializeField] [Min(2)] private int _definition = 12;
         [SerializeField] [Range(0,1)] private float _attraction = 0;
         [SerializeField] private float _rotationOffset;
@@ -28,24 +34,19 @@ namespace GridSystem.Generation
         [SerializeField] private float _noiseExponent = 1;
         [SerializeField] [Range(0,1)] private float _moistureScale = 0.5f;
         [SerializeField] private TerrainLevel[] _levels;
+        [Header("Ecosystems")] 
+        [SerializeField] [Min(1)] private int _minEcosystemSize = 1;
+        [SerializeField] [Min(2)] private int _maxEcosystemSize = 2;
 
-        private Vector3[] _borderPositions;
+        [HideInInspector] [SerializeField] private Vector3[] _borderPositions;
         private TerrainType[,] _terrainMap;
+        private readonly List<CellData> _landMassArea = new();
 
         public Texture2D noiseMap;
         [SerializeField] private int _shownLevel;
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
-            /*
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(Vector3.zero, Vector3.right * 5);
-            Gizmos.DrawLine(Vector3.zero, Vector3.forward * 5);
-            Gizmos.DrawLine(Vector3.forward * 5, Vector3.right * 5);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(transform.position, 0.5f);
-            return;
-            */
             if (!_showBorderDebug || Application.isPlaying) return;
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, _innerRadius);
@@ -64,7 +65,7 @@ namespace GridSystem.Generation
         private void OnValidate()
         {
             GridManager.GridSize = _mapSize;
-            GenerateBorders();
+            if (_RebuildBorderOnValidate) GenerateBorders();
             //SortLevels();
             noiseMap = new Texture2D(_mapSize.x, _mapSize.y);
 
@@ -79,6 +80,18 @@ namespace GridSystem.Generation
             }
             
             noiseMap.Apply();
+
+            if (_maxEcosystemSize < _minEcosystemSize + 1) _maxEcosystemSize = _minEcosystemSize + 1;
+        }
+
+        private async void Start()
+        {
+            while (!GridManager.GridInitializationCompleted)
+            {
+                await Task.Delay(10);
+            }
+            
+            GenerateMap(false);
         }
 
         private void GenerateBorders()
@@ -123,11 +136,9 @@ namespace GridSystem.Generation
             }
         }
 
-        private void GenerateTerrain()
+        private void GenerateTerrain(bool isPreview = false)
         {
-            SortLevels();
-
-            _terrainMap = new TerrainType[_mapSize.x, _mapSize.y];
+            //_terrainMap = new TerrainType[_mapSize.x, _mapSize.y];
             
             for (int j = 0; j < _mapSize.y; j++)
             {
@@ -136,29 +147,102 @@ namespace GridSystem.Generation
                     Vector3Int coordinates = GridManager.GetCoordinatesByCellIndex(i, j);
                     Vector3 planeCoordinates = new Vector3Int(coordinates.x, 0, coordinates.y);
 
+                    TerrainType terrain;
+                    
                     if (IsInBorders(planeCoordinates))
                     {
                         //print($"{i}:{j} : {EvaluateTerrainNoise(i,j)}");
 
-                        _terrainMap[i, j] = _landTerrain.terrain;
+                        terrain = _landTerrain.terrain;
                         
                         foreach (var terrainLevel in _levels)
                         {
-                            _terrainMap[i, j] = 
-                                GetTileByByHeight(EvaluateTerrainNoise(i, j, terrainLevel.seed), terrainLevel, _terrainMap[i,j]);
+                            terrain =
+                                GetTileByByHeight(EvaluateTerrainNoise(i, j, terrainLevel.seed), 
+                                    terrainLevel, terrain);
+                            if (!isPreview)
+                            {
+                                _landMassArea.Add(GridManager.GetCellDataFromIndex(i,j));
+                            }
                         }
                     }
                     else
                     {
-                        _terrainMap[i, j] = _defaultTerrain.terrain;
+                        terrain = _defaultTerrain.terrain;
                         
                     }
-                    
-                    _previewTileMap.SetTile(coordinates, _terrainMap[i,j].tile);
+
+                    if (isPreview)
+                    {
+                        _previewTileMap.SetTile(coordinates, terrain.tile);
+                    }
+                    else
+                    {
+                        GridManager.GetCellDataFromIndex(i,j).SetTerrain(terrain);
+                    }
+
+                    //_terrainMap[i, j] = terrain;
                 }
+            }
+            GenerateCost();
+            GenerateEcosystems();
+        }
+
+        private void GenerateCost()
+        {
+            if (_landMassArea.Count == 0) return;
+
+            CellData[] costs = GridManager.GetInnerBorderOfArea(_landMassArea);
+
+            TerrainType costTerrain = _costTerrain.terrain;
+            
+            foreach (var cell in costs)
+            {
+                cell.SetTerrain(costTerrain);
             }
         }
 
+        private void GenerateEcosystems()
+        {
+            List<CellData> alreadyParsed = new List<CellData>();
+
+            CellData[,] cellsData = GridManager.CellsDataCopy;
+
+            foreach (var cell in cellsData)
+            {
+                if (alreadyParsed.Contains(cell)) continue;
+
+                TerrainType ecosystemType = cell.terrain;
+                
+                List<CellData> openSet = new List<CellData>(GridManager.FindNeighbours(cell,1,true, true));
+
+                int ecosystemSize = Random.Range(_minEcosystemSize, _maxEcosystemSize);
+
+                List<CellData> ecosystemArea = new();
+
+                while (ecosystemSize > 0 && openSet.Count > 0)
+                {
+                    foreach (var neighbour in openSet.ToArray())
+                    {
+                        if (!alreadyParsed.Contains(neighbour) && neighbour.terrain == ecosystemType)
+                        {
+                            ecosystemArea.Add(neighbour);
+                            ecosystemSize--;
+                            
+                            openSet.AddRange(GridManager.FindNeighbours(neighbour,1,false, true));
+                            alreadyParsed.Add(neighbour);
+                        }
+                        
+                        if (ecosystemSize == 0) break;
+                        openSet.Remove(neighbour);
+                    }
+                }
+
+                MarketManager.AddMarket(MarketType.Ecosystem, ecosystemArea.ToArray());
+                    ;
+            }
+        }
+        
         private float EvaluateTerrainNoise(float x, float y, float offset)
         {
             float noise = Mathf.Clamp01(Mathf.PerlinNoise(
@@ -202,34 +286,13 @@ namespace GridSystem.Generation
             return false;
         }
 
-        private void SortLevels()
-        {
-            List<TerrainLevel> unSortedLevels = new List<TerrainLevel>(_levels);
-            List<TerrainLevel> sortedLevels = new();
-            
-            while (sortedLevels.Count != _levels.Length)
-            {
-                TerrainLevel pickedTerrain = new TerrainLevel(null, Mathf.Infinity);
-
-                foreach (var terrainLevel in unSortedLevels)
-                {
-                    if (terrainLevel.threshold < pickedTerrain.threshold)
-                        pickedTerrain = terrainLevel;
-                }
-                sortedLevels.Add(pickedTerrain);
-                unSortedLevels.Remove(pickedTerrain);
-            }
-
-            _levels = sortedLevels.ToArray();
-        }
-
-        public void GenerateMap(bool resetBorder = true)
+        public void GenerateMap(bool resetBorder = true, bool isPreview = false)
         {
             GridManager.GridSize = _mapSize;
             _previewTileMap.ClearAllTiles();
             //ClearMap(true);
             if (_borderPositions.Length == 0 || resetBorder) GenerateBorders();
-            GenerateTerrain();
+            GenerateTerrain(isPreview);
         }
     }
 }

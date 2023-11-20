@@ -47,6 +47,10 @@ MonoBehaviour:
     m_Key: Mark_Scope_Random
     m_Metadata:
       m_Items: []
+  - m_Id: 11578327894466560
+    m_Key: Mark_EcoSystemNaming
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

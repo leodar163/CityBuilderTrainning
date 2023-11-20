@@ -69,7 +69,7 @@ namespace GridSystem.UI
         {
            DisplayFacilityLayout();
             
-            _marketName.SetText(currentCell.market.name);
+            if (currentCell.market != null) _marketName.SetText(currentCell.market.name);
             
             _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
             _terrainType.SetText(currentCell.terrain.terrainName);

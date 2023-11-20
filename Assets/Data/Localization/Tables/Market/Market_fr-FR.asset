@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: sur un des {0} au hasar
     m_Metadata:
       m_Items: []
+  - m_Id: 11578327894466560
+    m_Localized: '{0} de {1}'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using GridSystem;
+using Localization;
 using ResourceSystem.Markets.Interactions;
 using ResourceSystem.Markets.Modifiers;
 using ResourceSystem.Markets.Needs;
+using TerrainSystem;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Tilemaps;
 using Utils;
 using Random = UnityEngine.Random;
@@ -24,6 +27,9 @@ namespace ResourceSystem.Markets
         [SerializeField] private Gradient _humanMarketColors;
         [SerializeField] private int _maxDistanceToMerge = 1;
         [SerializeField] private ScriptableNeedsSet _needsSetTemplate;
+        [Header("Formats")]
+        [SerializeField] private LocalizedString _localizedEcosystemNameFormat;
+        
 
         public IMarketModifierContainer modifierContainerSelf => this;
         public List<MarketModifier> modifiers { get; set; } = new();
@@ -50,9 +56,18 @@ namespace ResourceSystem.Markets
             return AddMarket(type, GridManager.GetNeighbours(originCell, range, true));
         }
 
-        public static Market AddMarket(MarketType type = MarketType.Ecosystem, params CellData[] area )
+        public static Market AddMarket(MarketType type = MarketType.Ecosystem, params CellData[] area)
         {
-            Market market = new(GenerateMarketColor(type), type, Instance._needsSetTemplate.needsSet);
+            Color marketColor = type == MarketType.Ecosystem
+                ? GenerateMarketColor(area[0].terrain)
+                : GenerateMarketColor(type);
+            
+            Market market = new(marketColor, type, Instance._needsSetTemplate.needsSet)
+            {
+                name = type == MarketType.Ecosystem
+                    ? GenerateMarketName(area[0].terrain)
+                    : GenerateMarketName(type)
+            };
 
             foreach (var cell in area)
             {
@@ -62,11 +77,11 @@ namespace ResourceSystem.Markets
                 cell.market = market;
                 
                 oldMarket?.RemoveCell(cell);
-                if (oldMarket != null && oldMarket.cells.Count == 0) RemoveMarket(oldMarket); 
+                if (oldMarket != null && oldMarket.cells.Count == 0) RemoveMarket(oldMarket);
             }
             
             GridManager.PaintTilemap(Instance.marketTile, TileMapType.Market, market.color, area);
-
+            
             markets.Add(market);
             if (market.type is MarketType.Ecosystem or MarketType.Both)
             {
@@ -92,6 +107,25 @@ namespace ResourceSystem.Markets
         {
             float alea = Random.Range(0, 1f);
             return marketType == MarketType.Ecosystem ? Instance._ecosystemColors.Evaluate(alea) : Instance._humanMarketColors.Evaluate(alea);
+        }
+
+        private static Color GenerateMarketColor(TerrainType terrain)
+        {
+            float alea = Random.Range(0, 1f);
+            return terrain.ecosystemGradient.Evaluate(alea);
+        }
+
+        private static string GenerateMarketName(MarketType marketType)
+        {
+            return string.Format(Instance._localizedEcosystemNameFormat.GetLocalizedString(),
+                (marketType == MarketType.Ecosystem
+                    ? VariableNameManager.EcosystemName
+                    : VariableNameManager.MarketName), "FOO");
+        }
+
+        private static string GenerateMarketName(TerrainType terrain)
+        {
+            return string.Format(Instance._localizedEcosystemNameFormat.GetLocalizedString(), terrain.terrainName, "FOO");
         }
         
         public static float GetDistanceBetweenMarkets(Market a, Market b)

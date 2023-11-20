@@ -9,9 +9,10 @@ namespace GridSystem.Generation.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            EditorGUILayout.Space();
             if (GUILayout.Button("Generate Map"))
             {
-                (target as MapGenerator)?.GenerateMap(false);
+                (target as MapGenerator)?.GenerateMap(false, true);
             }
 
             GUILayout.Label((target as MapGenerator)?.noiseMap);

@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: on one of the {0} randomly picked
     m_Metadata:
       m_Items: []
+  - m_Id: 11578327894466560
+    m_Localized: '{1}''s {0}'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
