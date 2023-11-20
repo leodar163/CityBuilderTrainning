@@ -78,6 +78,10 @@ namespace ResourceSystem.Markets.UI.Tooltip
             {
                 foreach (var order in orders)
                 {
+                    if (order == null)
+                    {
+                        continue;
+                    }
                     Vector2 orderOffset = new Vector2(1, order.quantity);
 
                     if (!orderCollapser.TryAdd(order.sender.EconomicActorName, orderOffset))

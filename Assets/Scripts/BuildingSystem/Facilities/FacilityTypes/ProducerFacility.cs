@@ -33,7 +33,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
             TimeManager.onMonthEnds += producerSelf.Produce;
         }
 
-        protected void OnDisable()
+        protected virtual void OnDisable()
         {
             TimeManager.onNewMonth -= producerSelf.FetchResources;
             TimeManager.onMonthEnds -= producerSelf.Produce;

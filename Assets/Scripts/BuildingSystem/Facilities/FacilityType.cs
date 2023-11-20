@@ -18,6 +18,7 @@ namespace BuildingSystem.Facilities
         [Header("Placement Description")] 
         [SerializeField] private PlacementCondition _placementCondition;
         [SerializeField] private LocalizedString _localizeNoPlacementCondition;
+        [SerializeField] private LocalizedString _localizeNoPlaceRemaining;
         
         public CellData cell { get; private set; }
         public BoxCollider Collider => _collider;
@@ -53,6 +54,11 @@ namespace BuildingSystem.Facilities
 
         public bool CanBePlaced(CellData cellData, out string conditionsFormat)
         {
+            if (cellData.freeFacilityPlacements <= 0)
+            {
+                conditionsFormat = _localizeNoPlaceRemaining.GetLocalizedString();
+                return false;
+            }
             if (_placementCondition)
                 return _placementCondition.CanPlace(cellData,out conditionsFormat);
             

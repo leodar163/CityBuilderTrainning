@@ -35,5 +35,30 @@ namespace ResourceSystem.Productions
                 }
             }
         }
+
+        public List<ResourceQuantity> GetNeeds()
+        {
+            Dictionary<ResourceType, float> summaries = new Dictionary<ResourceType, float>();
+            
+            foreach (var productionLine in productionLines)
+            {
+                foreach (var quantity in productionLine.demands)
+                {
+                    if (!summaries.TryAdd(quantity.resource, quantity.quantity))
+                    {
+                        summaries[quantity.resource] += quantity.quantity;
+                    }
+                }
+            }
+
+            List<ResourceQuantity> quantities = new();
+
+            foreach (var summary in summaries)
+            {
+                quantities.Add(new ResourceQuantity(summary.Key, summary.Value));
+            }
+
+            return quantities;
+        }
     }
 }

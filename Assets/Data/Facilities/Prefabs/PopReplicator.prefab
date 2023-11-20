@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6393146577981816728}
   - component: {fileID: 5041830291595977323}
-  - component: {fileID: 4812507162861821176}
+  - component: {fileID: 7799950404370637605}
   m_Layer: 0
-  m_Name: MarketModifierTest
+  m_Name: PopReplicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,7 +55,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4812507162861821176
+--- !u!114 &7799950404370637605
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,16 +64,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1489770644746872356}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8d0610985e3468cacd2d826f5f75f20, type: 3}
+  m_Script: {fileID: 11500000, guid: 08947f525dac409c94679d63865b2c5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 5041830291595977323}
-  icon: {fileID: 21300000, guid: a2da8b3f7d7162c4c87ee1b3db141d62, type: 3}
+  icon: {fileID: 21300000, guid: e30a86b44589b6a43bec0e529f0a86a1, type: 3}
   _facilityName:
     m_TableReference:
-      m_TableCollectionName: GUID:91d7bbd1fc459684bac13671811af4b8
+      m_TableCollectionName: 
     m_TableEntryReference:
-      m_KeyId: 10686713856
+      m_KeyId: 0
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
     m_TableEntryReference:
-      m_KeyId: 17135530823680
+      m_KeyId: 22102223965802496
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -107,7 +107,16 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   constructionCost: 0
-  _modifierTemplate: {fileID: 11400000, guid: 37817894078741a439a85604711d2288, type: 2}
+  _productionLines:
+  - name: Replication de pop
+    happinessSensitive: 0
+    demands:
+    - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
+      quantity: 1
+    offers:
+    - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
+      quantity: 2
+  relativeExtraToReproduce: 2
   references:
     version: 2
     RefIds: []
@@ -172,7 +181,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4a0d2478fe7119b44b34ed1f02775940, type: 2}
+  - {fileID: 2100000, guid: 33f9867a2cd2f774bbc8baa8e3cdfd07, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

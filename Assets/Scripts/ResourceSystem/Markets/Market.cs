@@ -185,6 +185,16 @@ namespace ResourceSystem.Markets
 
             return -1;
         }
+
+        public float GetResourceExtraAmount(ResourceType resource)
+        {
+            if (TryGetResourceValue(resource, out ResourceValue resourceValue))
+            {
+                return resourceValue.offer - resourceValue.demand;
+            }
+
+            return 0;
+        }
         
         public float GetResourceAvailability(ResourceType resource)
         {

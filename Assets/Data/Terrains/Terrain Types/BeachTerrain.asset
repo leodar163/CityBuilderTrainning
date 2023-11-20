@@ -53,7 +53,7 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    tile: {fileID: 11400000, guid: 67c480108f3b03e41aa85ff1567d4b80, type: 2}
+    tile: {fileID: 11400000, guid: e42c1645ef6cde045a211cbfe7577d6f, type: 2}
   references:
     version: 2
     RefIds: []

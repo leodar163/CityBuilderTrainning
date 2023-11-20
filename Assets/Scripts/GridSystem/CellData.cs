@@ -85,7 +85,7 @@ namespace GridSystem
 
         public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
-            if (facilities.Contains(facilityTypeToAdd)) return false;
+            if (facilities.Contains(facilityTypeToAdd) || freeFacilityPlacements <= 0) return false;
 
             facilities.Add(facilityTypeToAdd);
             PlaceFacility(facilityTypeToAdd);
