@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RenderData2
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  material: {fileID: 2100000, guid: 89623656d7f53434aae7274a5c2330d3, type: 2}
+  material: {fileID: 2100000, guid: 6a50a471a1a59c64aa997bfa0962501b, type: 2}
