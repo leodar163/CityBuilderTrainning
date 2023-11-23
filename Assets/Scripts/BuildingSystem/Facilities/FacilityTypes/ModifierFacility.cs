@@ -28,20 +28,19 @@ namespace BuildingSystem.Facilities.FacilityTypes
             
         }
 
+        #region CONSTRUCTORS
+
+        public ModifierFacility(ModifierFacility template) : base(template)
+        {
+            _modifierTemplate = template._modifierTemplate;
+        }
+        
         public override FacilityType Copy()
         {
-            return new ModifierFacility
-            {
-                _renderData = _renderData,
-                _scaleMultiplier = _scaleMultiplier,
-                _facilityName = _facilityName,
-                _facilityDescription = _facilityDescription,
-                _placementCondition = _placementCondition,
-                constructionCost = constructionCost,
-                _sizeRadius = _sizeRadius,
-                
-                _modifierTemplate = _modifierTemplate
-            };
+            return new ModifierFacility(this);
         }
+
+        #endregion
+        
     }
 }

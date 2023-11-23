@@ -56,20 +56,18 @@ namespace BuildingSystem.Facilities.FacilityTypes
             } while (neighbours.Count > 0);
         }
 
+        #region CONSTRUCTORS
+
+        public AutoReplicantFacility(AutoReplicantFacility template) : base(template)
+        {
+            relativeExtraToReproduce = template.relativeExtraToReproduce;
+        }
+        
         public override FacilityType Copy()
         {
-            return new AutoReplicantFacility
-            {
-                _renderData = _renderData,
-                _scaleMultiplier = _scaleMultiplier,
-                _facilityName = _facilityName,
-                _facilityDescription = _facilityDescription,
-                _placementCondition = _placementCondition,
-                constructionCost = constructionCost,
-                _sizeRadius = _sizeRadius,
-                
-                relativeExtraToReproduce = relativeExtraToReproduce
-            };
+            return new AutoReplicantFacility(this);
         }
+
+        #endregion
     }
 }

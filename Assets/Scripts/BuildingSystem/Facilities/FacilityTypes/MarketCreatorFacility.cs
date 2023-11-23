@@ -62,20 +62,20 @@ namespace BuildingSystem.Facilities.FacilityTypes
             s_deposits.Remove(this);
         }
 
+        #region CONSTRUCTORS
+
+        public MarketCreatorFacility(MarketCreatorFacility template) : base(template)
+        {
+            marketMergeRange = template.marketMergeRange;
+        }
+        
         public override FacilityType Copy()
         {
-            return new MarketCreatorFacility
-            {
-                _renderData = _renderData,
-                _scaleMultiplier = _scaleMultiplier,
-                _facilityName = _facilityName,
-                _facilityDescription = _facilityDescription,
-                _placementCondition = _placementCondition,
-                constructionCost = constructionCost,
-                _sizeRadius = _sizeRadius,
-                
-                marketMergeRange = marketMergeRange
-            };
+            return new MarketCreatorFacility(this);
         }
+
+        #endregion
+        
+        
     }
 }

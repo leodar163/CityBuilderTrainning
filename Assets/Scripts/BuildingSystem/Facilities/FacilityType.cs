@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 namespace BuildingSystem.Facilities
 {
     [Serializable]
-    public abstract class FacilityType : IBatchRendered
+    public class FacilityType : IBatchRendered
     {
         public Sprite icon;
 
@@ -63,9 +63,20 @@ namespace BuildingSystem.Facilities
 
         #region CONSTRUCTORS
 
+        protected FacilityType(FacilityType template)
+        {
+            _renderData = template._renderData;
+            _scaleMultiplier = template._scaleMultiplier;
+            _facilityName = template._facilityName;
+            _facilityDescription = template._facilityDescription;
+            _placementCondition = template._placementCondition;
+            constructionCost = template.constructionCost;
+            _sizeRadius = template._sizeRadius;
+        }
+
         public virtual FacilityType Copy()
         {
-            return null;
+            return new FacilityType(this);
         }
 
         #endregion

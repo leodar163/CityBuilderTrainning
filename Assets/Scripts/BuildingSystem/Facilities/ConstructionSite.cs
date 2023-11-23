@@ -33,21 +33,20 @@ namespace BuildingSystem.Facilities
             s_constructionForceResource = ResourceSet.Default.GetResource("resource_constructionforce");
         }
 
+        #region CONSTRUCTORS
+
+        public ConstructionSite(ConstructionSite template) : base(template)
+        {
+            _facilityToBuild = template._facilityToBuild;
+        }
+        
         public override FacilityType Copy()
         {
-            return new ConstructionSite
-            {
-                _renderData = _renderData,
-                _scaleMultiplier = _scaleMultiplier,
-                _facilityName = _facilityName,
-                _facilityDescription = _facilityDescription,
-                _placementCondition = _placementCondition,
-                constructionCost = constructionCost,
-                _sizeRadius = _sizeRadius,
-                
-                _facilityToBuild = _facilityToBuild 
-            };
+            return new ConstructionSite(this);
         }
+
+        #endregion
+       
 
         public override void OnAddedToCell(CellData cellAddedTo)
         {

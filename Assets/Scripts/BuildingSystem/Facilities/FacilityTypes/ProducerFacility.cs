@@ -41,19 +41,20 @@ namespace BuildingSystem.Facilities.FacilityTypes
             economicActorSelf.RemoveAllOrders();
         }
 
+        #region CONSTRUCTORS
+
+        public ProducerFacility(ProducerFacility template) : base(template)
+        {
+            _productionLines = new List<ProductionLine>(template._productionLines);
+        }
+        
         public override FacilityType Copy()
         {
-            return new ProducerFacility()
-            {
-                _renderData = _renderData,
-                _scaleMultiplier = _scaleMultiplier,
-                _facilityName = _facilityName,
-                _facilityDescription = _facilityDescription,
-                _placementCondition = _placementCondition,
-                constructionCost = constructionCost,
-                _sizeRadius = _sizeRadius,
-                _productionLines = new List<ProductionLine>(_productionLines)
-            };
+            return new ProducerFacility(this);
         }
+
+        #endregion
+        
+        
     }
 }
