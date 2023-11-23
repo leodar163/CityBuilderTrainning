@@ -107,6 +107,7 @@ namespace ResourceSystem.Markets
             }
             else
             {
+                resourceValue.excess = resourceValue.offer - resourceValue.demand;
                 CalculateResourceValueAvailability(resourceValue);
             }
         }
@@ -169,6 +170,8 @@ namespace ResourceSystem.Markets
                 resourceValue.offer == 0 ? 0 :
                 resourceValue.demand == 0 ? 1 :
                     Mathf.Clamp01(resourceValue.offer / resourceValue.demand);
+            
+            AssignResourceAvailabilityState(resourceValue);
         }
 
         public float GetResourceValueAmount(ResourceType resource, OrderType orderType)
@@ -183,17 +186,30 @@ namespace ResourceSystem.Markets
                 };
             }
 
-            return -1;
+            return -1; 
         }
 
-        public float GetResourceExtraAmount(ResourceType resource)
+        public ResourceAvailability GetResourceAvailabilityState(ResourceType resource)
         {
-            if (TryGetResourceValue(resource, out ResourceValue resourceValue))
-            {
-                return resourceValue.offer - resourceValue.demand;
-            }
+            return TryGetResourceValue(resource, out ResourceValue resourceValue) ? resourceValue.availabilityState : ResourceAvailability.Average;
+        }
 
-            return 0;
+        private static void AssignResourceAvailabilityState(ResourceValue resourceValue)
+        {
+            if (Math.Abs(resourceValue.availability - 0) < 0.0001) 
+                resourceValue.availabilityState = ResourceAvailability.Shortage;
+            else if (resourceValue.availability < 1)
+                resourceValue.availabilityState = ResourceAvailability.Missing;
+            else if (resourceValue.excess < resourceValue.offer * 0.1f)
+                resourceValue.availabilityState = ResourceAvailability.Average;
+            else if (resourceValue.excess < resourceValue.offer * 0.5f)
+                resourceValue.availabilityState = ResourceAvailability.InExcess;
+            else resourceValue.availabilityState = ResourceAvailability.InAbundance;
+        }
+        
+        public float GetResourceExcess(ResourceType resource)
+        {
+            return TryGetResourceValue(resource, out ResourceValue resourceValue) ? resourceValue.excess : 0;
         }
         
         public float GetResourceAvailability(ResourceType resource)

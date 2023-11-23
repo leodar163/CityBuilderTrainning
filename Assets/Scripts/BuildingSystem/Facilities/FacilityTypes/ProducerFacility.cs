@@ -27,7 +27,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
             producerSelf.FetchResources();
             producerSelf.Produce();
             
-            TimeManager.onNewMonth += producerSelf.FetchResources;
+            TimeManager.onMonthBegins += producerSelf.FetchResources;
             TimeManager.onMonthEnds += producerSelf.Produce;
         }
 
@@ -35,7 +35,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             base.OnRemovedFromCell(cellRemovedFrom);
             
-            TimeManager.onNewMonth -= producerSelf.FetchResources;
+            TimeManager.onMonthBegins -= producerSelf.FetchResources;
             TimeManager.onMonthEnds -= producerSelf.Produce;
             
             economicActorSelf.RemoveAllOrders();
@@ -54,7 +54,5 @@ namespace BuildingSystem.Facilities.FacilityTypes
         }
 
         #endregion
-        
-        
     }
 }

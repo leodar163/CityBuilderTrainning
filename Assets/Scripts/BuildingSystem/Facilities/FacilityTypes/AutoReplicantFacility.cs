@@ -32,7 +32,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             foreach (var quantity in _needs)
             {
-                if (market.GetResourceExtraAmount(quantity.resource) < quantity.quantity * relativeExtraToReproduce)
+                if (market.GetResourceExcess(quantity.resource) < quantity.quantity * relativeExtraToReproduce)
                     return;
             }
 
