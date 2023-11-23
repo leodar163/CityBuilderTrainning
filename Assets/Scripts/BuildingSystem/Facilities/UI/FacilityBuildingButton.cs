@@ -12,9 +12,8 @@ namespace BuildingSystem.Facilities.UI
         [SerializeField] private Button _button;
         [SerializeField] private Animator _animator;
         
+        
         private static readonly int animSelectionProperty = Animator.StringToHash("IsSelected");
-
-        private ConstructionSite _constructionSite;
 
         public FacilityType facility { get; private set; }
         
@@ -38,7 +37,7 @@ namespace BuildingSystem.Facilities.UI
         {
             if (messageUI is FacilityTooltipMessageUI facilityUI)
             {
-                facilityUI.SetFacility(_constructionSite == null ? facility : _constructionSite.facilityToBuild);
+                facilityUI.SetFacility(facility);
             }
         }
 
@@ -55,9 +54,8 @@ namespace BuildingSystem.Facilities.UI
         public void AssignFacility(FacilityType facilityTypeToAssign)
         {
             facility = facilityTypeToAssign;
-            _constructionSite = facility as ConstructionSite;
-
-            _iconImage.sprite = _constructionSite != null ? _constructionSite.facilityToBuild.icon : facility.icon;
+            
+            _iconImage.sprite = facility.icon;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Format;
+﻿using BuildingSystem.Facilities.Scriptables;
+using Format;
 using GridSystem;
 using GridSystem.Interaction;
 using ToolTipSystem;
@@ -48,7 +49,7 @@ namespace BuildingSystem.Facilities
         [Header("Construction")] 
         [SerializeField] private float _maxConstructionForceInvestment = 10;
 
-        [SerializeField] private ConstructionSite _constructionSiteTemplate;
+        [SerializeField] private ScriptableConstructionSite _constructionSiteTemplate;
 
         public static float maxConstructionForceInvestment => Instance._maxConstructionForceInvestment;
          
@@ -127,12 +128,15 @@ namespace BuildingSystem.Facilities
         
         private static bool TryPlaceNewFacility(FacilityType facilityTypeToPlace, CellData cell)
         {
+            
+            FacilityType facility = facilityTypeToPlace.constructionCost > 0
+                ? Instance._constructionSiteTemplate.GetFacilityCopy()
+                : facilityTypeToPlace.Copy();
 
-            FacilityType facilityTemplate = facilityTypeToPlace.constructionCost <= 0
-                ? facilityTypeToPlace
-                : Instance._constructionSiteTemplate;
-
-            FacilityType facility = facilityTypeToPlace.Copy();
+            if (facility is ConstructionSite constructionSite)
+            {
+                constructionSite.SetFacilityToBuild(facilityTypeToPlace);
+            }
 
             if (!cell.TryAddFacility(facility))
             {

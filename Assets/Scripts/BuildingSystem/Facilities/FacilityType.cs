@@ -89,11 +89,13 @@ namespace BuildingSystem.Facilities
         {
             bool isPositionValid;
 
-            Vector3 positionOffset;
+            Vector3 facilityPosition;
+            _rotation = quaternion.Euler(new float3(0, Random.Range(-175, 175),0));
+            _scale = Vector3.one * (Random.Range(0.9f, 1.1f) * _scaleMultiplier);
             
             do
             {
-                positionOffset = new Vector3
+                facilityPosition = cell.position + new Vector3
                 {
                     x = Random.Range(-0.5f, 0.5f),
                     z = Random.Range(-0.5f, 0.5f)
@@ -104,8 +106,8 @@ namespace BuildingSystem.Facilities
                 foreach (var facility in cell.facilities)
                 {
                     if (facility == this ||
-                        !(Vector3.Distance(cell.position + positionOffset, facility._position) 
-                          > sizeRadius + facility.sizeRadius)) continue;
+                        Vector3.Distance(facilityPosition, facility._position) 
+                          < sizeRadius + facility.sizeRadius) continue;
 
                     isPositionValid = false;
                     break;
@@ -113,9 +115,7 @@ namespace BuildingSystem.Facilities
                 
             } while (!isPositionValid);
 
-            _position = cell.position + positionOffset;
-            _rotation = quaternion.Euler(new float3(0, Random.Range(-175, 175),0));
-            _scale = Vector3.one * (Random.Range(0.9f, 1.1f) * _scaleMultiplier);
+            _position = cell.position + facilityPosition;
         }
         
         public bool CanBePlaced(CellData cellData, out string conditionsFormat)

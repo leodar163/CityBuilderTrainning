@@ -72,9 +72,9 @@ namespace BuildingSystem.Facilities.UI
             DisplayFacility(_constructionSite == null ? _facility : _constructionSite.facilityToBuild);
         }
 
-        private void DisplayFacility(FacilityType facilityType)
+        private void DisplayFacility(FacilityType facility)
         {
-            _facilityIcon.sprite = facilityType.icon;
+            _facilityIcon.sprite = facility.icon;
         }
 
         private void DestroyFacility()

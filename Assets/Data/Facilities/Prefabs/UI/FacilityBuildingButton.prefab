@@ -65,6 +65,8 @@ MonoBehaviour:
   _iconImage: {fileID: 5554709155981913494}
   _button: {fileID: 4634612985298532213}
   _animator: {fileID: 4332020502900418943}
+  _constructionSiteTemplate: {fileID: 11400000, guid: 7c49154fde430dd4eb5ddd35e166e82e,
+    type: 2}
   _facilityTooltipMessageTemplate: {fileID: 4225905071957915832, guid: 660f55cc3348dee4380b35833a3874c6,
     type: 3}
 --- !u!114 &4073469970672491661

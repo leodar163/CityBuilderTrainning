@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8a8d8645c2455a8d33d41ee4b940db, type: 3}
-  m_Name: House
+  m_Script: {fileID: 11500000, guid: 0c401c0af5ec46bcbcad48808c5e2e5f, type: 3}
+  m_Name: ConstructionSiteTemplate
   m_EditorClassIdentifier: 
-  _facility:
-    icon: {fileID: 21300000, guid: 0cb52103f11aaf648a58554c68900bef, type: 3}
-    _renderData: {fileID: 11400000, guid: 6a39410ddd2a12643aac3ea03279fd9a, type: 2}
+  _constructionSite:
+    icon: {fileID: 21300000, guid: 5970ea634fa4cb348a0dab84a98a0909, type: 3}
+    _renderData: {fileID: 11400000, guid: 8eeebbcdeeb8b0c45ad61712591ca8de, type: 2}
     _scaleMultiplier: 0.2
     constructionCost: 0
     _sizeRadius: 0.6
@@ -22,7 +22,7 @@ MonoBehaviour:
       m_TableReference:
         m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
       m_TableEntryReference:
-        m_KeyId: 4348569451294720
+        m_KeyId: 22082494349856768
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -31,27 +31,12 @@ MonoBehaviour:
       m_TableReference:
         m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
       m_TableEntryReference:
-        m_KeyId: 4352928583053312
+        m_KeyId: 22082407641010176
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
     _placementCondition: {fileID: 0}
-    _productionLines:
-    - name: Habitations
-      happinessSensitive: 0
-      demands: []
-      offers:
-      - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
-        quantity: 10
-    - name: Travail
-      happinessSensitive: 0
-      demands:
-      - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
-        quantity: 10
-      offers:
-      - resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
-        quantity: 10
   references:
     version: 2
     RefIds: []
