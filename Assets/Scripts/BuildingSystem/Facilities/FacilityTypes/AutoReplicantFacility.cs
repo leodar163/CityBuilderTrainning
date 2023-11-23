@@ -4,9 +4,11 @@ using GridSystem;
 using ResourceSystem;
 using TimeSystem;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
+    [Serializable]
     public class AutoReplicantFacility : ProducerFacility
     {
         private List<ResourceQuantity> _needs;
@@ -17,18 +19,12 @@ namespace BuildingSystem.Facilities.FacilityTypes
         {
             base.OnAddedToCell(cellAddedTo);
             _needs = producerSelf.GetNeeds();
-        }
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
             TimeManager.onMonthBegins += Replicate;
         }
 
-        protected override void OnDisable()
+        public override void OnRemovedFromCell(CellData cellRemovedFrom)
         {
-            base.OnDisable();
-            
+            base.OnRemovedFromCell(cellRemovedFrom);
             TimeManager.onNewMonth -= Replicate;
         }
 
@@ -40,23 +36,40 @@ namespace BuildingSystem.Facilities.FacilityTypes
                     return;
             }
 
-            if (CanBePlaced(cell, out _) && Instantiate(gameObject).TryGetComponent(out FacilityType clone))
+            if (CanBePlaced(cell, out _))
             {
-                if (!cell.TryAddFacility(clone))
-                {
-                    Destroy(clone.gameObject);
-                }
-                else return;
+                if(cell.TryAddFacility(Copy())) return;
             }
-            
-            foreach (var neighbour in cell.neighbours)
+
+            List<CellData> neighbours = new List<CellData>(cell.neighbours);
+            do
             {
-                if (CanBePlaced(neighbour, out _) && Instantiate(gameObject).TryGetComponent(out clone))
+                int alea = Random.Range(0, neighbours.Count);
+
+                if (CanBePlaced(neighbours[alea], out _))
                 {
-                    neighbour.TryAddFacility(clone);
-                    return;
+                    if (neighbours[alea].TryAddFacility(Copy())) return;
                 }
-            }
+                
+                neighbours.RemoveAt(alea);
+                
+            } while (neighbours.Count > 0);
+        }
+
+        public override FacilityType Copy()
+        {
+            return new AutoReplicantFacility
+            {
+                _renderData = _renderData,
+                _scaleMultiplier = _scaleMultiplier,
+                _facilityName = _facilityName,
+                _facilityDescription = _facilityDescription,
+                _placementCondition = _placementCondition,
+                constructionCost = constructionCost,
+                _sizeRadius = _sizeRadius,
+                
+                relativeExtraToReproduce = relativeExtraToReproduce
+            };
         }
     }
 }

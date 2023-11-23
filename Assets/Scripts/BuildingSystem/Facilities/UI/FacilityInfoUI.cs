@@ -45,7 +45,7 @@ namespace BuildingSystem.Facilities.UI
 
         private void Update()
         {
-            if (_constructionSite)
+            if (_constructionSite != null)
             {
                 _constructionSlider.maxValue = Mathf.RoundToInt(_constructionSite.constructionCost * 100) / 100f;
                 
@@ -80,7 +80,6 @@ namespace BuildingSystem.Facilities.UI
         private void DestroyFacility()
         {
             _facility.cell.RemoveFacility(_facility);
-            Destroy(_facility.gameObject);
         }
         
         public void OnPointerEnter(PointerEventData eventData)

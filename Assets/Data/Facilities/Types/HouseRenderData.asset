@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7622ad4e785412585a6c01347d8ebab, type: 3}
-  m_Name: FacilitySetDefault
+  m_Script: {fileID: 11500000, guid: da7f5ab8c1ca4f2c8cb3136da0c02fbd, type: 3}
+  m_Name: HouseRenderData
   m_EditorClassIdentifier: 
-  facilities:
-  - {fileID: 11400000, guid: 6607c1f2533ab4842b74fde889170a18, type: 2}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  material: {fileID: 2100000, guid: 1b22bbb537cd992498e7a244e12c6a25, type: 2}

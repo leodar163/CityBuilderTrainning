@@ -8,7 +8,7 @@ namespace Rendering.Tests
         private Quaternion _rotation;
         private Vector3 _scale;
 
-        public IBatchRendered BatchRenderedSelf => this;
+        public IBatchRendered RenderingSelf => this;
         public InstanceRenderData RenderData { get; set; }
 
         Vector3 IBatchRendered.Position
@@ -32,7 +32,7 @@ namespace Rendering.Tests
         public RenderedTest(InstanceRenderData renderData)
         {
             RenderData = renderData;
-            BatchRenderedSelf.OnCreated();
+            RenderingSelf.OnCreated();
         }
 
         public RenderedTest(InstanceRenderData renderData, Vector3 position, Quaternion rotation, Vector3 scale)
@@ -41,12 +41,12 @@ namespace Rendering.Tests
             _position = position;
             _rotation = rotation;
             _scale = scale;
-            BatchRenderedSelf.OnCreated();
+            RenderingSelf.OnCreated();
         }
 
         public void OnDestroy()
         {
-            BatchRenderedSelf.OnDestroyed();
+            RenderingSelf.OnDestroyed();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Rendering
 {
     public interface IBatchRendered
     {
-        public IBatchRendered BatchRenderedSelf { get; }
+        public IBatchRendered RenderingSelf { get; }
         
         public InstanceRenderData RenderData { get; }
         public Vector3 Position { get; protected set; }

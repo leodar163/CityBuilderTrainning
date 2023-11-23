@@ -19,7 +19,9 @@ namespace Format
         [SerializeField] private LocalizedString _localizedAllMarket;
         [SerializeField] private LocalizedString _localizedMainMarket;
         [SerializeField] private LocalizedString _localizedRandomMarket;
-
+        [Header("Facilities")]
+        [SerializeField] protected LocalizedString _localizeNoPlacementCondition;
+        [SerializeField] protected LocalizedString _localizeNoPlaceRemaining;
 
         [Header("Formatting")] 
         [SerializeField] private string _separatorFormat;
@@ -52,6 +54,9 @@ namespace Format
         public static string MainMaretFormat => Instance._localizedMainMarket.GetLocalizedString();
         public static string RandomMarketFormat => Instance._localizedRandomMarket.GetLocalizedString();
 
+        public static string NoPlacementCondition => Instance._localizeNoPlacementCondition.GetLocalizedString();
+        public static string NoPlaceException => Instance._localizeNoPlaceRemaining.GetLocalizedString();
+        
         public static string FormatMarketScope(MarketType marketFilter, MarketModifierScope scope)
         {
             string filterFormat = marketFilter switch

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
+    [Serializable]
     public class ProducerFacility : FacilityType, IProducer
     {
         public IEconomicActor economicActorSelf => this;
@@ -25,20 +26,34 @@ namespace BuildingSystem.Facilities.FacilityTypes
             base.OnAddedToCell(cellAddedTo);
             producerSelf.FetchResources();
             producerSelf.Produce();
-        }
-
-        protected virtual void OnEnable()
-        {
+            
             TimeManager.onNewMonth += producerSelf.FetchResources;
             TimeManager.onMonthEnds += producerSelf.Produce;
         }
 
-        protected virtual void OnDisable()
+        public override void OnRemovedFromCell(CellData cellRemovedFrom)
         {
+            base.OnRemovedFromCell(cellRemovedFrom);
+            
             TimeManager.onNewMonth -= producerSelf.FetchResources;
             TimeManager.onMonthEnds -= producerSelf.Produce;
             
             economicActorSelf.RemoveAllOrders();
+        }
+
+        public override FacilityType Copy()
+        {
+            return new ProducerFacility()
+            {
+                _renderData = _renderData,
+                _scaleMultiplier = _scaleMultiplier,
+                _facilityName = _facilityName,
+                _facilityDescription = _facilityDescription,
+                _placementCondition = _placementCondition,
+                constructionCost = constructionCost,
+                _sizeRadius = _sizeRadius,
+                _productionLines = new List<ProductionLine>(_productionLines)
+            };
         }
     }
 }

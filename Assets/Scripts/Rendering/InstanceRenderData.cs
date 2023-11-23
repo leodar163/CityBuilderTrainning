@@ -2,7 +2,7 @@
 
 namespace Rendering
 {
-    [CreateAssetMenu(menuName = "Rendering", fileName = "NewRenderingData")]
+    [CreateAssetMenu(menuName = "Batch Rendering/Render data", fileName = "NewRenderingData")]
     public class InstanceRenderData : ScriptableObject
     {
         public Mesh mesh;

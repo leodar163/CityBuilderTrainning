@@ -67,7 +67,7 @@ namespace BuildingSystem.Facilities
 
         private void Update()
         {
-            if (!selectedFacility || !isActive) return;
+            if (selectedFacility == null || !isActive) return;
 
             if(_oneFacilityAsBeenPlaced && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
@@ -132,12 +132,11 @@ namespace BuildingSystem.Facilities
                 ? facilityTypeToPlace
                 : Instance._constructionSiteTemplate;
 
-            if (!Instantiate(facilityTemplate.gameObject).TryGetComponent(out FacilityType facility))
-                return false;
+            FacilityType facility = facilityTypeToPlace.Copy();
 
             if (!cell.TryAddFacility(facility))
             {
-                Destroy(facility);
+                facility.RenderingSelf.OnDestroyed();
                 return false;
             }
 

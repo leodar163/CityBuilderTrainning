@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GridSystem;
 using ResourceSystem;
 using ResourceSystem.Markets;
 using TimeSystem;
 using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Serialization;
 
 namespace BuildingSystem.Facilities
 {
+    [Serializable]
     public class ConstructionSite : FacilityType, IEconomicActor
     {
         public string EconomicActorName => $"{facilityName} ({facilityToBuild.facilityName})";
@@ -72,15 +72,12 @@ namespace BuildingSystem.Facilities
 
         private void BuildFacility()
         {
-            if (Instantiate(facilityToBuild).TryGetComponent(out _facilityToBuild))
-            {
-                cell.maxFacilityCount++;
-                cell.TryAddFacility(facilityToBuild);
-                _facilityToBuild.transform.position = transform.position;
-                _facilityToBuild.transform.rotation = transform.rotation;
-                cell.maxFacilityCount--;
-                cell.RemoveFacility(this);
-            }
+            _facilityToBuild = _facilityToBuild.Copy();
+            cell.maxFacilityCount++;
+            cell.TryAddFacility(facilityToBuild);
+            _facilityToBuild.RenderingSelf.SetTransform(_position, _rotation, _scale);
+            cell.RemoveFacility(this);
+            cell.maxFacilityCount--;
         }
 
         public void SetFacilityToBuild(FacilityType facility)

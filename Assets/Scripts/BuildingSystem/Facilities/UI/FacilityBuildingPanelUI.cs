@@ -30,7 +30,7 @@ namespace BuildingSystem.Facilities.UI
             {
                 if (Instantiate(facilityBuildingButtonTemplate.gameObject, _buttonLayout).TryGetComponent(out FacilityBuildingButton newButton))
                 {
-                    newButton.AssignFacility(facility);
+                    newButton.AssignFacility(facility.Facility);
                     _buttons.Add(newButton);
                 }
             }

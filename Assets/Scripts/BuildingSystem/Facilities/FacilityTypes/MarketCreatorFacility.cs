@@ -6,10 +6,11 @@ using ResourceSystem.Markets;
 
 namespace BuildingSystem.Facilities.FacilityTypes
 {
-    public class DepositFacility : FacilityType
+    [Serializable]
+    public class MarketCreatorFacility : FacilityType
     {
         public int marketMergeRange = 1;
-        private static readonly List<DepositFacility> s_deposits = new();
+        private static readonly List<MarketCreatorFacility> s_deposits = new();
         private CellData[] _influencedArea;
 
         private List<CellData> GetExclusiveMarketCells()
@@ -59,6 +60,22 @@ namespace BuildingSystem.Facilities.FacilityTypes
             MarketManager.AmputateMarket(cell.market, GetExclusiveMarketCells());
             base.OnRemovedFromCell(cellRemovedFrom);
             s_deposits.Remove(this);
+        }
+
+        public override FacilityType Copy()
+        {
+            return new MarketCreatorFacility
+            {
+                _renderData = _renderData,
+                _scaleMultiplier = _scaleMultiplier,
+                _facilityName = _facilityName,
+                _facilityDescription = _facilityDescription,
+                _placementCondition = _placementCondition,
+                constructionCost = constructionCost,
+                _sizeRadius = _sizeRadius,
+                
+                marketMergeRange = marketMergeRange
+            };
         }
     }
 }

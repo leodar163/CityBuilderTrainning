@@ -47,7 +47,7 @@ float3 CalculateCelShading(const Light light, const SurfaceInfos surface_infos)
 
     float rim = 1 - dot(surface_infos.view, surface_infos.normal);
     rim *= pow(diffuse, surface_infos.rim_threshold);
-    rim *= pow(rim, surface_infos.smoothness);
+    rim *= pow(abs(rim), surface_infos.smoothness);
     rim = rim > surface_infos.rim_cell_threshold ? 1 : 0;
 
     

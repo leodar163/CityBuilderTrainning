@@ -86,28 +86,17 @@ namespace GridSystem
         public bool TryAddFacility(FacilityType facilityTypeToAdd)
         {
             if (facilities.Contains(facilityTypeToAdd) || freeFacilityPlacements <= 0) return false;
-
+            
             facilities.Add(facilityTypeToAdd);
-            PlaceFacility(facilityTypeToAdd);
+            
+            facilityTypeToAdd.OnAddedToCell(this);
+
+            if (facilityTypeToAdd is IEconomicActor actor)
+                OnAddEconomicActor(actor);
             
             return true;
         }
-
-        private void PlaceFacility(FacilityType facilityTypeToPlace)
-        {
-            Vector3 positionOffset = new Vector3
-            {
-                x = Random.Range(-0.5f, 0.5f),
-                z = Random.Range(-0.5f, 0.5f)
-            };
-
-            facilityTypeToPlace.transform.position = position + positionOffset;
-            facilityTypeToPlace.OnAddedToCell(this);
-
-            if (facilityTypeToPlace is IEconomicActor actor)
-                OnAddEconomicActor(actor);
-        }
-
+        
         public void RemoveFacility(FacilityType facilityTypeToRemove)
         {
             if (facilities.Contains(facilityTypeToRemove))

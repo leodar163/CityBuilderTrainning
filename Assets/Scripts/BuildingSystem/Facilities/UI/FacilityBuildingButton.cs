@@ -57,7 +57,7 @@ namespace BuildingSystem.Facilities.UI
             facility = facilityTypeToAssign;
             _constructionSite = facility as ConstructionSite;
 
-            _iconImage.sprite = _constructionSite ? _constructionSite.facilityToBuild.icon : facility.icon;
+            _iconImage.sprite = _constructionSite != null ? _constructionSite.facilityToBuild.icon : facility.icon;
         }
     }
 }
