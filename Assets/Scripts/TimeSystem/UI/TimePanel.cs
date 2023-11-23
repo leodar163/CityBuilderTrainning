@@ -76,7 +76,7 @@ namespace TimeSystem.UI
 
         private void UpdateEventPinDisplay()
         {
-            List<GameEvent> events = ScenarioManager.GetEventsOfYear(TimeManager.date.year);
+            List<(int, GameEvent)> events = ScenarioManager.GetEventsAndIndicesOfYear(TimeManager.date.year);
 
             foreach (var pin in _eventPins)
             {
@@ -95,9 +95,10 @@ namespace TimeSystem.UI
                     pin = _eventPins[i];
                 }
 
-                pin.GameEvent = events[i];
-                pin.transform.SetParent(_monthSliders[ScenarioManager.GetDateOfEvent(pin.GameEvent).month].transform);
-                ((RectTransform)pin.transform).anchoredPosition = Vector2.zero;
+                pin.GameEvent = events[i].Item2;
+                Transform pinTransform = pin.transform;
+                pinTransform.SetParent(_monthSliders[ScenarioManager.GetDateOfEvent(events[i].Item1).month].transform);
+                ((RectTransform)pinTransform).anchoredPosition = Vector2.zero;
                 pin.gameObject.SetActive(true);
             }
         }
