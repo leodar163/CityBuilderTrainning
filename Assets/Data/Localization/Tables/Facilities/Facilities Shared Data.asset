@@ -23,10 +23,6 @@ MonoBehaviour:
     m_Key: Fac_TreeDesc
     m_Metadata:
       m_Items: []
-  - m_Id: 1393238364160
-    m_Key: Fac_TreePlacementConditions
-    m_Metadata:
-      m_Items: []
   - m_Id: 17135530823680
     m_Key: Fac_NoPlaceException
     m_Metadata:

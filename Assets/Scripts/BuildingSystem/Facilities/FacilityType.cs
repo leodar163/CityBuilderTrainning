@@ -30,7 +30,7 @@ namespace BuildingSystem.Facilities
         [Header("Growth")]
         [SerializeField] protected float _naturalGrowth;
         [SerializeField] protected float _maxHealth;
-        [SerializeField] protected float _health;
+        public float health;
         [SerializeField] protected float _growthFromNeeds;
         [SerializeField] protected List<ResourceType> _needs;
         protected float _growth;
@@ -147,12 +147,12 @@ namespace BuildingSystem.Facilities
 
         private void ApplyGrowth()
         {
-            _health = Mathf.Clamp(_health + Growth, 0, _maxHealth);
-            if (_health <= 0)
+            health = Mathf.Clamp(health + Growth, 0, _maxHealth);
+            if (health <= 0)
             {
                 OnHealthHitsZero();
             }
-            else if (_health >= _maxHealth)
+            else if (health >= _maxHealth)
             {
                 OnHealthHitsMax();
             }
@@ -235,7 +235,7 @@ namespace BuildingSystem.Facilities
 
             _naturalGrowth = template._naturalGrowth;
             _growthFromNeeds = template._growthFromNeeds;
-            _health = template._health;
+            health = template.health;
             _maxHealth = template._maxHealth;
             _needs = new List<ResourceType>(template._needs);
         }
@@ -274,6 +274,8 @@ namespace BuildingSystem.Facilities
             Vector3 facilityPosition;
             _rotation = quaternion.Euler(new float3(0, Random.Range(-175, 175),0));
             _scale = Vector3.one * (Random.Range(0.9f, 1.1f) * _scaleMultiplier);
+
+            int safetyLoopCount = 100;
             
             do
             {
@@ -287,17 +289,20 @@ namespace BuildingSystem.Facilities
                 
                 foreach (var facility in cell.facilities)
                 {
-                    if (facility == this ||
-                        Vector3.Distance(facilityPosition, facility._position) 
-                          < sizeRadius + facility.sizeRadius) continue;
-
-                    isPositionValid = false;
-                    break;
+                    if (facility == this) continue;
+                    if (Vector3.Distance(facilityPosition, facility._position)
+                        < sizeRadius + facility.sizeRadius)
+                    {
+                        isPositionValid = false;
+                        break;
+                    }
                 }
-                
-            } while (!isPositionValid);
 
-            _position = cell.position + facilityPosition;
+                safetyLoopCount--;
+                
+            } while (!isPositionValid && safetyLoopCount > 0);
+
+            _position = facilityPosition;
         }
         
         public bool CanBePlaced(CellData cellData, out string conditionsFormat)

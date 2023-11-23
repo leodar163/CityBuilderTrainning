@@ -24,13 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 143717453824
-    m_Localized: Elementary component of {terrainForest}s and keep {resourceEnviro}
-      at sustanaible level.
-    m_Metadata:
-      m_Items:
-      - rid: 5251183267977363468
-  - m_Id: 1393238364160
-    m_Localized: Must be placed on {terrainForest} terrain{terrainCondition}
+    m_Localized: A tree
     m_Metadata:
       m_Items:
       - rid: 5251183267977363468

@@ -24,13 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 143717453824
-    m_Localized: "Composant \xE9l\xE9mentaire des {terrainForest}s et maintient une
-      valeur d'{resourceEnviro} \xE9lev\xE9e."
-    m_Metadata:
-      m_Items:
-      - rid: 5251183267977363457
-  - m_Id: 1393238364160
-    m_Localized: "Doit \xEAtre plac\xE9 sur un terrain {terrainForest}{terrainCondition}"
+    m_Localized: Un arbre
     m_Metadata:
       m_Items:
       - rid: 5251183267977363457
@@ -92,4 +86,4 @@ MonoBehaviour:
     - rid: 5251183267977363457
       type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_Entries: 00503a762100000000507a6344010000
+        m_Entries: 00503a7621000000

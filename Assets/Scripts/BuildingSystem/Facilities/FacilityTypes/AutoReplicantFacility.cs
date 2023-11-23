@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GridSystem;
-using ResourceSystem;
-using TimeSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,31 +9,16 @@ namespace BuildingSystem.Facilities.FacilityTypes
     [Serializable]
     public class AutoReplicantFacility : ProducerFacility
     {
-        private List<ResourceQuantity> _needs;
-        [Tooltip("how many time a market have to have a needed resource to reproduce")]
-        [Min(0)] public float relativeExtraToReproduce = 2;
-
-        public override void OnAddedToCell(CellData cellAddedTo)
+        [SerializeField] [Range(0,1)] private float _givenToCloneHealth;
+            
+        protected override void OnHealthHitsMax()
         {
-            base.OnAddedToCell(cellAddedTo);
-            _needs = producerSelf.GetNeeds();
-            TimeManager.onMonthBegins += Replicate;
-        }
-
-        public override void OnRemovedFromCell(CellData cellRemovedFrom)
-        {
-            base.OnRemovedFromCell(cellRemovedFrom);
-            TimeManager.onNewMonth -= Replicate;
+            base.OnHealthHitsMax();
+            Replicate();
         }
 
         private void Replicate()
         {
-            foreach (var quantity in _needs)
-            {
-                if (market.GetResourceExcess(quantity.resource) < quantity.quantity * relativeExtraToReproduce)
-                    return;
-            }
-
             if (CanBePlaced(cell, out _))
             {
                 if(cell.TryAddFacility(Copy())) return;
@@ -48,7 +31,11 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
                 if (CanBePlaced(neighbours[alea], out _))
                 {
-                    if (neighbours[alea].TryAddFacility(Copy())) return;
+                    FacilityType clone = Copy();
+                    clone.health = health * _givenToCloneHealth;
+                    health -= clone.health;
+                    
+                    if (neighbours[alea].TryAddFacility(clone)) return;
                 }
                 
                 neighbours.RemoveAt(alea);
@@ -60,7 +47,7 @@ namespace BuildingSystem.Facilities.FacilityTypes
 
         public AutoReplicantFacility(AutoReplicantFacility template) : base(template)
         {
-            relativeExtraToReproduce = template.relativeExtraToReproduce;
+            _givenToCloneHealth = template._givenToCloneHealth;
         }
         
         public override FacilityType Copy()
