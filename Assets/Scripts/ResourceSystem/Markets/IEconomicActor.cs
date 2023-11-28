@@ -83,7 +83,7 @@ namespace ResourceSystem.Markets
                 order = currentOrder;
                 return true;
             }
-
+            
             order = null;
             return false;
         }
