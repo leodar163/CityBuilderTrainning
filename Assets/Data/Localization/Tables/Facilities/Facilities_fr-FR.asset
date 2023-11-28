@@ -80,6 +80,14 @@ MonoBehaviour:
     m_Localized: "Peut \xEAtre plac\xE9 partout"
     m_Metadata:
       m_Items: []
+  - m_Id: 37384992925044736
+    m_Localized: "sant\xE9e"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 37385178216812544
+    m_Localized: besoin de {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

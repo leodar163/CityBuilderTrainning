@@ -1,6 +1,8 @@
-﻿using ResourceSystem.Categories;
+﻿using System;
+using ResourceSystem.Categories;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 
 namespace ResourceSystem
 {
@@ -14,7 +16,27 @@ namespace ResourceSystem
         public Sprite icon;
         public ResourceCategory Category => _category;
         public string id => _id;
-        public string resourceName => _name.GetLocalizedStringAsync().Result;
+        public string resourceName { get; private set; }
         public string description => _desc.IsEmpty ? "no_description" : _desc.GetLocalizedString();
+
+        private void Awake()
+        {
+            InitName();
+        }
+
+        private void OnEnable()
+        {
+            LocalizationSettings.SelectedLocaleChanged += InitName;
+        }
+
+        private void OnDisable()
+        {
+            LocalizationSettings.SelectedLocaleChanged -= InitName;
+        }
+
+        private void InitName(Locale locale = null)
+        {
+            resourceName = _name.GetLocalizedString();
+        }
     }
 }

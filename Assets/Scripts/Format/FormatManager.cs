@@ -4,6 +4,7 @@ using ResourceSystem.Markets;
 using ResourceSystem.Markets.Modifiers;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using Utils;
 
 namespace Format
@@ -26,11 +27,15 @@ namespace Format
         [Header("Formatting")] 
         [SerializeField] private string _separatorFormat;
 
+        [SerializeField] private LocalizedString _localizedDoublePoint;
+        public static string DoublePoint { get; private set; }
+
         [Header("Colors")] 
         [SerializeField] private Color _negativeColor = Color.red;
         [SerializeField] private Color _positiveColor = Color.green;
         [SerializeField] private Color _defaultTextColor = Color.white;
         [SerializeField] private Color _separatorColor = Color.gray;
+        
         
         public static Color negativeColor => Instance._negativeColor;
         public static Color positiveColor => Instance._positiveColor;
@@ -56,6 +61,27 @@ namespace Format
 
         public static string NoPlacementCondition => Instance._localizeNoPlacementCondition.GetLocalizedString();
         public static string NoPlaceException => Instance._localizeNoPlaceRemaining.GetLocalizedString();
+
+
+        private void Awake()
+        {
+            InitStrings();
+        }
+
+        private void OnEnable()
+        {
+            LocalizationSettings.SelectedLocaleChanged += InitStrings;
+        }
+
+        private void OnDisable()
+        {
+            LocalizationSettings.SelectedLocaleChanged -= InitStrings;
+        }
+
+        private void InitStrings(Locale locale = null)
+        {
+            DoublePoint = _localizedDoublePoint.GetLocalizedString();
+        }
         
         public static string FormatMarketScope(MarketType marketFilter, MarketModifierScope scope)
         {
@@ -76,9 +102,20 @@ namespace Format
             };
         }
         
-        public static string Plus(float value, float threshold = 0)
+        public static string Plus(float value)
         {
             return value >= 0 ? "+" : "";
+        }
+        
+        public static string FormatDelta(float value, int decimals = 2)
+        {
+            return
+                $"<color=#{GetColorByValue(value)}>{Plus(value)}{Mathf.RoundToInt(value * (10 * decimals)) / (10f * decimals)}</color>";
+        }
+
+        public static string GetColorByValue(float value)
+        {
+            return value > 0 ? positiveColorHTML : value < 0 ? negativeColorHTML : defaultTextColorHTML;
         }
     }
 }

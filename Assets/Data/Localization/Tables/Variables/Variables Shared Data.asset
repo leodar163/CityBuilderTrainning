@@ -63,6 +63,10 @@ MonoBehaviour:
     m_Key: Var_Desc_Availability
     m_Metadata:
       m_Items: []
+  - m_Id: 31938805933690880
+    m_Key: Format_DoublePoint
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

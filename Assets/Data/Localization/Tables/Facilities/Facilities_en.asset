@@ -80,6 +80,14 @@ MonoBehaviour:
     m_Localized: Can be placed everywhere
     m_Metadata:
       m_Items: []
+  - m_Id: 37384992925044736
+    m_Localized: health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 37385178216812544
+    m_Localized: '{0}''s need'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

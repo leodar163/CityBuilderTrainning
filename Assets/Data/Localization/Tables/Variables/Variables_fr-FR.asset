@@ -68,6 +68,10 @@ MonoBehaviour:
       faible am\xE8nera \xE0 des soucis de ravitaillement."
     m_Metadata:
       m_Items: []
+  - m_Id: 31938805933690880
+    m_Localized: ' : '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

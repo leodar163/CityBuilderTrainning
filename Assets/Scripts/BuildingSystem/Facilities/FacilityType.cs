@@ -32,7 +32,8 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected float _maxHealth;
         public float health;
         [SerializeField] protected float _growthFromNeeds;
-        [SerializeField] protected List<ResourceType> _needs;
+        [SerializeField] protected List<ResourceType> _resourceNeeds;
+        protected List<FacilityNeed> _needs;
         protected float _growth;
         [Header("Construction")]
         public float constructionCost;
@@ -59,6 +60,8 @@ namespace BuildingSystem.Facilities
 
         private readonly List<IGrowthEffector> _growthEffectors = new();
 
+        public List<IGrowthEffector> GrowthEffectors => _growthEffectors;
+
         public IBatchRendered RenderingSelf => this;
         public InstanceRenderData RenderData => _renderData;
 
@@ -80,8 +83,11 @@ namespace BuildingSystem.Facilities
             set => _scale = value;
         }
 
-        public List<ResourceType> Needs => _needs;
+        public List<ResourceType> Needs => _resourceNeeds;
 
+        
+        public float MaxHealth => _maxHealth;
+        
         public float Growth
         {
             get
@@ -117,11 +123,11 @@ namespace BuildingSystem.Facilities
 
         private void CalculateGrowth()
         {
-            _growth = _naturalGrowth;
+            _growth = 0;
 
             foreach (var need in _needs)
             {
-                _growth += CalculateGrowthFromNeed(need);
+                need.Growth = CalculateGrowthFromNeed(need.resource);
             }
 
             foreach (var effector in _growthEffectors)
@@ -158,6 +164,24 @@ namespace BuildingSystem.Facilities
             }
         }
 
+        private void InitNeeds()
+        {
+            _needs = new List<FacilityNeed>();
+            
+            foreach (var need in _resourceNeeds)
+            {
+                FacilityNeed facilityNeed = new FacilityNeed { resource = need };
+                _needs.Add(facilityNeed);
+                AddGrowthEffector(facilityNeed);
+            }
+        }
+
+        private void InitNaturalGrowth()
+        {
+            NaturalGrowth naturalGrowth = new NaturalGrowth { Growth = _naturalGrowth };
+            AddGrowthEffector(naturalGrowth);
+        }
+        
         protected virtual void OnHealthHitsZero()
         {
             
@@ -167,7 +191,7 @@ namespace BuildingSystem.Facilities
         {
             
         }
-        
+
         #endregion
 
         #region BEHAVIORS
@@ -237,7 +261,10 @@ namespace BuildingSystem.Facilities
             _growthFromNeeds = template._growthFromNeeds;
             health = template.health;
             _maxHealth = template._maxHealth;
-            _needs = new List<ResourceType>(template._needs);
+            _resourceNeeds = new List<ResourceType>(template._resourceNeeds);
+            
+            InitNaturalGrowth();
+            InitNeeds();
         }
 
         public virtual FacilityType Copy()
