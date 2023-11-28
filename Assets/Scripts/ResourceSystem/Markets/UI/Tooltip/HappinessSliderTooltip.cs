@@ -44,7 +44,7 @@ namespace ResourceSystem.Markets.UI.Tooltip
                 
                 bool positiveOutcome = needsSet._happinessDeltaDetails[resourceNeed] > 0;
                 
-                format += $"{needIn} {resourceNeed.resourceName} <color=#" +
+                format += $"{needIn} {resourceNeed.ResourceName} <color=#" +
                           $"{(positiveOutcome ? FormatManager.positiveColorHTML : FormatManager.negativeColorHTML)}>" +
                           $"{(positiveOutcome ? "+" : "")}" +
                           $"{needsSet._happinessDeltaDetails[resourceNeed]}</color>\n";

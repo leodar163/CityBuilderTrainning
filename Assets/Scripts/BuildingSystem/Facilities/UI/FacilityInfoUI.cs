@@ -29,9 +29,7 @@ namespace BuildingSystem.Facilities.UI
 
         [SerializeField] private Image _facilityIcon;
         [SerializeField] private Button _deleteButton;
-        [SerializeField] private Slider _constructionSlider;
-        [SerializeField] private TextMeshProUGUI _progressionText;
-        
+
         [Header("Tooltip")]
         [SerializeField] private FacilityTooltipMessageUI _facilityTooltipMessageTemplate;
         public TooltipMessageUI tooltipMessage => _facilityTooltipMessageTemplate;
@@ -43,29 +41,9 @@ namespace BuildingSystem.Facilities.UI
                 _deleteButton.onClick.AddListener(DestroyFacility);
         }
 
-        private void Update()
-        {
-            if (_constructionSite != null)
-            {
-                _constructionSlider.maxValue = Mathf.RoundToInt(_constructionSite.constructionCost * 100) / 100f;
-                
-                _constructionSlider.value = Mathf.RoundToInt(_constructionSite.constructionInvestment * 100) / 100f;
-
-                _progressionText.text = $"{_constructionSlider.value}/{_constructionSlider.maxValue}";
-                
-                _constructionSlider.gameObject.SetActive(true);
-                _progressionText.gameObject.SetActive(true);
-            }
-            else
-            {
-                _constructionSlider.gameObject.SetActive(false);
-                _progressionText.gameObject.SetActive(false);
-            }
-        }
-
         private void DisplayFacility()
         {
-            if (_facility == null)return;
+            if (_facility == null) return;
 
             _constructionSite = _facility as ConstructionSite;
 

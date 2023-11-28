@@ -16,8 +16,28 @@ namespace ResourceSystem
         public Sprite icon;
         public ResourceCategory Category => _category;
         public string id => _id;
-        public string resourceName { get; private set; }
-        public string description => _desc.IsEmpty ? "no_description" : _desc.GetLocalizedString();
+
+        string _resourceName;
+        
+        public string ResourceName
+        {
+            get
+            {
+                if (_resourceName == "") InitName();
+                return _resourceName;
+            }
+        }
+
+        private string _description;
+        
+        public string Description
+        {
+            get
+            {
+                if (_description == "") InitName();
+                return _description;
+            }
+        }
 
         private void Awake()
         {
@@ -36,7 +56,8 @@ namespace ResourceSystem
 
         private void InitName(Locale locale = null)
         {
-            resourceName = _name.GetLocalizedString();
+            _resourceName = _name.GetLocalizedString();
+            _description = _desc.IsEmpty ? "no_description" : _desc.GetLocalizedString();
         }
     }
 }

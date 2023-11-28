@@ -9,26 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c401c0af5ec46bcbcad48808c5e2e5f, type: 3}
-  m_Name: ConstructionSiteTemplate
+  m_Script: {fileID: 11500000, guid: 0c8a8d8645c2455a8d33d41ee4b940db, type: 3}
+  m_Name: ConstructionGuild
   m_EditorClassIdentifier: 
-  _constructionSite:
+  _facility:
     icon: {fileID: 21300000, guid: 5970ea634fa4cb348a0dab84a98a0909, type: 3}
-    _renderData: {fileID: 11400000, guid: 8eeebbcdeeb8b0c45ad61712591ca8de, type: 2}
+    _renderData: {fileID: 11400000, guid: 547882b8eba35864e95dd7a70523183e, type: 2}
     _scaleMultiplier: 0.2
-    _naturalGrowth: 1
-    _maxHealth: 0
-    health: 0
-    _growthFromNeeds: 2
-    _resourceNeeds:
-    - {fileID: 11400000, guid: 53974829d244ff140a428c0dc71a45c1, type: 2}
+    _naturalGrowth: -0.01
+    _maxHealth: 10
+    health: 10
+    _growthFromNeeds: 0
+    _resourceNeeds: []
     constructionCost: 0
-    _sizeRadius: 0.6
+    _sizeRadius: 0.3
     _facilityName:
       m_TableReference:
         m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
       m_TableEntryReference:
-        m_KeyId: 22082494349856768
+        m_KeyId: 22101958227283968
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -47,10 +46,10 @@ MonoBehaviour:
     _productionLines:
     - name: Construction
       happinessSensitive: 0
-      demands:
+      demands: []
+      offers:
       - resource: {fileID: 11400000, guid: 53974829d244ff140a428c0dc71a45c1, type: 2}
         quantity: 10
-      offers: []
   references:
     version: 2
     RefIds: []

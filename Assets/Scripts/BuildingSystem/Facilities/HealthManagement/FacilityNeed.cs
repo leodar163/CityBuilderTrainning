@@ -23,7 +23,7 @@ namespace BuildingSystem.Facilities.HealthManagement
         private string FormatNeed()
         {
             if (resource == null) return "miss_resource_to_need";
-            return string.Format(VariableNameManager.NeedFormat, resource.resourceName);
+            return string.Format(VariableNameManager.NeedFormat, resource.ResourceName);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace ResourceSystem.UI.Tooltip
 
             if (messageUI is TextTooltipMessageUI textTooltipMessageUI)
             {
-                textTooltipMessageUI.SetTexts(_resource.resourceName, _resource.description);
+                textTooltipMessageUI.SetTexts(_resource.ResourceName, _resource.Description);
             }
         }
 

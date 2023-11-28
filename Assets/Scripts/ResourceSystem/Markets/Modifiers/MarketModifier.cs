@@ -57,7 +57,7 @@ namespace ResourceSystem.Markets.Modifiers
                 if (order.quantity <= 0) continue;
                 format += $"+{order.quantity} " +
                           $"{(order.orderType == OrderType.Demand ? $"<color=#{FormatManager.negativeColorHTML}>{VariableNameManager.DemandName}" : $"<color=#{FormatManager.positiveColorHTML}>{VariableNameManager.OfferName}")} " +
-                          $"</color>{order.resource.resourceName}";
+                          $"</color>{order.resource.ResourceName}";
                 if (includeTarget)
                     format += $" {FormatManager.FormatMarketScope(_marketTypeFilter, _scope)}";
                 if (i < _orders.Count - 1)
@@ -77,7 +77,7 @@ namespace ResourceSystem.Markets.Modifiers
                     : $"<color=#{FormatManager.negativeColor}>";
                 format +=
                     $"{posNeg}{Mathf.RoundToInt(mult.quantity * 1000) / 10f}%</color> " +
-                    $"{VariableNameManager.ProductionName} ({mult.resource.resourceName})";
+                    $"{VariableNameManager.ProductionName} ({mult.resource.ResourceName})";
                 if (includeTarget)
                     format += $" {FormatManager.FormatMarketScope(_marketTypeFilter, _scope)}";
                 if (i < _multipliers.Count - 1)

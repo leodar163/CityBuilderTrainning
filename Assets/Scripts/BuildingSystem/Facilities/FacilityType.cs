@@ -92,6 +92,7 @@ namespace BuildingSystem.Facilities
         {
             get
             {
+                if (cell == null) return 0;
                 CalculateGrowth();
                 return _growth;
             }
@@ -108,9 +109,9 @@ namespace BuildingSystem.Facilities
 
         public void RemoveAllGrowthEffector()
         {
-            foreach (var effector in _growthEffectors)
+            while (_growthEffectors.Count > 0)
             {
-                RemoveGrowthEffector(effector);
+                RemoveGrowthEffector(_growthEffectors[^1]);
             }
         }
         
@@ -246,6 +247,8 @@ namespace BuildingSystem.Facilities
         protected FacilityType(FacilityType template)
         {
             _template = template._template ?? template;
+
+            icon = template.icon;
             
             _renderData = template._renderData;
             _scaleMultiplier = template._scaleMultiplier;
