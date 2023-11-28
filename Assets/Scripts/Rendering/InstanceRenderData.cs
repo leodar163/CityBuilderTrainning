@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Rendering
 {
@@ -14,7 +15,10 @@ namespace Rendering
         {
             if (_renderParams.material == null)
             {
-                _renderParams = new RenderParams(material);
+                _renderParams = new RenderParams(material)
+                {
+                    shadowCastingMode = ShadowCastingMode.On
+                };
             }
 
             return _renderParams;
