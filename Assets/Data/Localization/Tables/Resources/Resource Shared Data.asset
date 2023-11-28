@@ -79,6 +79,14 @@ MonoBehaviour:
     m_Key: Res_Cate_Society
     m_Metadata:
       m_Items: []
+  - m_Id: 40335648229052416
+    m_Key: Res_DiversityName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40335785961607168
+    m_Key: Res_Fertility
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

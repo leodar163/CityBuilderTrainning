@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30e8c45fec89408aa97554432ffd3a90, type: 3}
-  m_Name: Tree
+  m_Name: Predator
   m_EditorClassIdentifier: 
   _facility:
     icon: {fileID: 21300000, guid: 250d488424020ed4c895e3704e43732b, type: 3}
     _renderData: {fileID: 11400000, guid: 2b0cdbdc8f2b81c4597ddafacce0f00a, type: 2}
     _scaleMultiplier: 0.2
     _naturalGrowth: -0.5
-    _maxHealth: 1
-    health: 0.5
+    _maxHealth: 8
+    health: 4
     _growthFromNeeds: 1
     _resourceNeeds:
-    - {fileID: 11400000, guid: 0e61489d12ed1bb41a2bec298b1ae3a7, type: 2}
+    - {fileID: 11400000, guid: 0f5c615fff0a4b649b248e7d9f8d2111, type: 2}
     constructionCost: 0
     _sizeRadius: 0.3
     _facilityName:
