@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Variable
+namespace SubscribableVariables
 {
     public interface IVariableModifier
     {

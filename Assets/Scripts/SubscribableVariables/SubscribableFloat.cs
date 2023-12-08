@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Localization;
 using UnityEngine;
 
-namespace Variable
+namespace SubscribableVariables
 {
     [Serializable]
     public class SubscribableFloat
