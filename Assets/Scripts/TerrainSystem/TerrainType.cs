@@ -24,14 +24,14 @@ namespace TerrainSystem
         {
             if (cells.Contains(cellData)) return;
             cells.Add(cellData);
-            GridManager.PaintTilemap(tile,TileMapType.Terrain, cellData.cellCoordinates);
+            GridManager.PaintTilemap(tile,TileMapType.Terrain, cellData.coordinates);
         }
 
         public virtual void OnRemovedFromCell(CellData cellData)
         {
             if (!cells.Contains(cellData)) return;
             cells.Remove(cellData);
-            GridManager.PaintTilemap(null,TileMapType.Terrain,cellData.cellCoordinates);
+            GridManager.PaintTilemap(null,TileMapType.Terrain,cellData.coordinates);
         }
         
         /*

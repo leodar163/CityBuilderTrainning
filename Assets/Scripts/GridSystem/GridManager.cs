@@ -82,7 +82,7 @@ namespace GridSystem
 
         public static Vector3 GetCellCenter(CellData cellData)
         {
-            return GetCellCenter(cellData.cellCoordinates);
+            return GetCellCenter(cellData.coordinates);
         }
         
         private void InitCellsData()
@@ -208,10 +208,10 @@ namespace GridSystem
                 {
                     if (i == 0 && j == 0 && !includeOrigin) continue;
                     
-                    Vector3Int neighbourId = originCell.cellCoordinates + new Vector3Int(i, j);
+                    Vector3Int neighbourId = originCell.coordinates + new Vector3Int(i, j);
 
-                    if (onlyAdjacent && neighbourId.x != originCell.cellCoordinates.x &&
-                        neighbourId.y != originCell.cellCoordinates.y)
+                    if (onlyAdjacent && neighbourId.x != originCell.coordinates.x &&
+                        neighbourId.y != originCell.coordinates.y)
                         continue;
                     
                     if (TryGetCellDataFromCellId(neighbourId,
@@ -317,7 +317,7 @@ namespace GridSystem
             Tilemap mapToPaint = GetTilemap(tilemap);
             foreach (var cell in area)
             {
-                PaintTile(paintTile, mapToPaint, tint, cell.cellCoordinates);
+                PaintTile(paintTile, mapToPaint, tint, cell.coordinates);
             }
         }
 

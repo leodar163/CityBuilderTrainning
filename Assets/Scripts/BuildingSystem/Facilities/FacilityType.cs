@@ -268,6 +268,8 @@ namespace BuildingSystem.Facilities
             health = template.health;
             _maxHealth = template._maxHealth;
             _resourceNeeds = new List<ResourceType>(template._resourceNeeds);
+
+            _behaviors = new List<FacilityBehavior>(template._behaviors);
             
             InitNaturalGrowth();
             InitNeeds();

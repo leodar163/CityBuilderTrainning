@@ -27,12 +27,12 @@ namespace BuildingSystem.Facilities.Behaviors
             
         }
 
-        public virtual void OnAddedToCell(FacilityType facilityType, CellData cell)
+        public virtual void OnAddedToCell(FacilityType facility, CellData cell)
         {
             
         }
 
-        public virtual void OnRemovedFromCell(FacilityType facilityType, CellData cell)
+        public virtual void OnRemovedFromCell(FacilityType facility, CellData cell)
         {
             
         }

@@ -96,6 +96,18 @@ MonoBehaviour:
     m_Localized: "ne peut pas \xEAtre d\xE9truit"
     m_Metadata:
       m_Items: []
+  - m_Id: 42077425522880512
+    m_Localized: "placement en c\xF4te"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090916761743360
+    m_Localized: port
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090998496145408
+    m_Localized: "un b\xE2timent qui permet aux r\xE9fugiers de d\xE9barquer"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

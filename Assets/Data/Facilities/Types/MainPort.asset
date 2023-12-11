@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c8a8d8645c2455a8d33d41ee4b940db, type: 3}
-  m_Name: House
+  m_Name: MainPort
   m_EditorClassIdentifier: 
   _facility:
-    icon: {fileID: 21300000, guid: 0cb52103f11aaf648a58554c68900bef, type: 3}
-    _renderData: {fileID: 11400000, guid: 6a39410ddd2a12643aac3ea03279fd9a, type: 2}
-    _scaleMultiplier: 0.2
-    _naturalGrowth: -0.01
+    icon: {fileID: 21300000, guid: 4ef178cbd39fe9f478b46f92f39f64ab, type: 3}
+    _renderData: {fileID: 11400000, guid: c47948db4c192ed408c9e007893f3944, type: 2}
+    _scaleMultiplier: 1.2
+    _naturalGrowth: 0
     _maxHealth: 10
     health: 10
     _growthFromNeeds: 0
     _resourceNeeds: []
     _destroyable: 1
     constructionCost: 0
-    _sizeRadius: 0.3
+    _sizeRadius: 0.2
     _facilityName:
       m_TableReference:
         m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
       m_TableEntryReference:
-        m_KeyId: 4348569451294720
+        m_KeyId: 42090916761743360
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -37,28 +37,26 @@ MonoBehaviour:
       m_TableReference:
         m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
       m_TableEntryReference:
-        m_KeyId: 4352928583053312
+        m_KeyId: 42090998496145408
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    _placementCondition: {fileID: 0}
-    _behaviors: []
+    _placementCondition: {fileID: 11400000, guid: 092fa72bc59ee4d4889e89f878ef8810,
+      type: 2}
+    _behaviors:
+    - {fileID: 11400000, guid: e7a8bc751c2dffd4b8865eb97c524ddb, type: 2}
     _productionLines:
-    - name: Habitations
+    - name: Colons
       happinessSensitive: 0
       demands: []
       offers:
-      - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
-        quantity: 10
-    - name: Travail
-      happinessSensitive: 0
-      demands:
+      - resource: {fileID: 11400000, guid: be5c45f434fc78641b2fa56fc338e48e, type: 2}
+        quantity: 5
       - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
         quantity: 10
-      offers:
-      - resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
-        quantity: 10
+      - resource: {fileID: 11400000, guid: 53974829d244ff140a428c0dc71a45c1, type: 2}
+        quantity: 5
   references:
     version: 2
     RefIds: []

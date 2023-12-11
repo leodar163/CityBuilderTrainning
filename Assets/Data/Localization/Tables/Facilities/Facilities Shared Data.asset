@@ -91,6 +91,18 @@ MonoBehaviour:
     m_Key: Fac_CantDestroyMessage
     m_Metadata:
       m_Items: []
+  - m_Id: 42077425522880512
+    m_Key: Fac_Behav_CostPlacement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090916761743360
+    m_Key: Fac_PortName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090998496145408
+    m_Key: Fac_Port_Desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

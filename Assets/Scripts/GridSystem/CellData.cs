@@ -13,7 +13,7 @@ namespace GridSystem
     {
         public Market market;
         
-        public Vector3Int cellCoordinates { get; }
+        public Vector3Int coordinates { get; }
         public Vector3 position { get; private set; }
         public CellData[] neighbours { get; private set;}
         public readonly PathNode pathNode = new ();
@@ -30,10 +30,10 @@ namespace GridSystem
 
         #endregion
         
-        public CellData(Vector3Int cellCoordinates)
+        public CellData(Vector3Int coordinates)
         {
-            this.cellCoordinates = cellCoordinates;
-            position = GridManager.GetCellCenter(cellCoordinates);
+            this.coordinates = coordinates;
+            position = GridManager.GetCellCenter(coordinates);
         }
         
        public void FindNeighbours()
@@ -51,8 +51,8 @@ namespace GridSystem
 
         public float DistanceFrom(CellData target)
         {
-            int distX = Mathf.Abs(target.cellCoordinates.x - cellCoordinates.x);
-            int distY = Mathf.Abs(target.cellCoordinates.y - cellCoordinates.y);
+            int distX = Mathf.Abs(target.coordinates.x - coordinates.x);
+            int distY = Mathf.Abs(target.coordinates.y - coordinates.y);
             
             return distX > distY ? 
                 1.4f * distY + (distX - distY) 

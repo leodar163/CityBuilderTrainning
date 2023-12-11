@@ -96,6 +96,18 @@ MonoBehaviour:
     m_Localized: can't be destroyed
     m_Metadata:
       m_Items: []
+  - m_Id: 42077425522880512
+    m_Localized: cost placement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090916761743360
+    m_Localized: port
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42090998496145408
+    m_Localized: a facility that allows refugees to reach the island
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

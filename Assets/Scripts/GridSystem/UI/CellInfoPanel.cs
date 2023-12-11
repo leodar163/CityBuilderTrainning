@@ -71,7 +71,7 @@ namespace GridSystem.UI
             
             if (currentCell.market != null) _marketName.SetText(currentCell.market.name);
             
-            _coordinates.SetText($"{currentCell.cellCoordinates.x}:{currentCell.cellCoordinates.y}");
+            _coordinates.SetText($"{currentCell.coordinates.x}:{currentCell.coordinates.y}");
             _terrainType.SetText(currentCell.terrain.terrainName);
             _facilityCapacity.SetText($"{currentCell.facilityCount}/{currentCell.maxFacilityCount}");
         }
