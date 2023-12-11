@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GridSystem;
+using UnityEngine;
 using UnityEngine.Localization;
 
 namespace BuildingSystem.Facilities.Behaviors
@@ -22,6 +23,16 @@ namespace BuildingSystem.Facilities.Behaviors
         }
 
         public virtual void OnRemoved(FacilityType facility)
+        {
+            
+        }
+
+        public virtual void OnAddedToCell(FacilityType facilityType, CellData cell)
+        {
+            
+        }
+
+        public virtual void OnRemovedFromCell(FacilityType facilityType, CellData cell)
         {
             
         }

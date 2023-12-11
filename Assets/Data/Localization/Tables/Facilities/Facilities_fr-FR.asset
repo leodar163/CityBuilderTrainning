@@ -88,6 +88,14 @@ MonoBehaviour:
     m_Localized: besoin de {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 42063416321028096
+    m_Localized: "d\xE9truire l'am\xE9nagement"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42063770584526848
+    m_Localized: "ne peut pas \xEAtre d\xE9truit"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

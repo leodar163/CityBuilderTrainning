@@ -22,6 +22,7 @@ MonoBehaviour:
     _growthFromNeeds: 1
     _resourceNeeds:
     - {fileID: 11400000, guid: 0f5c615fff0a4b649b248e7d9f8d2111, type: 2}
+    _destroyable: 1
     constructionCost: 0
     _sizeRadius: 0.3
     _facilityName:

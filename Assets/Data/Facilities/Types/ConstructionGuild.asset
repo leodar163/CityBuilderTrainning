@@ -21,6 +21,7 @@ MonoBehaviour:
     health: 10
     _growthFromNeeds: 0
     _resourceNeeds: []
+    _destroyable: 1
     constructionCost: 0
     _sizeRadius: 0.3
     _facilityName:

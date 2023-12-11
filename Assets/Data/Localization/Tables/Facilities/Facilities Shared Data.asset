@@ -83,6 +83,14 @@ MonoBehaviour:
     m_Key: Fac_FacilityNeedFormat
     m_Metadata:
       m_Items: []
+  - m_Id: 42063416321028096
+    m_Key: Fac_DestroyMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42063770584526848
+    m_Key: Fac_CantDestroyMessage
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

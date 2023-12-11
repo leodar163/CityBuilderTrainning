@@ -42,6 +42,11 @@ namespace Localization
         public static string HealthName { get; private set; }
         [SerializeField] private LocalizedString _localizedNeedFormat;
         public static string NeedFormat { get; private set; }
+        [SerializeField] private AutoLocalizedString _destroyFacilityMessage;
+        public static AutoLocalizedString DestroyFacilityMessage => Instance._destroyFacilityMessage;
+        [SerializeField] private AutoLocalizedString _facilityCantDestroy;
+        public static AutoLocalizedString FacilityCantDestroy => Instance._facilityCantDestroy;
+
 
 
         private void Awake()

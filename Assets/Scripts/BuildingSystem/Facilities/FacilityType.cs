@@ -35,7 +35,8 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected List<ResourceType> _resourceNeeds;
         protected List<FacilityNeed> _needs;
         protected float _growth;
-        [Header("Construction")]
+        [Header("Construction")] 
+        [SerializeField] private bool _destroyable = true;
         public float constructionCost;
         [SerializeField] protected float _sizeRadius = 0.3f;
         [Header("Description")]
@@ -57,6 +58,7 @@ namespace BuildingSystem.Facilities
         public string facilityDesc => _facilityDescription.IsEmpty ? "no_facility_desc" : _facilityDescription.GetLocalizedString();
 
         public float sizeRadius => _sizeRadius * _scale.magnitude;
+        public bool destroyable => _destroyable;
 
         private readonly List<IGrowthEffector> _growthEffectors = new();
 
@@ -204,7 +206,7 @@ namespace BuildingSystem.Facilities
                 behavior.OnInit(this);
             }
         }
-        
+
         private void UpdateBehaviors()
         {
             foreach (var behavior in _behaviors)
@@ -255,7 +257,8 @@ namespace BuildingSystem.Facilities
             
             _facilityName = template._facilityName;
             _facilityDescription = template._facilityDescription;
-            
+
+            _destroyable = template._destroyable;
             _placementCondition = template._placementCondition;
             constructionCost = template.constructionCost;
             _sizeRadius = template._sizeRadius;
@@ -286,6 +289,11 @@ namespace BuildingSystem.Facilities
             RenderingSelf.OnCreated();
             onFacilityBuild?.Invoke(this);
             TimeManager.onNewMonth += ApplyGrowth;
+
+            foreach (var behavior in _behaviors)
+            {
+                behavior.OnAddedToCell(this, cellAddedTo);
+            }
         }
 
         public virtual void OnRemovedFromCell(CellData cellRemovedFrom)
@@ -295,6 +303,11 @@ namespace BuildingSystem.Facilities
             RemoveAllGrowthEffector();
             onFacilityDestroyed?.Invoke(this);
             TimeManager.onNewMonth -= ApplyGrowth;
+            
+            foreach (var behavior in _behaviors)
+            {
+                behavior.OnRemovedFromCell(this, cellRemovedFrom);
+            }
         }
 
         private void PlaceInCell()

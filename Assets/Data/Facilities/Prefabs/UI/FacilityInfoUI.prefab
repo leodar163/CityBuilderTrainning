@@ -411,7 +411,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _facilityIcon: {fileID: 2158827751448979373}
-  _deleteButton: {fileID: 6323430688040817905}
   _facilityTooltipMessageTemplate: {fileID: 4225905071957915832, guid: 660f55cc3348dee4380b35833a3874c6,
     type: 3}
 --- !u!1 &5077714555905637641
@@ -463,6 +462,7 @@ GameObject:
   - component: {fileID: 4247618287437433630}
   - component: {fileID: 7802458902868310444}
   - component: {fileID: 6323430688040817905}
+  - component: {fileID: 2257441814846916050}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -573,6 +573,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2257441814846916050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5126314760352103598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff50fa9b804c4bd28a669956ced766d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipMessage: {fileID: 5454631973540942421, guid: 5c2a63025e3defd4fb0812d320864e6a,
+    type: 3}
+  _facilityInfo: {fileID: 2783522194542589994}
+  _button: {fileID: 6323430688040817905}
 --- !u!1 &7192270720155893979
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using ToolTipSystem;
 using ToolTipSystem.Messages;
 using UnityEngine;
@@ -16,31 +17,23 @@ namespace BuildingSystem.Facilities.UI
             get => _facility;
             set
             {
-                if (_facility != null)
-                {
-                    _deleteButton.onClick.RemoveAllListeners();
-                }
                 _facility = value;
                 DisplayFacility();  
+                onFacilityChanged?.Invoke(_facility);
             } 
         }
 
         private ConstructionSite _constructionSite;
 
         [SerializeField] private Image _facilityIcon;
-        [SerializeField] private Button _deleteButton;
 
         [Header("Tooltip")]
         [SerializeField] private FacilityTooltipMessageUI _facilityTooltipMessageTemplate;
         public TooltipMessageUI tooltipMessage => _facilityTooltipMessageTemplate;
         public ITooltipMessenger tooltipMessengerSelf => this;
 
-        private void Awake()
-        {
-            if (_deleteButton)
-                _deleteButton.onClick.AddListener(DestroyFacility);
-        }
-
+        public event Action<FacilityType> onFacilityChanged;
+        
         private void DisplayFacility()
         {
             if (_facility == null) return;
@@ -55,11 +48,6 @@ namespace BuildingSystem.Facilities.UI
             _facilityIcon.sprite = facility.icon;
         }
 
-        private void DestroyFacility()
-        {
-            _facility.cell.RemoveFacility(_facility);
-        }
-        
         public void OnPointerEnter(PointerEventData eventData)
         {
             tooltipMessengerSelf.SubToTooltip();
