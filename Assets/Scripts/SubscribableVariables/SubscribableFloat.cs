@@ -40,7 +40,7 @@ namespace SubscribableVariables
         
         public float Value => GetValue();
 
-        private float _percent;
+        private float _addPercent;
         private float _mult;
         private float _add;
 
@@ -55,7 +55,7 @@ namespace SubscribableVariables
 
             _add += modifier.Add;
             _mult += modifier.Mult;
-            _percent += modifier.Percent;
+            _addPercent += modifier.AddPercent;
 
             onVariableChanged?.Invoke(this);
         }
@@ -66,7 +66,7 @@ namespace SubscribableVariables
 
             _add -= modifier.Add;
             _mult -= modifier.Mult;
-            _percent -= modifier.Percent;
+            _addPercent -= modifier.AddPercent;
             
             onVariableChanged?.Invoke(this);
         }
@@ -75,9 +75,23 @@ namespace SubscribableVariables
         {
             float value = _baseValue;
             value += _add;
-            value += value * _percent / 100;
+            value += value * _addPercent / 100;
             value *= _mult;
             return value;
+        }
+
+        public void RecalculateValue()
+        {
+            _add = 0;
+            _addPercent = 0;
+            _mult = 0;
+
+            foreach (var modifier in modifiers)
+            {
+                _add += modifier.Add;
+                _addPercent += modifier.AddPercent;
+                _mult += modifier.Mult;
+            }
         }
     }
 }

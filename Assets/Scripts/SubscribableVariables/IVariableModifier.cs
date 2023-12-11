@@ -6,9 +6,9 @@ namespace SubscribableVariables
     {
         public IVariableModifier VariableModifierSelf { get; }
         
-        public float Add { get; }
-        public float Mult { get; }
-        public float Percent { get; }
+        public float Add { get; protected set; }
+        public float Mult { get; protected set;}
+        public float AddPercent { get; protected set;}
 
         protected List<SubscribableFloat> variables { get; }
 
@@ -33,6 +33,32 @@ namespace SubscribableVariables
             while (variables.Count > 0)
             {
                 RemoveFrom(variables[0]);
+            }
+        }
+
+        public void SetAdd(float newAdd)
+        {
+            Add = Add;
+            NotifyVariables();
+        }
+
+        public void SetMult(float newMult)
+        {
+            Mult = newMult;
+            NotifyVariables();
+        }
+
+        public void SetAddPercent(float newAddPercent)
+        {
+            AddPercent = newAddPercent;
+            NotifyVariables();
+        }
+
+        private void NotifyVariables()
+        {
+            foreach (var variable in variables)
+            {
+                variable.RecalculateValue();
             }
         }
     }
