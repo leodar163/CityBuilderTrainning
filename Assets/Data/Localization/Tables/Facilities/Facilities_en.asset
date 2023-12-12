@@ -112,6 +112,14 @@ MonoBehaviour:
     m_Localized: Add a market
     m_Metadata:
       m_Items: []
+  - m_Id: 42479959620079616
+    m_Localized: tents
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42480186703892480
+    m_Localized: Few improvised tents to shelter people from weather
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

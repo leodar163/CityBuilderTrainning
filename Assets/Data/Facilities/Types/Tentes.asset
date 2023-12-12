@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8a8d8645c2455a8d33d41ee4b940db, type: 3}
+  m_Name: Tentes
+  m_EditorClassIdentifier: 
+  _facility:
+    icon: {fileID: 21300000, guid: e3c189613c3c69248a1997cac75e673f, type: 3}
+    _renderData: {fileID: 11400000, guid: 6a39410ddd2a12643aac3ea03279fd9a, type: 2}
+    _scaleMultiplier: 1
+    _naturalGrowth: -0.02
+    _maxHealth: 5
+    health: 5
+    _growthFromNeeds: 0
+    _resourceNeeds: []
+    _destroyable: 1
+    constructionCost: 5
+    _sizeRadius: 0.2
+    _facilityName:
+      m_TableReference:
+        m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
+      m_TableEntryReference:
+        m_KeyId: 42479959620079616
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    _facilityDescription:
+      m_TableReference:
+        m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
+      m_TableEntryReference:
+        m_KeyId: 42480186703892480
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    _placementCondition: {fileID: 11400000, guid: ad0b4237fea8c604f959f32eba84391b,
+      type: 2}
+    _behaviors: []
+    _productionLines:
+    - name: Habitations
+      happinessSensitive: 0
+      demands: []
+      offers:
+      - resource: {fileID: 11400000, guid: eacc99057732ba54e9a982a70adc4fa9, type: 2}
+        quantity: 4
+    - name: Travail
+      happinessSensitive: 1
+      demands:
+      - resource: {fileID: 11400000, guid: 335e5936d3ace834393d03c0d76eb5b8, type: 2}
+        quantity: 4
+      offers:
+      - resource: {fileID: 11400000, guid: c9a4d718b591d2343b391cea0b40d5fc, type: 2}
+        quantity: 2
+  references:
+    version: 2
+    RefIds: []

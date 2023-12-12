@@ -107,6 +107,14 @@ MonoBehaviour:
     m_Key: Fac_Behav_AddAMaket
     m_Metadata:
       m_Items: []
+  - m_Id: 42479959620079616
+    m_Key: Fac_Name_Tents
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42480186703892480
+    m_Key: Fac_Desc_Tents
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

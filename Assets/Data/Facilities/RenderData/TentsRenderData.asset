@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da7f5ab8c1ca4f2c8cb3136da0c02fbd, type: 3}
+  m_Name: TentsRenderData
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 4300000, guid: c058c1e089dd1b447b14342b208969d4, type: 2}
+  material: {fileID: 2100000, guid: 85e22c20cbc2f624194baeb978b97c49, type: 2}
