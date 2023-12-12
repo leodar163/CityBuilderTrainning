@@ -216,6 +216,11 @@ namespace ResourceSystem.Markets
             marketToRemove.OnRemoved();
         }
 
+        public static void AmputateMarket(Market marketToAmputate, params CellData[] cellsToRemove)
+        {
+            AmputateMarket(marketToAmputate, new List<CellData>(cellsToRemove));
+        }
+        
         public static void AmputateMarket(Market marketToAmputate, List<CellData> cellsToRemove)
         {
             foreach (var cell in cellsToRemove)
@@ -248,7 +253,7 @@ namespace ResourceSystem.Markets
 
                 if (distance > Instance._maxDistanceToMerge)
                 {
-                    AddMarket(MarketType.Artificial, area);
+                    AddMarket(marketToAmputate.type, area);
                 }
             }
         }
@@ -301,6 +306,16 @@ namespace ResourceSystem.Markets
             return areas;
         }
 
-        
+        public static void TransferCells(Market origin, Market target, params CellData[] cellsToTransfer)
+        {
+            foreach (var cell in cellsToTransfer)
+            {
+                target.AddCell(cell);
+            }
+            
+            target.CalculateBorders();
+
+            AmputateMarket(origin, cellsToTransfer);
+        }
     }
 }

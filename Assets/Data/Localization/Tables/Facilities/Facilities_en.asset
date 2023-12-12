@@ -108,6 +108,10 @@ MonoBehaviour:
     m_Localized: a facility that allows refugees to reach the island
     m_Metadata:
       m_Items: []
+  - m_Id: 42451430408867840
+    m_Localized: Add a market
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

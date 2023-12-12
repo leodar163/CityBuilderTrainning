@@ -46,6 +46,7 @@ MonoBehaviour:
       type: 2}
     _behaviors:
     - {fileID: 11400000, guid: e7a8bc751c2dffd4b8865eb97c524ddb, type: 2}
+    - {fileID: 11400000, guid: a15dfa7ad7afacc4babba169fb8bc490, type: 2}
     _productionLines:
     - name: Colons
       happinessSensitive: 0

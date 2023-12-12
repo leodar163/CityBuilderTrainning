@@ -108,6 +108,10 @@ MonoBehaviour:
     m_Localized: "un b\xE2timent qui permet aux r\xE9fugiers de d\xE9barquer"
     m_Metadata:
       m_Items: []
+  - m_Id: 42451430408867840
+    m_Localized: "Ajoute un march\xE9"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

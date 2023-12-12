@@ -300,16 +300,16 @@ namespace BuildingSystem.Facilities
 
         public virtual void OnRemovedFromCell(CellData cellRemovedFrom)
         {
+            foreach (var behavior in _behaviors)
+            {
+                behavior.OnRemovedFromCell(this, cellRemovedFrom);
+            }
+        
             cell = null;
             RenderingSelf.OnDestroyed();
             RemoveAllGrowthEffector();
             onFacilityDestroyed?.Invoke(this);
             TimeManager.onNewMonth -= ApplyGrowth;
-            
-            foreach (var behavior in _behaviors)
-            {
-                behavior.OnRemovedFromCell(this, cellRemovedFrom);
-            }
         }
 
         private void PlaceInCell()

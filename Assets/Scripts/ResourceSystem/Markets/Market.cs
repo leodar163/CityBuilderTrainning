@@ -45,12 +45,10 @@ namespace ResourceSystem.Markets
         }
 
         #endregion
-
-        #region MULTIPLICATORS
         
-
-        #endregion
-        
+        /// <summary>
+        /// Must be called only from MarketManager
+        /// </summary>
         public void AddCell(CellData cell)
         {
             if (cells.Contains(cell)) return;
@@ -59,6 +57,9 @@ namespace ResourceSystem.Markets
             cell.market = this;
         }
 
+        /// <summary>
+        /// Must be called only from MarketManager
+        /// </summary>
         public void RemoveCell(CellData cell)
         {
             if (!cells.Contains(cell)) return;
@@ -67,10 +68,10 @@ namespace ResourceSystem.Markets
 
             if (cell.market == this) cell.market = MarketManager.AddMarket(cell, 0);
 
-            Parallel.ForEach(cell.economicActors, actor =>
+            foreach (var actor in cell.economicActors)
             {
                 actor.NotifyMarketChange();
-            });
+            }
         }
 
         public void CalculateBorders()
