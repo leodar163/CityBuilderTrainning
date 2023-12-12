@@ -14,11 +14,11 @@ namespace BuildingSystem.Facilities.HealthManagement
         protected List<ScriptableFacility> _inclusiveFilter { get; }
         protected List<ScriptableFacility> _exclusiveFilter { get; }
 
-        public Action<IGrowthEffector> OnDestroyed { get; set; }
-        
+        public List<FacilityType> facilities { get; }
+
         public void ApplyEffector(FacilityType facility)
         {
-            if (_inclusiveFilter.Count > 0)
+            if (_inclusiveFilter is {Count: > 0})
             {
                 foreach (var filter in _inclusiveFilter)
                 {
@@ -28,18 +28,33 @@ namespace BuildingSystem.Facilities.HealthManagement
                 return;
             }
 
-            foreach (var filter in _exclusiveFilter)
+            if (_exclusiveFilter is {Count: > 0})
             {
-                if (filter.Facility.IsSameType(facility)) return;
+                foreach (var filter in _exclusiveFilter)
+                {
+                    if (filter.Facility.IsSameType(facility)) return;
+                }
             }
-
+            
             ADDING:
+            facilities.Add(facility);
             facility.AddGrowthEffector(this);
         }
 
+        public void UnApplyEffector(FacilityType facility)
+        {
+            if (!facilities.Remove(facility)) return;
+            
+            facility.RemoveGrowthEffector(this);
+        }
+        
         public void Destroy()
         {
-            OnDestroyed?.Invoke(this);
+            foreach (var facility in facilities)
+            {
+                facility.RemoveGrowthEffector(this);
+            }
+            facilities.Clear();
         }
     }
 }

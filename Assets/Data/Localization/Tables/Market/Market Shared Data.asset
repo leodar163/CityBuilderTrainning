@@ -51,6 +51,26 @@ MonoBehaviour:
     m_Key: Mark_EcoSystemNaming
     m_Metadata:
       m_Items: []
+  - m_Id: 19662879384555520
+    m_Key: Mark_ShortageOf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663033856577536
+    m_Key: Mark_MissingOf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663220855427072
+    m_Key: Mark_AverageOf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663579267092480
+    m_Key: Mark_ExcessOf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663825304965120
+    m_Key: Mark_AbundanceOf
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -54,6 +54,26 @@ MonoBehaviour:
     m_Localized: '{0} de {1}'
     m_Metadata:
       m_Items: []
+  - m_Id: 19662879384555520
+    m_Localized: "p\xE9nurie de {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663033856577536
+    m_Localized: manque de {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663220855427072
+    m_Localized: suffisamment de {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663579267092480
+    m_Localized: "exc\xE9dent de {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663825304965120
+    m_Localized: abondance de {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

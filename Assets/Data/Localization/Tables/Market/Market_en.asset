@@ -54,6 +54,26 @@ MonoBehaviour:
     m_Localized: '{1}''s {0}'
     m_Metadata:
       m_Items: []
+  - m_Id: 19662879384555520
+    m_Localized: shortage of {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663033856577536
+    m_Localized: missing {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663220855427072
+    m_Localized: enough {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663579267092480
+    m_Localized: surplus of {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19663825304965120
+    m_Localized: abundance of {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

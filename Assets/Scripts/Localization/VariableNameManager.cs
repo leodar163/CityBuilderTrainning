@@ -1,4 +1,5 @@
 ﻿using System;
+using ResourceSystem.Markets;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -21,6 +22,7 @@ namespace Localization
         public static string ProductionName { get; private set; }
         [SerializeField] private LocalizedString _localizedEfficiency;
         public static string EfficiencyName { get; private set; }
+        
         [Header("Market")] 
         [SerializeField] private LocalizedString _localizedMarket;
         public static string MarketName { get; private set; }
@@ -36,6 +38,11 @@ namespace Localization
         public static string AvailabilityName { get; private set; }
         [SerializeField] private LocalizedString _localizedAvailabilityDesc;
         public static string AvailabilityDesc { get; private set; }
+        [SerializeField] private AutoLocalizedString _shortageOf;
+        [SerializeField] private AutoLocalizedString _missingOf;
+        [SerializeField] private AutoLocalizedString _averageOf;
+        [SerializeField] private AutoLocalizedString _excessOf;
+        [SerializeField] private AutoLocalizedString _abundanceOf;
         
         [Header("Facility")] 
         [SerializeField] private LocalizedString _localizedHealth;
@@ -64,6 +71,19 @@ namespace Localization
             LocalizationSettings.SelectedLocaleChanged -= InitStrings;
         }
 
+        public static AutoLocalizedString GetNeedFormat(ResourceAvailability availability)
+        {
+            return availability switch
+            {
+                ResourceAvailability.Shortage => Instance._shortageOf,
+                ResourceAvailability.Missing => Instance._missingOf,
+                ResourceAvailability.Average => Instance._averageOf,
+                ResourceAvailability.InExcess => Instance._excessOf,
+                ResourceAvailability.InAbundance => Instance._abundanceOf,
+                _ => throw new ArgumentOutOfRangeException(nameof(availability), availability, null)
+            };
+        }
+        
         private void InitStrings(Locale locale = null)
         {
             MaxQuantityName = _localizedMaxQuantity.GetLocalizedString();

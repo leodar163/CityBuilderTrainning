@@ -15,6 +15,8 @@ namespace BuildingSystem.Facilities.HealthManagement
 
         List<ScriptableFacility> IGrowthEffector._exclusiveFilter { get; }
 
+        List<FacilityType> IGrowthEffector.facilities { get; } = new();
+
         public Action<IGrowthEffector> OnDestroyed { get; set; }
     }
 }

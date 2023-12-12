@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BuildingSystem.Facilities.Scriptables;
-using Format;
 using Localization;
 using ResourceSystem;
 
@@ -14,16 +13,23 @@ namespace BuildingSystem.Facilities.HealthManagement
         public string GrowthEffectorName => FormatNeed(); 
         public float Growth { get; set; }
 
+        private FacilityType _facility;
+        
         List<ScriptableFacility> IGrowthEffector._inclusiveFilter { get; } = new();
 
         List<ScriptableFacility> IGrowthEffector._exclusiveFilter { get; } = new();
+
+        List<FacilityType> IGrowthEffector.facilities { get; } = new();
 
         public Action<IGrowthEffector> OnDestroyed { get; set; }
 
         private string FormatNeed()
         {
             if (resource == null) return "miss_resource_to_need";
-            return string.Format(VariableNameManager.NeedFormat, resource.ResourceName);
+            _facility ??= GrowthEffectorSelf.facilities[0];
+            return string.Format(
+                VariableNameManager.GetNeedFormat(_facility.cell.market.GetResourceAvailabilityState(resource)).String,
+                resource.ResourceName);
         }
     }
 }

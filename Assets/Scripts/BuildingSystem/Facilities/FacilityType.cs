@@ -31,7 +31,13 @@ namespace BuildingSystem.Facilities
         [SerializeField] protected float _naturalGrowth;
         [SerializeField] protected float _maxHealth;
         public float health;
-        [SerializeField] protected float _growthFromNeeds;
+        [Space]
+        [SerializeField] protected float _growthFromShortage;
+        [SerializeField] protected float _growthFromMissing;
+        [SerializeField] protected float _growthFromAverage;
+        [SerializeField] protected float _growthFromExcess;
+        [SerializeField] protected float _growthFromAbundance;
+        [Space]
         [SerializeField] protected List<ResourceType> _resourceNeeds;
         protected List<FacilityNeed> _needs;
         protected float _growth;
@@ -106,24 +112,21 @@ namespace BuildingSystem.Facilities
         {
             if (_growthEffectors.Contains(effector)) return;
             _growthEffectors.Add(effector);
-            effector.OnDestroyed += RemoveGrowthEffector;
         }
 
         public void RemoveAllGrowthEffector()
         {
             while (_growthEffectors.Count > 0)
             {
-                RemoveGrowthEffector(_growthEffectors[^1]);
+                _growthEffectors[^1].UnApplyEffector(this);
             }
         }
         
         public void RemoveGrowthEffector(IGrowthEffector effector)
         {
-            if (!_growthEffectors.Contains(effector)) return;
             _growthEffectors.Remove(effector);
-            effector.OnDestroyed -= RemoveGrowthEffector;
         }
-
+        
         private void CalculateGrowth()
         {
             _growth = 0;
@@ -145,11 +148,11 @@ namespace BuildingSystem.Facilities
 
             return cell.market.GetResourceAvailabilityState(resource) switch
             {
-                ResourceAvailability.Shortage => -_growthFromNeeds * 2,
-                ResourceAvailability.Missing => -_growthFromNeeds,
-                ResourceAvailability.Average => 0,
-                ResourceAvailability.InExcess => _growthFromNeeds,
-                ResourceAvailability.InAbundance => _growthFromNeeds * 2,
+                ResourceAvailability.Shortage => _growthFromShortage,
+                ResourceAvailability.Missing => _growthFromMissing,
+                ResourceAvailability.Average => _growthFromAverage,
+                ResourceAvailability.InExcess => _growthFromExcess,
+                ResourceAvailability.InAbundance =>_growthFromAbundance,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -175,14 +178,14 @@ namespace BuildingSystem.Facilities
             {
                 FacilityNeed facilityNeed = new FacilityNeed { resource = need };
                 _needs.Add(facilityNeed);
-                AddGrowthEffector(facilityNeed);
+                facilityNeed.GrowthEffectorSelf.ApplyEffector(this);
             }
         }
 
         private void InitNaturalGrowth()
         {
             NaturalGrowth naturalGrowth = new NaturalGrowth { Growth = _naturalGrowth };
-            AddGrowthEffector(naturalGrowth);
+            naturalGrowth.GrowthEffectorSelf.ApplyEffector(this);
         }
         
         protected virtual void OnHealthHitsZero()
@@ -264,7 +267,12 @@ namespace BuildingSystem.Facilities
             _sizeRadius = template._sizeRadius;
 
             _naturalGrowth = template._naturalGrowth;
-            _growthFromNeeds = template._growthFromNeeds;
+            _growthFromShortage = template._growthFromShortage;
+            _growthFromMissing = template._growthFromMissing;
+            _growthFromAverage = template._growthFromAverage;
+            _growthFromExcess = template._growthFromExcess;
+            _growthFromAbundance = template._growthFromAbundance;
+            
             health = template.health;
             _maxHealth = template._maxHealth;
             _resourceNeeds = new List<ResourceType>(template._resourceNeeds);
