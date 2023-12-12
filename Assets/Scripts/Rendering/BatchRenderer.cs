@@ -8,7 +8,7 @@ namespace Rendering
     public class BatchRenderer : Singleton<BatchRenderer>
     {
         private static readonly Dictionary<IBatchRendered, int> s_batchRendereds = new();
-        private static readonly Dictionary<InstanceRenderData, List<Matrix4x4>> s_batches = new();
+        private static readonly Dictionary<InstanceRenderData, Matrix4x4[]> s_batches = new();
 
         public static void AddBatchRendered(IBatchRendered batchRendered)
         {
@@ -16,24 +16,33 @@ namespace Rendering
 
             if (!s_batches.TryGetValue(batchRendered.RenderData, out var matrices))
             {
-                matrices = new List<Matrix4x4>();
+                matrices = new Matrix4x4[1023];
                 s_batches.Add(batchRendered.RenderData, matrices);
             }
 
-            matrices.Add(batchRendered.GetMatrix());
-            
-            s_batchRendereds.Add(batchRendered, matrices.Count - 1);
+            for (int i = 0; i < matrices.Length; i++)
+            {
+                if (matrices[i] == default)
+                {
+                    matrices[i] = batchRendered.GetMatrix();
+                    s_batchRendereds.Add(batchRendered, i);
+                    return;
+                }
+            }
+
+            throw new OutOfMemoryException(
+                "Can only render 1023 instance of the same RenderData. Stop trying to render more");
         }
 
         public static void RemoveBatchRendered(IBatchRendered batchRendered)
         {
             if (!s_batchRendereds.ContainsKey(batchRendered)) return;
 
-            s_batches[batchRendered.RenderData].RemoveAt(s_batchRendereds[batchRendered]);
-            
+            s_batches[batchRendered.RenderData][s_batchRendereds[batchRendered]] = default;
+
             s_batchRendereds.Remove(batchRendered);
 
-            if (s_batches[batchRendered.RenderData].Count == 0) s_batches.Remove(batchRendered.RenderData);
+            if (s_batches[batchRendered.RenderData].Length == 0) s_batches.Remove(batchRendered.RenderData);
         }
 
         public static void NotifyMatrixChanges(IBatchRendered batchRendered)
