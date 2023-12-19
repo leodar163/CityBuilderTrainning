@@ -13,7 +13,7 @@ namespace TerrainSystem
         [SerializeField] private LocalizedString _terrainName;
         [SerializeField] private string _id;
         [SerializeField] public Gradient ecosystemGradient;
-        [SerializeField] public Tile tile;
+        [SerializeField] public TileBase tile;
         public string id => _id;
         public readonly List<CellData> cells = new();
 

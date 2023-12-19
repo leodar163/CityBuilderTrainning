@@ -326,6 +326,7 @@ namespace GridSystem
             if (CellIsOutOfGrid(cellIndex)) return;
             tilemap.SetTile(cellIndex, paintTile);
             tilemap.SetTileFlags(cellIndex, TileFlags.None);
+            tint.a = tilemap.color.a;
             tilemap.SetColor(cellIndex, tint);
         }
 

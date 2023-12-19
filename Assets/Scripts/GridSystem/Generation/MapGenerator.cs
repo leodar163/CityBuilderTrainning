@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ResourceSystem.Markets;
 using TerrainSystem;
@@ -67,6 +65,7 @@ namespace GridSystem.Generation
         {
             GridManager.GridSize = _mapSize;
             if (_RebuildBorderOnValidate) GenerateBorders();
+            if (_levels.Length == 0) return;
             //SortLevels();
             noiseMap = new Texture2D(_mapSize.x, _mapSize.y);
 
@@ -186,7 +185,7 @@ namespace GridSystem.Generation
                 }
             }
             GenerateCost();
-            GenerateEcosystems();
+            if(!isPreview) GenerateEcosystems();
         }
 
         private void GenerateCost()

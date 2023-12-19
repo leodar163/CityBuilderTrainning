@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da7f5ab8c1ca4f2c8cb3136da0c02fbd, type: 3}
-  m_Name: ConstructionSiteRenderData
+  m_Name: FishingDocksRenderData
   m_EditorClassIdentifier: 
-  mesh: {fileID: 4300000, guid: 1c3e0f87e373bca478ec1c358df85521, type: 2}
-  material: {fileID: 2100000, guid: 8de5ad076f475ef4bae225ca105e64e3, type: 2}
+  mesh: {fileID: 4300000, guid: 48af26ab556161145a7cee936f662a39, type: 2}
+  material: {fileID: 2100000, guid: 2724588521049af449eaf0e4c6392e7b, type: 2}

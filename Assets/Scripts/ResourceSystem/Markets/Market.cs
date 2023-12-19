@@ -149,11 +149,11 @@ namespace ResourceSystem.Markets
         {
             List<ResourceOrder> filteredOrders = new List<ResourceOrder>();
 
-            Parallel.ForEach(_orders, order =>
+            foreach (var order in _orders)
             {
                 if (order.type == orderType && order.resource == resource)
                     filteredOrders.Add(order);
-            });
+            }
 
             if (filteredOrders.Count == 0)
             {

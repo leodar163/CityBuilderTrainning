@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_ConstructionSite
+  m_Name: Mat_FishingDocks
   m_Shader: {fileID: -6465566751694194690, guid: d06b28e9f4f83e047beb6e48bb228b17,
     type: 3}
   m_Parent: {fileID: 0}
@@ -75,7 +75,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texture:
-        m_Texture: {fileID: 2800000, guid: faf657cd667060b4a9ed139cdd63ccf2, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0c4f19268ac0dd841a4bf12d6d1a77da, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -138,14 +138,14 @@ Material:
     - _smoothness: 0.5
     - _specular_cell_offset: 0
     - _specular_cell_threshold: 0.21
-    - _specular_multipier: 0.5
+    - _specular_multipier: 0.458
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _shadow_color: {r: 0.23584908, g: 0.13438947, b: 0.13438947, a: 1}
-    - _tint: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
+    - _shadow_color: {r: 0.398876, g: 0.18154147, b: 0.4433962, a: 1}
+    - _tint: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &601556209124699233
 MonoBehaviour:
