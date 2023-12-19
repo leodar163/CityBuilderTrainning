@@ -160,10 +160,10 @@ namespace GridSystem.Generation
                             terrain =
                                 GetTileByByHeight(EvaluateTerrainNoise(i, j, terrainLevel.seed), 
                                     terrainLevel, terrain);
-                            if (!isPreview)
-                            {
-                                _landMassArea.Add(GridManager.GetCellDataFromIndex(i,j));
-                            }
+                        }
+                        if (!isPreview)
+                        {
+                            _landMassArea.Add(GridManager.GetCellDataFromIndex(i,j));
                         }
                     }
                     else

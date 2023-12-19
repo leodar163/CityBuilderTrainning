@@ -9,10 +9,8 @@ using Rendering;
 using ResourceSystem;
 using ResourceSystem.Markets;
 using TimeSystem;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Localization;
-using Random = UnityEngine.Random;
 
 namespace BuildingSystem.Facilities
 {
@@ -42,6 +40,7 @@ namespace BuildingSystem.Facilities
         protected List<FacilityNeed> _needs;
         protected float _growth;
         [Header("Construction")] 
+        [SerializeField] protected PlacementType _placementType;
         [SerializeField] private bool _destroyable = true;
         public float constructionCost;
         [SerializeField] protected float _sizeRadius = 0.3f;
@@ -57,6 +56,8 @@ namespace BuildingSystem.Facilities
         
         public CellData cell { get; private set; }
 
+        public float ScaleMultiplier => _scaleMultiplier;
+        
         public static event Action<FacilityType> onFacilityBuild;
         public static event Action<FacilityType> onFacilityDestroyed;
 
@@ -65,6 +66,7 @@ namespace BuildingSystem.Facilities
 
         public float sizeRadius => _sizeRadius * _scale.magnitude;
         public bool destroyable => _destroyable;
+        public PlacementType PlacementType => _placementType;
 
         private readonly List<IGrowthEffector> _growthEffectors = new();
 
@@ -265,6 +267,7 @@ namespace BuildingSystem.Facilities
             _placementCondition = template._placementCondition;
             constructionCost = template.constructionCost;
             _sizeRadius = template._sizeRadius;
+            _placementType = template._placementType;
 
             _naturalGrowth = template._naturalGrowth;
             _growthFromShortage = template._growthFromShortage;
@@ -295,7 +298,9 @@ namespace BuildingSystem.Facilities
         public virtual void OnAddedToCell(CellData cellAddedTo)
         {
             cell = cellAddedTo;
-            PlaceInCell();
+            
+            FacilityPlacementBehaviors.Place(this, cellAddedTo, _placementType);
+
             RenderingSelf.OnCreated();
             onFacilityBuild?.Invoke(this);
             TimeManager.onNewMonth += ApplyGrowth;
@@ -320,43 +325,7 @@ namespace BuildingSystem.Facilities
             TimeManager.onNewMonth -= ApplyGrowth;
         }
 
-        private void PlaceInCell()
-        {
-            bool isPositionValid;
-
-            Vector3 facilityPosition;
-            _rotation = quaternion.Euler(new float3(0, Random.Range(-175, 175),0));
-            _scale = Vector3.one * (Random.Range(0.9f, 1.1f) * _scaleMultiplier);
-
-            int safetyLoopCount = 100;
-            
-            do
-            {
-                facilityPosition = cell.position + new Vector3
-                {
-                    x = Random.Range(-0.5f, 0.5f),
-                    z = Random.Range(-0.5f, 0.5f)
-                };
-
-                isPositionValid = true;
-                
-                foreach (var facility in cell.facilities)
-                {
-                    if (facility == this) continue;
-                    if (Vector3.Distance(facilityPosition, facility._position)
-                        < sizeRadius + facility.sizeRadius)
-                    {
-                        isPositionValid = false;
-                        break;
-                    }
-                }
-
-                safetyLoopCount--;
-                
-            } while (!isPositionValid && safetyLoopCount > 0);
-
-            _position = facilityPosition;
-        }
+        
         
         public bool CanBePlaced(CellData cellData, out string conditionsFormat)
         {

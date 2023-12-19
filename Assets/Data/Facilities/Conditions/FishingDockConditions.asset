@@ -9,19 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f230164852845e78509dabcb2cc0a12, type: 3}
-  m_Name: CostPlacementBehavior
+  m_Script: {fileID: 11500000, guid: 22285f9e572047e486ae66b84a3162cf, type: 3}
+  m_Name: FishingDockConditions
   m_EditorClassIdentifier: 
-  _behaviorName:
-    m_TableReference:
-      m_TableCollectionName: GUID:9594847ca71834b4ea2658faf14347c0
-    m_TableEntryReference:
-      m_KeyId: 42077425522880512
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  _format:
+  _localizedCondition:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -30,16 +21,30 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _desc:
+  inverseCondition: 0
+  nbrOfNeededConditions: 0
+  allConditions: 1
+  _localizedMultipleConditions:
     m_TableReference:
-      m_TableCollectionName: 
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
     m_TableEntryReference:
-      m_KeyId: 0
+      m_KeyId: 1433415602176
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  _costTerrain: {fileID: 11400000, guid: 7f7dd6c74d5c3d145a558dbd00428f80, type: 2}
+  _localizedAllConditions:
+    m_TableReference:
+      m_TableCollectionName: GUID:29bc5af807c7d3d44bd60df47b28b7c3
+    m_TableEntryReference:
+      m_KeyId: 2401406439424
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  placementConditions:
+  - {fileID: 11400000, guid: 092fa72bc59ee4d4889e89f878ef8810, type: 2}
+  - {fileID: 11400000, guid: ad0b4237fea8c604f959f32eba84391b, type: 2}
   references:
     version: 2
     RefIds: []

@@ -42,6 +42,10 @@ MonoBehaviour:
     m_Localized: plage
     m_Metadata:
       m_Items: []
+  - m_Id: 45621537316483072
+    m_Localized: terre
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

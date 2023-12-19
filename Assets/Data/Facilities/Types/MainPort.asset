@@ -19,8 +19,13 @@ MonoBehaviour:
     _naturalGrowth: 0
     _maxHealth: 10
     health: 10
-    _growthFromNeeds: 0
+    _growthFromShortage: 0
+    _growthFromMissing: 0
+    _growthFromAverage: 0
+    _growthFromExcess: 0
+    _growthFromAbundance: 0
     _resourceNeeds: []
+    _placementType: 2
     _destroyable: 1
     constructionCost: 0
     _sizeRadius: 0.2
@@ -45,7 +50,6 @@ MonoBehaviour:
     _placementCondition: {fileID: 11400000, guid: 092fa72bc59ee4d4889e89f878ef8810,
       type: 2}
     _behaviors:
-    - {fileID: 11400000, guid: e7a8bc751c2dffd4b8865eb97c524ddb, type: 2}
     - {fileID: 11400000, guid: a15dfa7ad7afacc4babba169fb8bc490, type: 2}
     _productionLines:
     - name: Colons

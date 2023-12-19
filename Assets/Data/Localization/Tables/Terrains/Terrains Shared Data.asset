@@ -39,6 +39,10 @@ MonoBehaviour:
     m_Key: Ter_BeachName
     m_Metadata:
       m_Items: []
+  - m_Id: 45621537316483072
+    m_Key: Ter_Land
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

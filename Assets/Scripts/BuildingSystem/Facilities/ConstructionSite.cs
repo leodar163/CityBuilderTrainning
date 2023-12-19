@@ -39,7 +39,7 @@ namespace BuildingSystem.Facilities
             _facilityToBuild = _facilityToBuild.Copy();
             cell.maxFacilityCount++;
             cell.TryAddFacility(facilityToBuild);
-            _facilityToBuild.RenderingSelf.SetTransform(_position, _rotation, _scale);
+            _facilityToBuild.RenderingSelf.SetTransform(_position, _rotation, _facilityToBuild.RenderingSelf.Scale);
             cell.RemoveFacility(this);
             currentCell.maxFacilityCount--;
         }
@@ -47,9 +47,9 @@ namespace BuildingSystem.Facilities
         public void SetFacilityToBuild(FacilityType facility)
         {
             if (facility == null || facility == facilityToBuild) return;
-
             _facilityToBuild = facility;
-            constructionCost = facilityToBuild.constructionCost;
+            _placementType = facility.PlacementType;
+            constructionCost = facility.constructionCost;
             _maxHealth = constructionCost;
         }
     }

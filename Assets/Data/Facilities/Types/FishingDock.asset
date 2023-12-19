@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _facility:
     icon: {fileID: 21300000, guid: 8185284f6ec637744aebbe48ac07e182, type: 3}
-    _renderData: {fileID: 11400000, guid: c47948db4c192ed408c9e007893f3944, type: 2}
-    _scaleMultiplier: 1
+    _renderData: {fileID: 11400000, guid: a017e663e52cb374287dc03597e0f46c, type: 2}
+    _scaleMultiplier: 1.2
     _naturalGrowth: 0
     _maxHealth: 10
     health: 10
@@ -25,6 +25,7 @@ MonoBehaviour:
     _growthFromExcess: 0
     _growthFromAbundance: 0
     _resourceNeeds: []
+    _placementType: 2
     _destroyable: 1
     constructionCost: 20
     _sizeRadius: 0.2
@@ -46,10 +47,9 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    _placementCondition: {fileID: 11400000, guid: 092fa72bc59ee4d4889e89f878ef8810,
+    _placementCondition: {fileID: 11400000, guid: 66c4e2a7b84ce17408be10136b1f756d,
       type: 2}
-    _behaviors:
-    - {fileID: 11400000, guid: e7a8bc751c2dffd4b8865eb97c524ddb, type: 2}
+    _behaviors: []
     _productionLines:
     - name: "P\xEAche"
       happinessSensitive: 1
